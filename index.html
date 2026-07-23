@@ -1,1 +1,288 @@
-[COPY THE ENTIRE FILE CONTENT FROM THE FILE JUST CREATED]
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The Chainwise - Real-time protocol analysis for DeFi risk intelligence. Identify high-risk smart contracts and treasury anomalies before capital exposure.">
+    <title>The Chainwise | DeFi Risk Intelligence & Protocol Analysis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-red: #FF3D5C;
+            --color-blue: #00D4FF;
+            --color-orange: #FF8C3D;
+            --color-navy: #0F1629;
+            --color-gray-dark: #1A2847;
+            --color-white: #F7F9FC;
+            --gradient-primary: linear-gradient(135deg, #FF3D5C 0%, #FF8C3D 50%, #00D4FF 100%);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--color-navy); color: var(--color-white); line-height: 1.6; }
+        header { padding: 24px 48px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--color-white); }
+        .logo-text { font-size: 24px; font-weight: 700; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .logo svg { width: 40px; height: 40px; }
+        nav { display: flex; gap: 32px; align-items: center; }
+        nav a { color: var(--color-white); text-decoration: none; font-size: 14px; }
+        .btn { padding: 12px 24px; border-radius: 8px; font-weight: 600; text-decoration: none; cursor: pointer; border: none; transition: all 0.3s; }
+        .btn-primary { background: var(--gradient-primary); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255, 61, 92, 0.3); }
+        .hero { padding: 120px 48px; text-align: center; max-width: 1200px; margin: 0 auto; }
+        .hero h1 { font-size: 56px; font-weight: 700; margin-bottom: 24px; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.2; }
+        .hero p { font-size: 18px; color: #A0A0A0; margin-bottom: 12px; max-width: 700px; margin-left: auto; margin-right: auto; }
+        .hero .tagline { font-size: 16px; color: var(--color-white); font-weight: 600; margin-bottom: 32px; }
+        .cta-buttons { display: flex; gap: 16px; justify-content: center; margin-top: 48px; }
+        .features { padding: 80px 48px; max-width: 1200px; margin: 0 auto; }
+        .features h2 { font-size: 42px; font-weight: 700; text-align: center; margin-bottom: 64px; color: var(--color-white); }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; }
+        .feature-card { padding: 32px; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; background: rgba(255,255,255,0.02); transition: all 0.3s; }
+        .feature-card:hover { border-color: var(--color-blue); background: rgba(0,212,255,0.05); }
+        .feature-card h3 { font-size: 18px; font-weight: 600; margin-bottom: 12px; color: var(--color-white); }
+        .feature-card p { font-size: 14px; color: #A0A0A0; }
+        .section-title { font-size: 42px; font-weight: 700; margin-bottom: 64px; color: var(--color-white); }
+        .methodology { padding: 80px 48px; max-width: 1200px; margin: 0 auto; background: rgba(26, 40, 71, 0.5); }
+        .methodology-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; }
+        .methodology-card { padding: 24px; border-left: 3px solid var(--color-orange); background: rgba(255,255,255,0.02); }
+        .methodology-card h4 { font-size: 16px; font-weight: 600; margin-bottom: 8px; color: var(--color-orange); }
+        .methodology-card p { font-size: 14px; color: #A0A0A0; }
+        .case-study { padding: 80px 48px; max-width: 1200px; margin: 0 auto; }
+        .case-title { font-size: 36px; font-weight: 700; margin-bottom: 32px; color: var(--color-white); }
+        .case-content { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+        .case-left h3 { font-size: 20px; font-weight: 600; margin-bottom: 16px; color: var(--color-white); }
+        .case-stat { margin-bottom: 24px; }
+        .case-stat .value { font-size: 28px; font-weight: 700; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .case-stat .label { font-size: 14px; color: #A0A0A0; margin-top: 4px; }
+        .case-right { background: rgba(255,61,92,0.1); padding: 32px; border-radius: 12px; border: 1px solid rgba(255,61,92,0.3); }
+        .case-right h3 { color: var(--color-red); margin-bottom: 16px; }
+        .case-finding { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .case-finding:last-child { border-bottom: none; }
+        .case-finding strong { color: var(--color-white); display: block; margin-bottom: 4px; }
+        .case-finding p { font-size: 14px; color: #A0A0A0; }
+        .alert-box { margin: 60px auto; max-width: 800px; padding: 24px; border: 1px solid var(--color-orange); border-radius: 8px; background: rgba(255, 140, 61, 0.05); }
+        .alert-box h3 { color: var(--color-orange); font-size: 16px; font-weight: 600; margin-bottom: 12px; }
+        .alert-box p { color: #A0A0A0; font-size: 14px; line-height: 1.6; }
+        .stats { padding: 60px 48px; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 32px; text-align: center; }
+        .stat-item h4 { font-size: 32px; font-weight: 700; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
+        .stat-item p { font-size: 14px; color: #A0A0A0; }
+        footer { text-align: center; padding: 48px; border-top: 1px solid rgba(255,255,255,0.1); color: #A0A0A0; font-size: 14px; }
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 16px; padding: 16px 24px; }
+            nav { flex-wrap: wrap; gap: 16px; justify-content: center; }
+            .hero { padding: 60px 24px; }
+            .hero h1 { font-size: 36px; }
+            .features, .methodology, .case-study, .stats { padding: 40px 24px; }
+            .case-content { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="#" class="logo">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#FF3D5C;stop-opacity:1" />
+                        <stop offset="50%" style="stop-color:#FF8C3D;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#00D4FF;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <path d="M 160 30 A 70 70 0 0 0 40 100 A 70 70 0 0 0 160 170" stroke="url(#logoGradient)" stroke-width="20" fill="none" stroke-linecap="round"/>
+                <rect x="115" y="75" width="50" height="50" rx="4" fill="none" stroke="url(#logoGradient)" stroke-width="3"/>
+                <circle cx="100" cy="100" r="6" fill="#FF8C3D"/>
+            </svg>
+            <span class="logo-text">The Chainwise</span>
+        </a>
+        <nav>
+            <a href="#features">Features</a>
+            <a href="#methodology">How It Works</a>
+            <a href="#cases">Cases</a>
+            <button class="btn btn-primary">Dashboard</button>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>The Industry Standard for DeFi Risk Intelligence & Fraud Detection</h1>
+        <p>Real-time protocol analysis designed to identify high-risk smart contracts, treasury anomalies, and architectural vulnerabilities before capital is compromised.</p>
+        <div class="tagline">Day 1 Threat Identification. Institutional Protection. Industry Standard.</div>
+        <div class="cta-buttons">
+            <button class="btn btn-primary">Launch Risk Dashboard</button>
+            <a href="#cases" class="btn" style="border: 1px solid var(--color-blue); color: var(--color-blue);">View Cases</a>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="stat-item">
+            <h4>8</h4>
+            <p>Specialized Analysis Layers</p>
+        </div>
+        <div class="stat-item">
+            <h4>&lt;24h</h4>
+            <p>Detection Timeline</p>
+        </div>
+        <div class="stat-item">
+            <h4>Multi-Chain</h4>
+            <p>Cross-Blockchain Support</p>
+        </div>
+        <div class="stat-item">
+            <h4>100%</h4>
+            <p>Verifiable On-Chain</p>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <h2>How We Protect You</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>🔍 Pattern Recognition</h3>
+                <p>Detect suspicious behavioral patterns across website, whitepaper, and on-chain indicators</p>
+            </div>
+            <div class="feature-card">
+                <h3>📊 Bytecode Analysis</h3>
+                <p>Deep inspection of contract code for hidden or malicious functions and owner controls</p>
+            </div>
+            <div class="feature-card">
+                <h3>💰 Treasury Flow</h3>
+                <p>Real-time monitoring of fund movements, large outflows, and liquidity dynamics</p>
+            </div>
+            <div class="feature-card">
+                <h3>⚡ Withdrawal Dynamics</h3>
+                <p>Track historical withdrawal patterns and detect pause/freeze events</p>
+            </div>
+            <div class="feature-card">
+                <h3>🌉 Cross-Chain Bridge</h3>
+                <p>Monitor protocol behavior and fund movement across multiple blockchain networks</p>
+            </div>
+            <div class="feature-card">
+                <h3>🔗 Off-Ramp Detection</h3>
+                <p>Identify suspicious off-ramp activities and fund extraction to centralized exchanges</p>
+            </div>
+            <div class="feature-card">
+                <h3>👥 Sybil Clustering</h3>
+                <p>Detect coordinated wallet activity and machine-like behavioral patterns</p>
+            </div>
+            <div class="feature-card">
+                <h3>🎯 Transaction Attribution</h3>
+                <p>Advanced forensics to trace capital flows and identify responsible parties</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="methodology" id="methodology">
+        <h2 style="text-align: center; margin-bottom: 64px;">8-Layer Detection Framework</h2>
+        <div class="methodology-grid">
+            <div class="methodology-card">
+                <h4>Layer 1: Patterns</h4>
+                <p>Scans for guaranteed returns, MLM language, unsustainable APY claims</p>
+            </div>
+            <div class="methodology-card">
+                <h4>Layer 2: Bytecode</h4>
+                <p>Identifies dangerous functions, owner controls, time-lock implementations</p>
+            </div>
+            <div class="methodology-card">
+                <h4>Layer 3: Treasury</h4>
+                <p>Tracks fund flows, large outflows, mixer transfers, drain velocity</p>
+            </div>
+            <div class="methodology-card">
+                <h4>Layer 4: Withdrawals</h4>
+                <p>Monitors pause events, queue depth, cooldown increases, collapse indicators</p>
+            </div>
+            <div class="methodology-card">
+                <h4>Layer 5: Bridges</h4>
+                <p>Cross-chain fund tracking, bridge protocol monitoring, exit detection</p>
+            </div>
+            <div class="methodology-card">
+                <h4>Layer 6: Off-Ramps</h4>
+                <p>CEX proximity alerts, VASP node detection, operator exit paths</p>
+            </div>
+            <div class="methodology-card">
+                <h4>Layer 7: Sybil</h4>
+                <p>Wallet clustering, creation timing analysis, coordinated behavior detection</p>
+            </div>
+            <div class="methodology-card">
+                <h4>Layer 8: Attribution</h4>
+                <p>Transaction tracing, confidence scoring, evidence documentation, forensics</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="case-study" id="cases">
+        <div class="case-title">Smart Solve DeFi - Case Study</div>
+        <div class="case-content">
+            <div class="case-left">
+                <h3>Risk Assessment Results</h3>
+                
+                <div class="case-stat">
+                    <div class="value">95/100</div>
+                    <div class="label">Risk Score (CRITICAL)</div>
+                </div>
+
+                <div class="case-stat">
+                    <div class="value">MLM Pyramid</div>
+                    <div class="label">Classification</div>
+                </div>
+
+                <div class="case-stat">
+                    <div class="value">1% Daily</div>
+                    <div class="label">Promised Returns (365% APY - Mathematically Impossible)</div>
+                </div>
+
+                <div class="case-stat">
+                    <div class="value">15-Level Structure</div>
+                    <div class="label">Commission + 10-Generation Withdrawal Bonus</div>
+                </div>
+
+                <div class="case-stat">
+                    <div class="value">60%</div>
+                    <div class="label">Operator Wallet Control (Centralized)</div>
+                </div>
+
+                <div class="case-stat">
+                    <div class="value">$100M+</div>
+                    <div class="label">Estimated User Loss (If Uncaught)</div>
+                </div>
+            </div>
+
+            <div class="case-right">
+                <h3>Key Findings</h3>
+
+                <div class="case-finding">
+                    <strong>Dangerous Functions</strong>
+                    <p>5 critical functions identified: withdraw(), pause(), migrate(), setTreasury(), transferOwnership() - all onlyOwner access</p>
+                </div>
+
+                <div class="case-finding">
+                    <strong>Treasury Drain</strong>
+                    <p>$150K outflow detected in last 7 days ($21,428/day). Operator transfers to personal wallets confirmed</p>
+                </div>
+
+                <div class="case-finding">
+                    <strong>Obfuscation Patterns</strong>
+                    <p>$75K to mixer services, $25K to cross-chain bridges - classic operator exit preparation</p>
+                </div>
+
+                <div class="case-finding">
+                    <strong>Withdrawal Queue Crisis</strong>
+                    <p>127 pending withdrawals detected. Users unable to exit = imminent collapse signal</p>
+                </div>
+
+                <div class="case-finding">
+                    <strong>Predicted Timeline</strong>
+                    <p>6-12 months until collapse. Operator pause() → migrate() → exit scenario confirmed</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="alert-box">
+        <h3>⚠️ High Risk Assessment Notice</h3>
+        <p>This platform provides institutional-grade risk assessment. Contract behavior showing parameters inconsistent with sustainable protocols, treasury architectures indicating capital concentration risk, or withdrawal dynamics suggesting illiquidity are flagged for immediate review. All findings are evidence-based and verifiable on-chain. This is not financial advice. Independent verification recommended before any capital decision.</p>
+    </div>
+
+    <footer>
+        <p>The Chainwise | The Industry Standard for DeFi Risk Intelligence</p>
+        <p style="margin-top: 12px; font-size: 12px;">Built by Satoshi Lab | Enterprise Risk Intelligence Platform</p>
+    </footer>
+</body>
+</html>
