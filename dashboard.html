@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="ChainWise Risk Dashboard - Real-time DeFi protocol analysis and risk assessment.">
     <title>Risk Dashboard | The Chainwise</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%23FF3D5C'/><stop offset='50%25' stop-color='%23FF8C3D'/><stop offset='100%25' stop-color='%2300D4FF'/></linearGradient></defs><rect width='200' height='200' rx='36' fill='%230F1629'/><path d='M160 30A70 70 0 0 0 40 100A70 70 0 0 0 160 170' stroke='url(%23g)' stroke-width='20' fill='none' stroke-linecap='round'/><circle cx='100' cy='100' r='10' fill='%23FF8C3D'/></svg>">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.10.0/chart.min.js"></script>
     <style>
         * {
@@ -591,7 +592,20 @@
     <nav class="header">
         <div class="nav-container">
             <a href="/" class="logo">
-                <img src="./logo-chainwise.png" alt="ChainWise" style="width: 32px; height: 32px; border-radius: 6px;">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px; border-radius: 6px;">
+                    <defs>
+                        <linearGradient id="logoGradDashHeader" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#FF3D5C"/>
+                            <stop offset="50%" style="stop-color:#FF8C3D"/>
+                            <stop offset="100%" style="stop-color:#00D4FF"/>
+                        </linearGradient>
+                    </defs>
+                    <rect width="200" height="200" fill="#0F1629" rx="20"/>
+                    <path d="M 160 30 A 70 70 0 0 0 40 100 A 70 70 0 0 0 160 170" stroke="url(#logoGradDashHeader)" stroke-width="20" fill="none" stroke-linecap="round"/>
+                    <rect x="115" y="75" width="50" height="50" rx="4" fill="none" stroke="url(#logoGradDashHeader)" stroke-width="3"/>
+                    <circle cx="140" cy="105" r="4" fill="#FF8C3D"/>
+                    <circle cx="100" cy="100" r="6" fill="#FF8C3D"/>
+                </svg>
                 <span>ChainWise</span>
             </a>
             <ul class="nav-primary">
@@ -740,7 +754,20 @@
             <div class="footer-grid">
                 <div class="footer-section footer-brand">
                     <div class="logo">
-                        <img src="./logo-chainwise.png" alt="ChainWise" style="width: 32px; height: 32px; border-radius: 6px;">
+                        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px; border-radius: 6px;">
+                            <defs>
+                                <linearGradient id="logoGradDashFooter" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#FF3D5C"/>
+                                    <stop offset="50%" style="stop-color:#FF8C3D"/>
+                                    <stop offset="100%" style="stop-color:#00D4FF"/>
+                                </linearGradient>
+                            </defs>
+                            <rect width="200" height="200" fill="#0F1629" rx="20"/>
+                            <path d="M 160 30 A 70 70 0 0 0 40 100 A 70 70 0 0 0 160 170" stroke="url(#logoGradDashFooter)" stroke-width="20" fill="none" stroke-linecap="round"/>
+                            <rect x="115" y="75" width="50" height="50" rx="4" fill="none" stroke="url(#logoGradDashFooter)" stroke-width="3"/>
+                            <circle cx="140" cy="105" r="4" fill="#FF8C3D"/>
+                            <circle cx="100" cy="100" r="6" fill="#FF8C3D"/>
+                        </svg>
                         <span>ChainWise</span>
                     </div>
                     <p class="footer-tagline">The industry standard for DeFi risk intelligence. Real-time protocol analysis designed to identify high-risk smart contracts and treasury anomalies before capital is compromised.</p>
