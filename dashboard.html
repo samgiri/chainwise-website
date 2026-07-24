@@ -215,6 +215,25 @@
             box-shadow: 0 0 0 2px rgba(247, 147, 26, 0.1);
         }
 
+        .search-select {
+            flex: 0 0 auto;
+            padding: 1rem;
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            color: var(--color-text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .search-select:focus {
+            outline: none;
+            border-color: var(--color-accent-orange);
+            box-shadow: 0 0 0 2px rgba(247, 147, 26, 0.1);
+        }
+
         .search-btn {
             padding: 1rem 2rem;
             background: linear-gradient(90deg, var(--color-accent-orange), var(--color-accent-purple));
@@ -636,6 +655,15 @@
                     id="protocolInput"
                     placeholder="Enter protocol address, contract name, or smart contract address (0x...)"
                 >
+                <select class="search-select" id="chainSelect">
+                    <option value="ethereum">Ethereum</option>
+                    <option value="bsc">BNB Chain</option>
+                    <option value="polygon">Polygon</option>
+                    <option value="arbitrum">Arbitrum</option>
+                    <option value="optimism">Optimism</option>
+                    <option value="base">Base</option>
+                    <option value="avalanche">Avalanche</option>
+                </select>
                 <button class="search-btn" id="analyzeBtn">Analyze Protocol</button>
             </div>
             <div class="status-line" id="statusLine"></div>
@@ -963,10 +991,13 @@
             }
         }
 
-        async function analyzeProtocol(protocol) {
+        async function analyzeProtocol(protocol, chain) {
             setStatus('Analyzing...');
             try {
-                const url = protocol ? `/api/analyze?address=${encodeURIComponent(protocol)}` : '/api/analyze';
+                const params = new URLSearchParams();
+                if (protocol) params.set('address', protocol);
+                if (chain) params.set('chain', chain);
+                const url = params.toString() ? `/api/analyze?${params.toString()}` : '/api/analyze';
                 const response = await fetch(url);
                 if (!response.ok) throw new Error(`API returned ${response.status}`);
                 const data = await response.json();
@@ -982,10 +1013,11 @@
 
         const analyzeBtn = document.getElementById('analyzeBtn');
         const protocolInput = document.getElementById('protocolInput');
+        const chainSelect = document.getElementById('chainSelect');
 
-        analyzeBtn.addEventListener('click', () => analyzeProtocol(protocolInput.value.trim()));
+        analyzeBtn.addEventListener('click', () => analyzeProtocol(protocolInput.value.trim(), chainSelect.value));
         protocolInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') analyzeProtocol(protocolInput.value.trim());
+            if (e.key === 'Enter') analyzeProtocol(protocolInput.value.trim(), chainSelect.value);
         });
 
         analyzeProtocol();
