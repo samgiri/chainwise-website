@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Chainwise - Risk Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        :root {
+            --color-red: #FF3D5C;
+            --color-blue: #00D4FF;
+            --color-orange: #FF8C3D;
+            --color-navy: #0F1629;
+            --color-gray-dark: #1A2847;
+            --color-white: #F7F9FC;
+            --gradient-primary: linear-gradient(135deg, #FF3D5C 0%, #FF8C3D 50%, #00D4FF 100%);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--color-navy); color: var(--color-white); line-height: 1.6; }
+        header { padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--color-white); }
+        .logo-text { font-size: 20px; font-weight: 700; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+        .status-badge { display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: rgba(0, 212, 255, 0.1); border: 1px solid var(--color-blue); border-radius: 20px; font-size: 12px; color: var(--color-blue); }
+        .search-section { margin-bottom: 32px; display: flex; gap: 16px; }
+        .search-input { flex: 1; max-width: 600px; padding: 12px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--color-white); font-family: 'Inter', sans-serif; }
+        .search-btn { padding: 12px 24px; background: var(--gradient-primary); border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 32px; }
+        .card { background: rgba(26, 40, 71, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 24px; }
+        .card h3 { font-size: 14px; color: #A0A0A0; margin-bottom: 12px; text-transform: uppercase; }
+        .card-value { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+        .card-subtext { font-size: 13px; color: #A0A0A0; }
+        .risk-score-card { grid-column: span 2; background: linear-gradient(135deg, rgba(255, 61, 92, 0.1) 0%, rgba(255, 140, 61, 0.1) 100%); border: 1px solid rgba(255, 61, 92, 0.3); }
+        .risk-score-content { display: flex; align-items: center; gap: 32px; }
+        .risk-score-circle { width: 120px; height: 120px; background: conic-gradient(var(--gradient-primary) 0deg 342deg, rgba(255,255,255,0.1) 342deg 360deg); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 48px; font-weight: 700; color: var(--color-red); }
+        .risk-score-details h4 { font-size: 24px; margin-bottom: 8px; color: var(--color-red); }
+        .charts-section { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; }
+        .chart-card { background: rgba(26, 40, 71, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 24px; }
+        .chart-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 20px; color: var(--color-white); }
+        .chart-container { position: relative; height: 300px; }
+        .layers-section { background: rgba(26, 40, 71, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 24px; margin-bottom: 32px; }
+        .layers-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+        .layer-item { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 16px; }
+        .layer-name { font-size: 13px; font-weight: 600; color: #A0A0A0; margin-bottom: 8px; text-transform: uppercase; }
+        .layer-value { font-size: 24px; font-weight: 700; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
+        .layer-bar { width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+        .layer-bar-fill { height: 100%; background: var(--gradient-primary); border-radius: 2px; }
+        .cases-section { background: rgba(26, 40, 71, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 24px; margin-bottom: 32px; }
+        .case-item { background: rgba(255,61,92,0.05); border-left: 3px solid var(--color-red); padding: 16px; margin-bottom: 16px; border-radius: 8px; }
+        .alerts-section { background: rgba(26, 40, 71, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 24px; }
+        .alert-item { background: rgba(255,140,61,0.05); border-left: 3px solid var(--color-orange); padding: 12px; margin-bottom: 12px; border-radius: 6px; font-size: 13px; }
+        footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; color: #A0A0A0; font-size: 13px; }
+        @media (max-width: 1024px) {
+            .charts-section { grid-template-columns: 1fr; }
+            .risk-score-card { grid-column: span 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="/" class="logo">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" width="32" height="32">
+                    <defs>
+                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#FF3D5C;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#FF8C3D;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#00D4FF;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M 160 30 A 70 70 0 0 0 40 100 A 70 70 0 0 0 160 170" stroke="url(#logoGradient)" stroke-width="20" fill="none" stroke-linecap="round"/>
+                    <rect x="115" y="75" width="50" height="50" rx="4" fill="none" stroke="url(#logoGradient)" stroke-width="3"/>
+                    <circle cx="100" cy="100" r="6" fill="#FF8C3D"/>
+                </svg>
+                <span class="logo-text">The Chainwise</span>
+            </a>
+            <div class="status-badge">
+                <div style="width: 8px; height: 8px; background: var(--color-blue); border-radius: 50%; animation: pulse 2s infinite;"></div>
+                Live Monitoring
+            </div>
+        </header>
+
+        <div class="search-section">
+            <input type="text" class="search-input" placeholder="Enter contract address or protocol name...">
+            <button class="search-btn">Analyze</button>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="card risk-score-card">
+                <div class="risk-score-content">
+                    <div class="risk-score-circle">95</div>
+                    <div class="risk-score-details">
+                        <h4>Critical Risk Detected</h4>
+                        <p>Smart Solve DeFi exhibits parameters consistent with MLM pyramid scheme.</p>
+                        <div style="padding: 8px 12px; background: rgba(255, 61, 92, 0.2); border-left: 3px solid var(--color-red); border-radius: 4px; font-weight: 600; color: var(--color-red); font-size: 13px; margin-top: 12px;">CRITICAL - 95/100</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Detection Time</h3>
+                <div class="card-value">&lt;24h</div>
+                <div class="card-subtext">From deployment to alert</div>
+            </div>
+
+            <div class="card">
+                <h3>Confidence</h3>
+                <div class="card-value">98%</div>
+                <div class="card-subtext">Evidence-based score</div>
+            </div>
+
+            <div class="card">
+                <h3>Estimated Loss</h3>
+                <div class="card-value">$100M+</div>
+                <div class="card-subtext">If unchecked</div>
+            </div>
+
+            <div class="card">
+                <h3>Users at Risk</h3>
+                <div class="card-value">15,000+</div>
+                <div class="card-subtext">Active participants</div>
+            </div>
+
+            <div class="card">
+                <h3>Days to Collapse</h3>
+                <div class="card-value">180-365</div>
+                <div class="card-subtext">Est. timeline</div>
+            </div>
+
+            <div class="card">
+                <h3>Operator Control</h3>
+                <div class="card-value">60%</div>
+                <div class="card-subtext">Of treasury</div>
+            </div>
+        </div>
+
+        <div class="charts-section">
+            <div class="chart-card">
+                <h3>Risk Score Distribution</h3>
+                <div class="chart-container">
+                    <canvas id="riskChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3>8-Layer Analysis</h3>
+                <div class="chart-container">
+                    <canvas id="layersChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="layers-section">
+            <h3>8-Layer Detection Breakdown</h3>
+            <div class="layers-grid">
+                <div class="layer-item">
+                    <div class="layer-name">Layer 1: Patterns</div>
+                    <div class="layer-value">85%</div>
+                    <div class="layer-bar"><div class="layer-bar-fill" style="width: 85%"></div></div>
+                </div>
+                <div class="layer-item">
+                    <div class="layer-name">Layer 2: Bytecode</div>
+                    <div class="layer-value">55%</div>
+                    <div class="layer-bar"><div class="layer-bar-fill" style="width: 55%"></div></div>
+                </div>
+                <div class="layer-item">
+                    <div class="layer-name">Layer 3: Treasury</div>
+                    <div class="layer-value">30%</div>
+                    <div class="layer-bar"><div class="layer-bar-fill" style="width: 30%"></div></div>
+                </div>
+                <div class="layer-item">
+                    <div class="layer-name">Layer 4: Withdrawals</div>
+                    <div class="layer-value">50%</div>
+                    <div class="layer-bar"><div class="layer-bar-fill" style="width: 50%"></div></div>
+                </div>
+                <div class="layer-item">
+                    <div class="layer-name">Layer 5: Bridges</div>
+                    <div class="layer-value">20%</div>
+                    <div class="layer-bar"><div class="layer-bar-fill" style="width: 20%"></div></div>
+                </div>
+                <div class="layer-item">
+                    <div class="layer-name">Layer 6: Off-Ramps</div>
+                    <div class="layer-value">25%</div>
+                    <div class="layer-bar"><div class="layer-bar-fill" style="width: 25%"></div></div>
+                </div>
+                <div class="layer-item">
+                    <div class="layer-name">Layer 7: Sybil</div>
+                    <div class="layer-value">40%</div>
+                    <div class="layer-bar"><div class="layer-bar-fill" style="width: 40%"></div></div>
+                </div>
+                <div class="layer-item">
+                    <div class="layer-name">Layer 8: Attribution</div>
+                    <div class="layer-value">35%</div>
+                    <div class="layer-bar"><div class="layer-bar-fill" style="width: 35%"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cases-section">
+            <h3>Active Cases</h3>
+            <div class="case-item">
+                <h4>Smart Solve DeFi</h4>
+                <div style="display: flex; gap: 16px; font-size: 12px; color: #A0A0A0;">
+                    <span>BSC Chain</span>
+                    <span style="padding: 4px 8px; background: rgba(255,61,92,0.2); border-radius: 4px; color: var(--color-red); font-weight: 600;">CRITICAL</span>
+                    <span>95/100 Risk</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="alerts-section">
+            <h3>Recent Alerts</h3>
+            <div class="alert-item"><strong>CRITICAL:</strong> Withdrawal queue exceeds threshold (127 pending)</div>
+            <div class="alert-item"><strong>HIGH:</strong> Treasury drain detected - $21K/day outflow</div>
+            <div class="alert-item"><strong>HIGH:</strong> Operator pause() function ready</div>
+            <div class="alert-item"><strong>MEDIUM:</strong> Sybil cluster detected (89 wallets)</div>
+        </div>
+
+        <footer>
+            <p>The Chainwise Risk Dashboard | Real-time DeFi Intelligence</p>
+            <p style="margin-top: 12px;">Built by Satoshi Lab</p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script>
+        const riskCtx = document.getElementById('riskChart').getContext('2d');
+        new Chart(riskCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Risk', 'Safe'],
+                datasets: [{
+                    data: [95, 5],
+                    backgroundColor: ['#FF3D5C', 'rgba(255,255,255,0.1)'],
+                    borderColor: ['#FF3D5C', 'rgba(255,255,255,0.1)'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                cutout: '70%'
+            }
+        });
+
+        const layersCtx = document.getElementById('layersChart').getContext('2d');
+        new Chart(layersCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Patterns', 'Bytecode', 'Treasury', 'Withdrawals', 'Bridges', 'Off-Ramps', 'Sybil', 'Attribution'],
+                datasets: [{
+                    label: 'Risk Score',
+                    data: [85, 55, 30, 50, 20, 25, 40, 35],
+                    borderColor: '#FF3D5C',
+                    backgroundColor: 'rgba(255, 61, 92, 0.1)',
+                    pointBackgroundColor: '#FF3D5C',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        ticks: { color: '#A0A0A0' },
+                        max: 100
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
