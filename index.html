@@ -14,44 +14,40 @@
         }
 
         :root {
-            --color-bg-primary: #0a0e27;
-            --color-bg-secondary: #111629;
-            --color-bg-tertiary: #1a1f3a;
-            --color-text-primary: #ffffff;
-            --color-text-secondary: #a0a8c8;
-            --color-accent-orange: #f7931a;
-            --color-accent-purple: #7b3fe4;
-            --color-accent-coral: #ff6b6b;
-            --color-border: #2a3047;
-            --color-success: #10b981;
-            --color-warning: #f59e0b;
-            --color-critical: #ef4444;
+            --bg-primary: #0a0e27;
+            --bg-secondary: #111629;
+            --bg-tertiary: #1a1f3a;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a8c8;
+            --accent-orange: #f7931a;
+            --accent-purple: #7b3fe4;
+            --border: #2a3047;
         }
 
         body {
-            background: var(--color-bg-primary);
-            color: var(--color-text-primary);
+            background: var(--bg-primary);
+            color: var(--text-primary);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
         }
 
-        nav.header {
+        /* NAV */
+        nav {
             position: sticky;
             top: 0;
             z-index: 100;
             background: rgba(10, 14, 39, 0.95);
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--color-border);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 1.5rem;
         }
 
         .nav-container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 0 1.5rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            height: 64px;
         }
 
         .logo {
@@ -59,197 +55,115 @@
             align-items: center;
             gap: 0.75rem;
             text-decoration: none;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 700;
-            color: var(--color-text-primary);
-            transition: opacity 0.2s;
+            color: var(--text-primary);
         }
 
-        .logo:hover {
-            opacity: 0.8;
-        }
-
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--color-accent-orange), var(--color-accent-purple));
+        .logo img {
+            width: 40px;
+            height: 40px;
             border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            font-weight: 900;
-            color: white;
         }
 
-        .nav-primary {
+        .nav-links {
             display: flex;
             gap: 2rem;
             list-style: none;
         }
 
-        .nav-primary a {
-            color: var(--color-text-secondary);
+        .nav-links a {
+            color: var(--text-secondary);
             text-decoration: none;
             font-size: 0.95rem;
-            font-weight: 500;
             transition: color 0.2s;
-            position: relative;
         }
 
-        .nav-primary a:hover {
-            color: var(--color-text-primary);
+        .nav-links a:hover {
+            color: var(--text-primary);
         }
 
-        .nav-primary a::after {
-            content: '';
-            position: absolute;
-            bottom: -6px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--color-accent-orange), var(--color-accent-purple));
-            transition: width 0.3s;
-        }
-
-        .nav-primary a:hover::after {
-            width: 100%;
-        }
-
-        .nav-secondary {
+        .nav-buttons {
             display: flex;
             gap: 1rem;
-            list-style: none;
-            align-items: center;
         }
 
-        .btn-nav {
-            padding: 0.5rem 1.25rem;
+        .btn {
+            padding: 0.6rem 1.5rem;
             border-radius: 4px;
             font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
             text-decoration: none;
             border: none;
+            transition: all 0.2s;
         }
 
-        .btn-nav.primary {
-            background: linear-gradient(90deg, var(--color-accent-orange), var(--color-accent-purple));
+        .btn-primary {
+            background: linear-gradient(90deg, var(--accent-orange), var(--accent-purple));
             color: white;
         }
 
-        .btn-nav.primary:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
-
-        .btn-nav.secondary {
-            border: 1px solid var(--color-border);
-            color: var(--color-text-primary);
-            background: transparent;
-        }
-
-        .btn-nav.secondary:hover {
-            background: var(--color-bg-tertiary);
-            border-color: var(--color-accent-orange);
-        }
-
-        main {
-            min-height: calc(100vh - 320px);
-            background: var(--color-bg-primary);
-            padding: 3rem 1.5rem;
-        }
-
-        .hero {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .hero-header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .hero-header h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            background: linear-gradient(90deg, var(--color-accent-orange), var(--color-accent-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero-header p {
-            font-size: 1.25rem;
-            color: var(--color-text-secondary);
-            margin-bottom: 1.5rem;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .hero-image {
-            max-width: 1000px;
-            margin: 3rem auto;
-            border-radius: 12px;
-            border: 1px solid var(--color-border);
-            overflow: hidden;
-        }
-
-        .hero-image img {
-            width: 100%;
-            height: auto;
-            display: block;
-            background: var(--color-bg-secondary);
-        }
-
-        .tagline {
-            font-size: 1rem;
-            color: var(--color-accent-orange);
-            font-weight: 600;
-            margin-bottom: 2rem;
-        }
-
-        .cta-group {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-bottom: 3rem;
-        }
-
-        .cta-btn {
-            padding: 1rem 2rem;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.2s;
-            cursor: pointer;
-            border: none;
-        }
-
-        .cta-btn.primary {
-            background: linear-gradient(90deg, var(--color-accent-orange), var(--color-accent-purple));
-            color: white;
-        }
-
-        .cta-btn.primary:hover {
+        .btn-primary:hover {
             opacity: 0.9;
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(247, 147, 26, 0.3);
         }
 
-        .cta-btn.secondary {
-            border: 1px solid var(--color-border);
-            color: var(--color-text-primary);
+        .btn-secondary {
+            border: 1px solid var(--border);
+            color: var(--text-primary);
             background: transparent;
         }
 
-        .cta-btn.secondary:hover {
-            background: var(--color-bg-tertiary);
-            border-color: var(--color-accent-orange);
+        .btn-secondary:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-orange);
+        }
+
+        /* MAIN */
+        main {
+            padding: 4rem 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(90deg, var(--accent-orange), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto 2rem;
+        }
+
+        .hero-tagline {
+            text-align: center;
+            color: var(--accent-orange);
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 4rem;
+        }
+
+        .cta-buttons .btn {
+            padding: 1rem 2rem;
+            font-size: 1rem;
         }
 
         .stats {
@@ -262,18 +176,18 @@
             margin-right: auto;
         }
 
-        .stat-item {
+        .stat {
             text-align: center;
             padding: 1.5rem;
-            background: var(--color-bg-secondary);
-            border: 1px solid var(--color-border);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
             border-radius: 8px;
         }
 
         .stat-number {
             font-size: 2.5rem;
             font-weight: 700;
-            background: linear-gradient(90deg, var(--color-accent-orange), var(--color-accent-purple));
+            background: linear-gradient(90deg, var(--accent-orange), var(--accent-purple));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -282,46 +196,7 @@
 
         .stat-label {
             font-size: 0.95rem;
-            color: var(--color-text-secondary);
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-bottom: 4rem;
-        }
-
-        .feature-card {
-            padding: 2rem;
-            background: var(--color-bg-secondary);
-            border: 1px solid var(--color-border);
-            border-radius: 8px;
-            transition: all 0.3s;
-        }
-
-        .feature-card:hover {
-            background: var(--color-bg-tertiary);
-            border-color: var(--color-accent-orange);
-            transform: translateY(-4px);
-        }
-
-        .feature-icon {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .feature-card h3 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-            color: var(--color-text-primary);
-        }
-
-        .feature-card p {
-            font-size: 0.95rem;
-            color: var(--color-text-secondary);
-            line-height: 1.6;
+            color: var(--text-secondary);
         }
 
         .section-title {
@@ -329,34 +204,70 @@
             font-weight: 700;
             text-align: center;
             margin-bottom: 3rem;
-            color: var(--color-text-primary);
         }
 
-        .disclaimer-section {
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .card {
+            padding: 2rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-orange);
+            transform: translateY(-4px);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .disclaimer {
             background: rgba(239, 68, 68, 0.05);
-            border: 1px solid var(--color-border);
+            border: 1px solid var(--border);
             border-radius: 8px;
             padding: 2rem;
-            margin: 4rem auto;
             max-width: 900px;
+            margin: 4rem auto;
         }
 
-        .disclaimer-section h2 {
+        .disclaimer h2 {
             font-size: 1.3rem;
             margin-bottom: 1rem;
-            color: var(--color-text-primary);
         }
 
-        .disclaimer-section p {
+        .disclaimer p {
             font-size: 0.95rem;
-            color: var(--color-text-secondary);
+            color: var(--text-secondary);
             line-height: 1.8;
             margin-bottom: 0.75rem;
         }
 
+        /* FOOTER */
         footer {
-            background: var(--color-bg-secondary);
-            border-top: 1px solid var(--color-border);
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
             padding: 4rem 1.5rem 2rem;
             margin-top: 4rem;
         }
@@ -372,7 +283,7 @@
             gap: 2rem;
             margin-bottom: 3rem;
             padding-bottom: 3rem;
-            border-bottom: 1px solid var(--color-border);
+            border-bottom: 1px solid var(--border);
         }
 
         .footer-section h3 {
@@ -380,7 +291,7 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: var(--color-accent-orange);
+            color: var(--accent-orange);
             margin-bottom: 1rem;
         }
 
@@ -388,34 +299,30 @@
             list-style: none;
         }
 
-        .footer-section ul li {
+        .footer-section li {
             margin-bottom: 0.75rem;
         }
 
         .footer-section a {
-            color: var(--color-text-secondary);
+            color: var(--text-secondary);
             text-decoration: none;
             font-size: 0.9rem;
             transition: color 0.2s;
         }
 
         .footer-section a:hover {
-            color: var(--color-accent-orange);
+            color: var(--accent-orange);
         }
 
-        .footer-brand .logo {
-            margin-bottom: 1rem;
-        }
-
-        .footer-tagline {
-            color: var(--color-text-secondary);
+        .footer-brand p {
+            color: var(--text-secondary);
             font-size: 0.9rem;
             line-height: 1.6;
             max-width: 260px;
             margin-bottom: 1.5rem;
         }
 
-        .footer-socials {
+        .social-links {
             display: flex;
             gap: 1rem;
         }
@@ -424,18 +331,18 @@
             width: 40px;
             height: 40px;
             border-radius: 6px;
-            background: var(--color-bg-tertiary);
+            background: var(--bg-tertiary);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--color-text-secondary);
+            color: var(--text-secondary);
             text-decoration: none;
             transition: all 0.2s;
             font-size: 1.2rem;
         }
 
         .social-link:hover {
-            background: linear-gradient(135deg, var(--color-accent-orange), var(--color-accent-purple));
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-purple));
             color: white;
             transform: translateY(-2px);
         }
@@ -447,51 +354,23 @@
             flex-wrap: wrap;
             gap: 1rem;
             font-size: 0.85rem;
-            color: var(--color-text-secondary);
-        }
-
-        .footer-badge {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-        }
-
-        .badge-icon {
-            width: 16px;
-            height: 16px;
-            background: var(--color-success);
-            border-radius: 50%;
-        }
-
-        .social-note {
-            font-size: 0.8rem;
-            color: var(--color-text-secondary);
-            margin-top: 0.75rem;
-            font-style: italic;
+            color: var(--text-secondary);
         }
 
         @media (max-width: 768px) {
-            .nav-primary {
+            .nav-links, .nav-buttons {
                 display: none;
             }
 
-            .nav-secondary {
-                display: none;
+            .hero-title {
+                font-size: 1.8rem;
             }
 
-            .hero-header h1 {
-                font-size: 2rem;
-            }
-
-            .hero-header p {
-                font-size: 1rem;
-            }
-
-            .cta-group {
+            .cta-buttons {
                 flex-direction: column;
             }
 
-            .cta-btn {
+            .cta-buttons .btn {
                 width: 100%;
             }
 
@@ -499,204 +378,159 @@
                 grid-template-columns: 1fr 1fr;
             }
 
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
             .footer-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .footer-bottom {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .disclaimer-section {
-                padding: 1.5rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .nav-container {
-                height: auto;
-                padding: 1rem;
-            }
-
-            .footer-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-section {
-                border-bottom: 1px solid var(--color-border);
-                padding-bottom: 1.5rem;
-            }
-
-            .footer-section:last-child {
-                border-bottom: none;
-            }
-
-            .stats {
                 grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <nav class="header">
+    <nav>
         <div class="nav-container">
-            <a href="/" class="logo">
-                <img src="./logo-chainwise.png" alt="ChainWise" style="width: 32px; height: 32px; border-radius: 6px;">
-                <span>ChainWise</span>
+            <a href="#" class="logo">
+                <img src="https://raw.githubusercontent.com/samgiri/chainwise-website/main/8b7ad514-6cfd-418a-a874-87ff6fa5d5f0.png" alt="ChainWise">
+                <span>The Chainwise</span>
             </a>
-            <ul class="nav-primary">
+            <ul class="nav-links">
                 <li><a href="#features">Features</a></li>
                 <li><a href="#methodology">Methodology</a></li>
                 <li><a href="#research">Research</a></li>
-                <li><a href="#dashboard">Dashboard</a></li>
                 <li><a href="#pricing">Pricing</a></li>
             </ul>
-            <ul class="nav-secondary">
-                <li><a href="#contact" class="btn-nav secondary">Contact</a></li>
-                <li><a href="/dashboard" class="btn-nav primary">Launch Dashboard</a></li>
-            </ul>
+            <div class="nav-buttons">
+                <a href="#contact" class="btn btn-secondary">Contact</a>
+                <a href="/dashboard" class="btn btn-primary">Dashboard</a>
+            </div>
         </div>
     </nav>
 
     <main>
-        <div class="hero">
-            <div class="hero-header">
-                <h1>The Industry Standard for DeFi Risk Intelligence & Fraud Detection</h1>
-                <p>Real-time protocol analysis designed to identify high-risk smart contracts, treasury anomalies, and architectural vulnerabilities before capital is compromised.</p>
-                <div class="tagline">Day 1 Threat Identification. Institutional Protection. Industry Standard.</div>
-                <div class="cta-group">
-                    <a href="/dashboard" class="cta-btn primary">Launch Risk Dashboard</a>
-                    <a href="#research" class="cta-btn secondary">View Research</a>
-                </div>
-            </div>
+        <h1 class="hero-title">The Industry Standard for DeFi Risk Intelligence & Fraud Detection</h1>
+        <p class="hero-subtitle">Real-time protocol analysis designed to identify high-risk smart contracts, treasury anomalies, and architectural vulnerabilities before capital is compromised.</p>
+        <p class="hero-tagline">Day 1 Threat Identification. Institutional Protection. Industry Standard.</p>
 
-            <div class="hero-image">
-                <img src="https://images.unsplash.com/photo-1639762681033-cb35f64550da?w=1000&h=600&fit=crop" alt="ChainWise DeFi Risk Intelligence Dashboard">
-            </div>
+        <div class="cta-buttons">
+            <a href="/dashboard" class="btn btn-primary">Launch Risk Dashboard</a>
+            <a href="#research" class="btn btn-secondary">View Research</a>
+        </div>
 
-            <div class="stats">
-                <div class="stat-item">
-                    <div class="stat-number">8</div>
-                    <div class="stat-label">Detection Layers</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">&lt;24h</div>
-                    <div class="stat-label">Threat Detection</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">∞</div>
-                    <div class="stat-label">Multi-Chain</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">100%</div>
-                    <div class="stat-label">On-Chain Verified</div>
-                </div>
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-number">8</div>
+                <div class="stat-label">Detection Layers</div>
             </div>
+            <div class="stat">
+                <div class="stat-number">&lt;24h</div>
+                <div class="stat-label">Threat Detection</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">∞</div>
+                <div class="stat-label">Multi-Chain</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">On-Chain Verified</div>
+            </div>
+        </div>
 
-            <h2 class="section-title" id="features">How We Protect You</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🔍</div>
-                    <h3>Pattern Recognition</h3>
-                    <p>Detect suspicious behavioral patterns across website, whitepaper, and on-chain indicators</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3>Bytecode Analysis</h3>
-                    <p>Deep inspection of contract code for hidden or malicious functions and owner controls</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">💰</div>
-                    <h3>Treasury Flow</h3>
-                    <p>Real-time monitoring of fund movements, large outflows, and liquidity dynamics</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
-                    <h3>Withdrawal Dynamics</h3>
-                    <p>Track historical withdrawal patterns and detect pause/freeze events</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🌉</div>
-                    <h3>Cross-Chain Bridge</h3>
-                    <p>Monitor protocol behavior and fund movement across multiple blockchain networks</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🔗</div>
-                    <h3>Off-Ramp Detection</h3>
-                    <p>Identify suspicious off-ramp activities and fund extraction to centralized exchanges</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">👥</div>
-                    <h3>Sybil Clustering</h3>
-                    <p>Detect coordinated wallet activity and machine-like behavioral patterns</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🎯</div>
-                    <h3>Transaction Attribution</h3>
-                    <p>Advanced forensics to trace capital flows and identify responsible parties</p>
-                </div>
+        <h2 class="section-title" id="features">How We Protect You</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-icon">🔍</div>
+                <h3>Pattern Recognition</h3>
+                <p>Detect suspicious behavioral patterns across website, whitepaper, and on-chain indicators</p>
             </div>
+            <div class="card">
+                <div class="card-icon">📊</div>
+                <h3>Bytecode Analysis</h3>
+                <p>Deep inspection of contract code for hidden or malicious functions and owner controls</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">💰</div>
+                <h3>Treasury Flow</h3>
+                <p>Real-time monitoring of fund movements, large outflows, and liquidity dynamics</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">⚡</div>
+                <h3>Withdrawal Dynamics</h3>
+                <p>Track historical withdrawal patterns and detect pause/freeze events</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🌉</div>
+                <h3>Cross-Chain Bridge</h3>
+                <p>Monitor protocol behavior and fund movement across multiple blockchain networks</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🔗</div>
+                <h3>Off-Ramp Detection</h3>
+                <p>Identify suspicious off-ramp activities and fund extraction to centralized exchanges</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">👥</div>
+                <h3>Sybil Clustering</h3>
+                <p>Detect coordinated wallet activity and machine-like behavioral patterns</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🎯</div>
+                <h3>Transaction Attribution</h3>
+                <p>Advanced forensics to trace capital flows and identify responsible parties</p>
+            </div>
+        </div>
 
-            <h2 class="section-title" id="pricing">Pricing Plans</h2>
-            <div style="max-width: 900px; margin: 0 auto; text-align: center; padding: 2rem; background: var(--color-bg-secondary); border: 1px solid var(--color-border); border-radius: 8px;">
-                <p style="color: var(--color-text-secondary); font-size: 1.1rem; margin-bottom: 1rem;">Flexible pricing for individuals, teams, and enterprises.</p>
-                <p style="color: var(--color-text-secondary); font-size: 0.95rem;">Free API access, premium dashboard tiers, and custom enterprise solutions.</p>
+        <h2 class="section-title" id="methodology">8-Layer Detection Framework</h2>
+        <div class="grid">
+            <div class="card">
+                <div style="font-weight: 700; color: var(--accent-orange); margin-bottom: 0.5rem;">Layer 1: Patterns</div>
+                <p>Guaranteed returns, MLM language, unsustainable APY claims</p>
             </div>
+            <div class="card">
+                <div style="font-weight: 700; color: var(--accent-orange); margin-bottom: 0.5rem;">Layer 2: Bytecode</div>
+                <p>Dangerous functions, owner controls, time-lock implementations</p>
+            </div>
+            <div class="card">
+                <div style="font-weight: 700; color: var(--accent-orange); margin-bottom: 0.5rem;">Layer 3: Treasury</div>
+                <p>Fund flows, large outflows, mixer transfers, drain velocity</p>
+            </div>
+            <div class="card">
+                <div style="font-weight: 700; color: var(--accent-orange); margin-bottom: 0.5rem;">Layer 4: Withdrawals</div>
+                <p>Pause events, queue depth, cooldowns, collapse indicators</p>
+            </div>
+            <div class="card">
+                <div style="font-weight: 700; color: var(--accent-orange); margin-bottom: 0.5rem;">Layer 5: Bridges</div>
+                <p>Cross-chain tracking, bridge monitoring, exit detection</p>
+            </div>
+            <div class="card">
+                <div style="font-weight: 700; color: var(--accent-orange); margin-bottom: 0.5rem;">Layer 6: Off-Ramps</div>
+                <p>CEX proximity, VASP detection, operator exit paths</p>
+            </div>
+            <div class="card">
+                <div style="font-weight: 700; color: var(--accent-orange); margin-bottom: 0.5rem;">Layer 7: Sybil</div>
+                <p>Wallet clustering, timing analysis, coordinated behavior</p>
+            </div>
+            <div class="card">
+                <div style="font-weight: 700; color: var(--accent-orange); margin-bottom: 0.5rem;">Layer 8: Attribution</div>
+                <p>Transaction tracing, confidence scoring, forensics</p>
+            </div>
+        </div>
 
-            <h2 class="section-title" id="research">Research & Case Studies</h2>
-            <div style="max-width: 900px; margin: 0 auto; text-align: center; padding: 2rem; background: var(--color-bg-secondary); border: 1px solid var(--color-border); border-radius: 8px;">
-                <p style="color: var(--color-text-secondary); font-size: 1.1rem; margin-bottom: 1rem;">Detailed case studies and threat analysis coming soon.</p>
-                <p style="color: var(--color-text-secondary); font-size: 0.95rem;">Smart Solve DeFi analysis, protocol breakdowns, and verified on-chain evidence.</p>
-            </div>
+        <h2 class="section-title" id="research">Research & Case Studies</h2>
+        <div style="max-width: 900px; margin: 0 auto; text-align: center; padding: 2rem; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px;">
+            <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 1rem;">Detailed case studies and threat analysis coming soon.</p>
+            <p style="color: var(--text-secondary); font-size: 0.95rem;">Smart Solve DeFi analysis, protocol breakdowns, and verified on-chain evidence.</p>
+        </div>
 
-            <h2 class="section-title" id="methodology">8-Layer Detection Framework</h2>
-            <div style="max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
-                <div style="padding: 1.5rem; background: var(--color-bg-secondary); border: 1px solid var(--color-border); border-radius: 8px;">
-                    <div style="font-weight: 700; color: var(--color-accent-orange); margin-bottom: 0.5rem;">Layer 1: Patterns</div>
-                    <p style="font-size: 0.9rem; color: var(--color-text-secondary);">Guaranteed returns, MLM language, unsustainable APY claims</p>
-                </div>
-                <div style="padding: 1.5rem; background: var(--color-bg-secondary); border: 1px solid var(--color-border); border-radius: 8px;">
-                    <div style="font-weight: 700; color: var(--color-accent-orange); margin-bottom: 0.5rem;">Layer 2: Bytecode</div>
-                    <p style="font-size: 0.9rem; color: var(--color-text-secondary);">Dangerous functions, owner controls, time-lock implementations</p>
-                </div>
-                <div style="padding: 1.5rem; background: var(--color-bg-secondary); border: 1px solid var(--color-border); border-radius: 8px;">
-                    <div style="font-weight: 700; color: var(--color-accent-orange); margin-bottom: 0.5rem;">Layer 3: Treasury</div>
-                    <p style="font-size: 0.9rem; color: var(--color-text-secondary);">Fund flows, outflows, mixer transfers, drain velocity</p>
-                </div>
-                <div style="padding: 1.5rem; background: var(--color-bg-secondary); border: 1px solid var(--color-border); border-radius: 8px;">
-                    <div style="font-weight: 700; color: var(--color-accent-orange); margin-bottom: 0.5rem;">Layer 4: Withdrawals</div>
-                    <p style="font-size: 0.9rem; color: var(--color-text-secondary);">Pause events, queue depth, cooldowns, collapse indicators</p>
-                </div>
-                <div style="padding: 1.5rem; background: var(--color-bg-secondary); border: 1px solid var(--color-border); border-radius: 8px;">
-                    <div style="font-weight: 700; color: var(--color-accent-orange); margin-bottom: 0.5rem;">Layer 5: Bridges</div>
-                    <p style="font-size: 0.9rem; color: var(--color-text-secondary);">Cross-chain tracking, bridge monitoring, exit detection</p>
-                </div>
-                <div style="padding: 1.5rem; background: var(--color-bg-secondary); border: 1px solid var(--color-border); border-radius: 8px;">
-                    <div style="font-weight: 700; color: var(--color-accent-orange); margin-bottom: 0.5rem;">Layer 6: Off-Ramps</div>
-                    <p style="font-size: 0.9rem; color: var(--color-text-secondary);">CEX proximity, VASP detection, operator exit paths</p>
-                </div>
-                <div style="padding: 1.5rem; background: var(--color-bg-secondary); border: 1px solid var(--color-border); border-radius: 8px;">
-                    <div style="font-weight: 700; color: var(--color-accent-orange); margin-bottom: 0.5rem;">Layer 7: Sybil</div>
-                    <p style="font-size: 0.9rem; color: var(--color-text-secondary);">Wallet clustering, timing analysis, coordinated behavior</p>
-                </div>
-                <div style="padding: 1.5rem; background: var(--color-bg-secondary); border: 1px solid var(--color-border); border-radius: 8px;">
-                    <div style="font-weight: 700; color: var(--color-accent-orange); margin-bottom: 0.5rem;">Layer 8: Attribution</div>
-                    <p style="font-size: 0.9rem; color: var(--color-text-secondary);">Transaction tracing, confidence scoring, forensics</p>
-                </div>
-            </div>
+        <h2 class="section-title" id="pricing">Pricing Plans</h2>
+        <div style="max-width: 900px; margin: 0 auto; text-align: center; padding: 2rem; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px;">
+            <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 1rem;">Flexible pricing for individuals, teams, and enterprises.</p>
+            <p style="color: var(--text-secondary); font-size: 0.95rem;">Free API access, premium dashboard tiers, and custom enterprise solutions.</p>
+        </div>
 
-            <div class="disclaimer-section" id="disclaimer">
-                <h2>⚠️ Important Disclaimer</h2>
-                <p><strong>Not Financial Advice:</strong> ChainWise provides institutional-grade risk assessment and analysis tools for informational purposes only. Nothing on this platform constitutes financial, investment, legal, or tax advice. The information presented does not constitute a recommendation to buy, sell, hold, or trade any cryptocurrency or digital asset.</p>
-                <p><strong>Risk Acknowledgment:</strong> Cryptocurrency and smart contract protocols carry substantial risk. Past performance and analysis do not guarantee future results. Users should conduct independent research and consult with qualified financial, legal, and tax advisors before making any investment decisions.</p>
-                <p><strong>Verification Required:</strong> All findings and risk scores presented by ChainWise are evidence-based and on-chain verifiable. However, users are encouraged to independently verify all information before taking any action. ChainWise assumes no liability for losses or damages resulting from the use of this platform or reliance on its analysis.</p>
-                <p><strong>Regulatory Compliance:</strong> Users are solely responsible for ensuring their use of ChainWise complies with all applicable laws, regulations, and tax obligations in their jurisdiction.</p>
-            </div>
+        <div class="disclaimer" id="disclaimer">
+            <h2>⚠️ Important Disclaimer</h2>
+            <p><strong>Not Financial Advice:</strong> ChainWise provides institutional-grade risk assessment and analysis tools for informational purposes only. Nothing on this platform constitutes financial, investment, legal, or tax advice.</p>
+            <p><strong>Risk Acknowledgment:</strong> Cryptocurrency and smart contract protocols carry substantial risk. Past performance and analysis do not guarantee future results. Users should conduct independent research and consult with qualified financial, legal, and tax advisors before making any investment decisions.</p>
+            <p><strong>Verification Required:</strong> All findings and risk scores presented by ChainWise are evidence-based and on-chain verifiable. However, users are encouraged to independently verify all information before taking any action.</p>
+            <p><strong>Regulatory Compliance:</strong> Users are solely responsible for ensuring their use of ChainWise complies with all applicable laws, regulations, and tax obligations in their jurisdiction.</p>
         </div>
     </main>
 
@@ -704,18 +538,16 @@
         <div class="footer-container">
             <div class="footer-grid">
                 <div class="footer-section footer-brand">
-                    <div class="logo">
-                        <img src="./logo-chainwise.png" alt="ChainWise" style="width: 32px; height: 32px; border-radius: 6px;">
-                        <span>ChainWise</span>
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                        <img src="https://raw.githubusercontent.com/samgiri/chainwise-website/main/8b7ad514-6cfd-418a-a874-87ff6fa5d5f0.png" alt="ChainWise" style="width: 32px; height: 32px; border-radius: 4px;">
+                        <span style="font-size: 1.1rem; font-weight: 700;">The Chainwise</span>
                     </div>
-                    <p class="footer-tagline">The industry standard for DeFi risk intelligence. Real-time protocol analysis for smart contract safety.</p>
-                    <div class="footer-socials">
-                        <a href="https://twitter.com/ChainWiseOfficial" class="social-link" title="Twitter/X">𝕏</a>
-                        <a href="https://t.me/ChainWiseOfficial" class="social-link" title="Telegram">✈️</a>
-                        <a href="https://youtube.com/@ChainWiseOfficial" class="social-link" title="YouTube">▶️</a>
-                        <a href="https://discord.gg/chainwise" class="social-link" title="Discord">💬</a>
+                    <p>The industry standard for DeFi risk intelligence. Real-time protocol analysis for smart contract safety.</p>
+                    <div class="social-links">
+                        <a href="https://twitter.com/chainwise" class="social-link" title="Twitter">𝕏</a>
+                        <a href="https://medium.com/@chainwise" class="social-link" title="Medium">📝</a>
+                        <a href="https://youtube.com/@chainwise" class="social-link" title="YouTube">▶️</a>
                     </div>
-                    <p class="social-note">Social links coming soon — contact for verified accounts</p>
                 </div>
 
                 <div class="footer-section">
@@ -725,7 +557,6 @@
                         <li><a href="#methodology">Methodology</a></li>
                         <li><a href="/dashboard">Dashboard</a></li>
                         <li><a href="#pricing">Pricing</a></li>
-                        <li><a href="#api">API Docs</a></li>
                     </ul>
                 </div>
 
@@ -733,18 +564,16 @@
                     <h3>Research</h3>
                     <ul>
                         <li><a href="#research">Case Studies</a></li>
-                        <li><a href="#threats">Live Threats</a></li>
-                        <li><a href="#detection">Detection Framework</a></li>
-                        <li><a href="#blog">Research Blog</a></li>
+                        <li><a href="#research">Detection Framework</a></li>
+                        <li><a href="#">Blog</a></li>
                     </ul>
                 </div>
 
                 <div class="footer-section">
                     <h3>Company</h3>
                     <ul>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#team">Team</a></li>
-                        <li><a href="#press">Press Kit</a></li>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Team</a></li>
                         <li><a href="https://satoshilab.ai">Satoshi Lab</a></li>
                     </ul>
                 </div>
@@ -752,30 +581,25 @@
                 <div class="footer-section">
                     <h3>Trust</h3>
                     <ul>
-                        <li><a href="#security">Security</a></li>
-                        <li><a href="#compliance">Compliance</a></li>
-                        <li><a href="#right-of-reply">Right of Reply</a></li>
-                        <li><a href="#audit">Third-Party Audits</a></li>
+                        <li><a href="#disclaimer">Disclaimer</a></li>
+                        <li><a href="#">Security</a></li>
+                        <li><a href="#">Compliance</a></li>
                     </ul>
                 </div>
 
                 <div class="footer-section">
                     <h3>Legal</h3>
                     <ul>
-                        <li><a href="#disclaimer">Disclaimer</a></li>
-                        <li><a href="#privacy">Privacy Policy</a></li>
-                        <li><a href="#terms">Terms of Service</a></li>
-                        <li><a href="#cookies">Cookie Policy</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
                     </ul>
                 </div>
             </div>
 
             <div class="footer-bottom">
-                <div>© 2024 ChainWise. All rights reserved. Built by <a href="https://satoshilab.ai" style="color: var(--color-accent-orange); text-decoration: none;">Satoshi Lab</a></div>
-                <div class="footer-badge">
-                    <span class="badge-icon"></span>
-                    <span>Enterprise-Grade Security</span>
-                </div>
+                <div>© 2024 The Chainwise. All rights reserved. Built by <a href="https://satoshilab.ai" style="color: var(--accent-orange); text-decoration: none;">Satoshi Lab</a></div>
+                <div>🟢 Enterprise-Grade Security</div>
             </div>
         </div>
     </footer>
