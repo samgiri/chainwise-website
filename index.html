@@ -65,6 +65,49 @@
         .card-icon { font-size: 2rem; margin-bottom: 1rem; }
         .card h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.75rem; }
         .card p { font-size: 0.95rem; color: var(--text2); }
+
+        .feature-card {
+            position: relative;
+            overflow: hidden;
+            min-height: 300px;
+            padding: 2.5rem;
+            background: var(--bg2);
+            border: 1px solid #2a3047;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, border-color 0.3s ease-out;
+        }
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(247, 147, 26, 0.1), rgba(123, 63, 228, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease-out;
+            pointer-events: none;
+        }
+        .feature-card:hover,
+        .feature-card:focus-visible {
+            transform: scale(1.05);
+            box-shadow: 0 12px 32px rgba(247, 147, 26, 0.15);
+            border-color: var(--orange);
+            outline: none;
+        }
+        .feature-card:hover::before,
+        .feature-card:focus-visible::before {
+            opacity: 1;
+        }
+        .feature-card:active {
+            transform: scale(1.02);
+        }
+        .feature-card-icon { position: relative; z-index: 1; width: 32px; height: 32px; margin-bottom: 1.25rem; }
+        .feature-card h3 { position: relative; z-index: 1; font-size: 1.15rem; font-weight: 600; margin-bottom: 0.85rem; color: var(--text); }
+        .feature-card p { position: relative; z-index: 1; font-size: 0.95rem; color: #c3c9e0; line-height: 1.7; flex: 1; }
+        .feature-card-hint { position: relative; z-index: 1; font-size: 0.8rem; color: var(--orange); font-weight: 600; margin-top: 1.25rem; opacity: 0; transform: translateY(4px); transition: opacity 0.25s ease-out, transform 0.25s ease-out; }
+        .feature-card:hover .feature-card-hint,
+        .feature-card:focus-visible .feature-card-hint { opacity: 1; transform: translateY(0); }
         .disclaimer { background: rgba(239,68,68,0.05); border: 1px solid #2a3047; border-radius: 8px; padding: 2rem; max-width: 900px; margin: 4rem auto; }
         .disclaimer h2 { font-size: 1.3rem; margin-bottom: 1rem; }
         .disclaimer p { font-size: 0.95rem; color: var(--text2); line-height: 1.8; margin-bottom: 0.75rem; }
@@ -80,6 +123,17 @@
         .social-link { width: 40px; height: 40px; border-radius: 6px; background: #1a1f3a; display: flex; align-items: center; justify-content: center; color: var(--text2); text-decoration: none; transition: all 0.2s; font-size: 1.2rem; }
         .social-link:hover { background: linear-gradient(135deg, var(--orange), var(--purple)); color: white; transform: translateY(-2px); }
         .footer-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.85rem; color: var(--text2); }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(5, 7, 20, 0.75); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 1.5rem; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.2s ease-out; }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-box { position: relative; max-width: 480px; width: 100%; background: var(--bg2); border: 1px solid #2a3047; border-radius: 12px; padding: 2.5rem; transform: scale(0.95) translateY(8px); transition: transform 0.2s ease-out; }
+        .modal-overlay.active .modal-box { transform: scale(1) translateY(0); }
+        .modal-close { position: absolute; top: 1rem; right: 1rem; width: 32px; height: 32px; border-radius: 6px; border: 1px solid #2a3047; background: transparent; color: var(--text2); font-size: 1rem; cursor: pointer; transition: all 0.2s; }
+        .modal-close:hover { background: #1a1f3a; color: var(--text); border-color: var(--orange); }
+        .modal-icon { width: 40px; height: 40px; margin-bottom: 1.25rem; }
+        .modal-icon svg { width: 100%; height: 100%; }
+        .modal-box h3 { font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; }
+        .modal-box p { font-size: 1rem; color: #c3c9e0; line-height: 1.7; }
         @media (max-width: 768px) {
             .nav-links, .nav-buttons { display: none; }
             .hero-title { font-size: 1.8rem; }
@@ -92,6 +146,15 @@
     </style>
 </head>
 <body>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+        <defs>
+            <linearGradient id="iconGrad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#f7931a"/>
+                <stop offset="100%" stop-color="#7b3fe4"/>
+            </linearGradient>
+        </defs>
+    </svg>
+
     <nav>
         <div class="nav-container">
             <a href="#" class="logo">
@@ -231,15 +294,55 @@
         </div>
 
         <h2 class="section-title" id="features">How We Protect You</h2>
-        <div class="grid">
-            <div class="card"><div class="card-icon">🔍</div><h3>Pattern Recognition</h3><p>Detect suspicious behavioral patterns across website, whitepaper, and on-chain indicators</p></div>
-            <div class="card"><div class="card-icon">📊</div><h3>Bytecode Analysis</h3><p>Deep inspection of contract code for hidden or malicious functions</p></div>
-            <div class="card"><div class="card-icon">💰</div><h3>Treasury Flow</h3><p>Real-time monitoring of fund movements and liquidity dynamics</p></div>
-            <div class="card"><div class="card-icon">⚡</div><h3>Withdrawal Dynamics</h3><p>Track historical withdrawal patterns and detect pause/freeze events</p></div>
-            <div class="card"><div class="card-icon">🌉</div><h3>Cross-Chain Bridge</h3><p>Monitor protocol behavior across multiple blockchain networks</p></div>
-            <div class="card"><div class="card-icon">🔗</div><h3>Off-Ramp Detection</h3><p>Identify suspicious off-ramp activities and fund extraction</p></div>
-            <div class="card"><div class="card-icon">👥</div><h3>Sybil Clustering</h3><p>Detect coordinated wallet activity and behavioral patterns</p></div>
-            <div class="card"><div class="card-icon">🎯</div><h3>Transaction Attribution</h3><p>Advanced forensics to trace capital flows</p></div>
+        <div class="grid" id="featureGrid">
+            <div class="feature-card" tabindex="0" role="button" data-layer="pattern-recognition" data-title="Pattern Recognition" data-full="Spot red flags before you invest — not after you've lost money. Our pattern engine cross-references a protocol's website, whitepaper, and on-chain behavior against thousands of known scam signatures, surfacing suspicious claims and inconsistencies early.">
+                <svg class="feature-card-icon" viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3"/><path d="m16 16-1.9-1.9"/></svg>
+                <h3>Pattern Recognition</h3>
+                <p>Spot red flags before you invest — not after you've lost money. We cross-reference a protocol's website, whitepaper, and on-chain behavior against known scam signatures.</p>
+                <span class="feature-card-hint">Learn more →</span>
+            </div>
+            <div class="feature-card" tabindex="0" role="button" data-layer="bytecode-analysis" data-title="Bytecode Analysis" data-full="Know exactly what a contract can do to your funds before you approve it. We decompile and inspect bytecode for hidden functions, backdoors, and owner-only controls that aren't visible in marketing materials or even verified source code.">
+                <svg class="feature-card-icon" viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
+                <h3>Bytecode Analysis</h3>
+                <p>Know exactly what a contract can do to your funds before you approve it. We inspect bytecode for hidden functions and owner-only controls invisible to marketing pages.</p>
+                <span class="feature-card-hint">Learn more →</span>
+            </div>
+            <div class="feature-card" tabindex="0" role="button" data-layer="treasury-flow" data-title="Treasury Flow" data-full="See where protocol funds are actually going, in real time. We track treasury wallets continuously, flagging unusual outflows, liquidity drains, and fund movements that often precede a rug pull or insolvency event.">
+                <svg class="feature-card-icon" viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 18v-7"/><path d="M11.119 2.205a2 2 0 0 1 1.762 0l7.84 3.846A.5.5 0 0 1 20.5 7h-17a.5.5 0 0 1-.22-.949z"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M3 22h18"/><path d="M6 18v-7"/></svg>
+                <h3>Treasury Flow</h3>
+                <p>See where protocol funds are actually going, in real time. We flag unusual outflows and liquidity drains that often precede a rug pull.</p>
+                <span class="feature-card-hint">Learn more →</span>
+            </div>
+            <div class="feature-card" tabindex="0" role="button" data-layer="withdrawal-dynamics" data-title="Withdrawal Dynamics" data-full="Get warned the moment withdrawals start slowing down or freezing. We monitor historical withdrawal patterns and detect pause events, growing queues, and cooldown changes — early signals of a protocol in distress.">
+                <svg class="feature-card-icon" viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5"/><path d="m16 19 3 3 3-3"/><path d="M18 12h.01"/><path d="M19 16v6"/><path d="M6 12h.01"/><circle cx="12" cy="12" r="2"/></svg>
+                <h3>Withdrawal Dynamics</h3>
+                <p>Get warned the moment withdrawals start slowing down or freezing. We track pause events and growing queues before they become a crisis.</p>
+                <span class="feature-card-hint">Learn more →</span>
+            </div>
+            <div class="feature-card" tabindex="0" role="button" data-layer="cross-chain-bridge" data-title="Cross-Chain Bridge" data-full="Track risk across every chain a protocol touches, not just one. Our monitoring follows fund movement and protocol behavior across bridges and multiple blockchain networks, so risk doesn't hide in a chain you weren't watching.">
+                <svg class="feature-card-icon" viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.586 5.414-5.172 5.172"/><path d="m18.586 13.414-5.172 5.172"/><path d="M6 12h12"/><circle cx="12" cy="20" r="2"/><circle cx="12" cy="4" r="2"/><circle cx="20" cy="12" r="2"/><circle cx="4" cy="12" r="2"/></svg>
+                <h3>Cross-Chain Bridge</h3>
+                <p>Track risk across every chain a protocol touches, not just one. We follow fund movement across bridges so risk doesn't hide where you weren't watching.</p>
+                <span class="feature-card-hint">Learn more →</span>
+            </div>
+            <div class="feature-card" tabindex="0" role="button" data-layer="off-ramp-detection" data-title="Off-Ramp Detection" data-full="Catch funds heading toward exchanges before they disappear for good. We identify wallet activity consistent with cashing out through centralized exchanges, a common final step before an operator disappears with user funds.">
+                <svg class="feature-card-icon" viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+                <h3>Off-Ramp Detection</h3>
+                <p>Catch funds heading toward exchanges before they disappear for good. We flag activity consistent with operators cashing out.</p>
+                <span class="feature-card-hint">Learn more →</span>
+            </div>
+            <div class="feature-card" tabindex="0" role="button" data-layer="sybil-clustering" data-title="Sybil Clustering" data-full="Unmask fake community and wallet activity designed to look organic. We detect coordinated, machine-like wallet behavior and clustering that reveals when 'grassroots' activity is really a handful of operators.">
+                <svg class="feature-card-icon" viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/><path d="M14 13.12c0 2.38 0 6.38-1 8.88"/><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/><path d="M2 12a10 10 0 0 1 18-6"/><path d="M2 16h.01"/><path d="M21.8 16c.2-2 .131-5.354 0-6"/><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"/><path d="M8.65 22c.21-.66.45-1.32.57-2"/><path d="M9 6.8a6 6 0 0 1 9 5.2v2"/></svg>
+                <h3>Sybil Clustering</h3>
+                <p>Unmask fake community and wallet activity designed to look organic. We detect coordinated behavior behind seemingly independent wallets.</p>
+                <span class="feature-card-hint">Learn more →</span>
+            </div>
+            <div class="feature-card" tabindex="0" role="button" data-layer="transaction-attribution" data-title="Transaction Attribution" data-full="Trace the money back to the people actually responsible. Using on-chain forensics, we follow capital flows through mixers and intermediary wallets to attribute activity to real operators with a measurable confidence score.">
+                <svg class="feature-card-icon" viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                <h3>Transaction Attribution</h3>
+                <p>Trace the money back to the people actually responsible. Our forensics follow capital through mixers to attribute activity with a confidence score.</p>
+                <span class="feature-card-hint">Learn more →</span>
+            </div>
         </div>
 
         <h2 class="section-title" id="methodology">8-Layer Detection Framework</h2>
@@ -326,6 +429,16 @@
             </div>
         </div>
     </footer>
+
+    <div class="modal-overlay" id="featureModal" aria-hidden="true">
+        <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+            <div class="modal-icon" id="modalIcon"></div>
+            <h3 id="modalTitle"></h3>
+            <p id="modalBody"></p>
+        </div>
+    </div>
+
     <script>
         (function () {
             const el = document.getElementById('protocolCounter');
@@ -340,6 +453,47 @@
                 if (progress < 1) requestAnimationFrame(tick);
             }
             requestAnimationFrame(tick);
+        })();
+
+        (function () {
+            const modal = document.getElementById('featureModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            const modalIcon = document.getElementById('modalIcon');
+            const modalClose = document.getElementById('modalClose');
+            const cards = document.querySelectorAll('.feature-card');
+
+            function openModal(card) {
+                modalTitle.textContent = card.dataset.title;
+                modalBody.textContent = card.dataset.full;
+                modalIcon.innerHTML = card.querySelector('.feature-card-icon').outerHTML.replace('feature-card-icon', 'modal-icon-svg');
+                modal.classList.add('active');
+                modal.setAttribute('aria-hidden', 'false');
+                modalClose.focus();
+            }
+
+            function closeModal() {
+                modal.classList.remove('active');
+                modal.setAttribute('aria-hidden', 'true');
+            }
+
+            cards.forEach(card => {
+                card.addEventListener('click', () => openModal(card));
+                card.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        openModal(card);
+                    }
+                });
+            });
+
+            modalClose.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
+            });
         })();
     </script>
 </body>
