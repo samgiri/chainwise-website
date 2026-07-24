@@ -45,9 +45,14 @@
         .trust-item { display: flex; align-items: center; gap: 0.5rem; }
         .trust-item .trust-icon { font-size: 1rem; }
 
-        .chain-logos { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-bottom: 0.75rem; }
-        .chain-badge { width: 32px; height: 32px; border-radius: 50%; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.35); transition: transform 0.2s ease, box-shadow 0.2s ease; }
-        .chain-badge:hover { transform: translateY(-3px) scale(1.1); box-shadow: 0 6px 16px rgba(0,0,0,0.45); }
+        .chain-logos { display: flex; flex-wrap: wrap; gap: 1.1rem; justify-content: center; margin-bottom: 0.75rem; }
+        .chain-badge-link { position: relative; display: inline-flex; text-decoration: none; padding-top: 0.5rem; }
+        .chain-badge { width: 40px; height: 40px; border-radius: 50%; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.35); transition: transform 0.25s ease, box-shadow 0.25s ease; }
+        .chain-badge-link:hover .chain-badge,
+        .chain-badge-link:focus-visible .chain-badge { transform: translateY(-4px) scale(1.15); box-shadow: 0 0 18px rgba(247, 147, 26, 0.6), 0 6px 16px rgba(0,0,0,0.45); }
+        .chain-tooltip { position: absolute; top: 0; left: 50%; transform: translateX(-50%) translateY(4px); background: var(--bg2); border: 1px solid #2a3047; color: var(--text); font-size: 0.75rem; font-weight: 600; padding: 0.3rem 0.6rem; border-radius: 4px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease; }
+        .chain-badge-link:hover .chain-tooltip,
+        .chain-badge-link:focus-visible .chain-tooltip { opacity: 1; transform: translateX(-50%) translateY(-4px); }
         .chain-caption { text-align: center; color: var(--text2); font-size: 0.85rem; margin-bottom: 1rem; }
         .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-bottom: 4rem; max-width: 900px; margin-left: auto; margin-right: auto; }
         .stat { text-align: center; padding: 1.5rem; background: var(--bg2); border: 1px solid #2a3047; border-radius: 8px; }
@@ -169,14 +174,40 @@
                 </div>
 
                 <div class="chain-logos">
-                    <img class="chain-badge" src="./assets/chains/ethereum.png" alt="Ethereum" title="Ethereum">
-                    <img class="chain-badge" src="./assets/chains/polygon.png" alt="Polygon" title="Polygon">
-                    <img class="chain-badge" src="./assets/chains/arbitrum.png" alt="Arbitrum" title="Arbitrum">
-                    <img class="chain-badge" src="./assets/chains/optimism.png" alt="Optimism" title="Optimism">
-                    <img class="chain-badge" src="./assets/chains/base.png" alt="Base" title="Base">
-                    <img class="chain-badge" src="./assets/chains/zksync.png" alt="zkSync" title="zkSync">
+                    <a class="chain-badge-link" href="/dashboard?chain=ethereum" aria-label="Analyze a protocol on Ethereum">
+                        <img class="chain-badge" src="./assets/chains/ethereum.png" alt="Ethereum">
+                        <span class="chain-tooltip">Ethereum</span>
+                    </a>
+                    <a class="chain-badge-link" href="/dashboard?chain=polygon" aria-label="Analyze a protocol on Polygon">
+                        <img class="chain-badge" src="./assets/chains/polygon.png" alt="Polygon">
+                        <span class="chain-tooltip">Polygon</span>
+                    </a>
+                    <a class="chain-badge-link" href="/dashboard?chain=arbitrum" aria-label="Analyze a protocol on Arbitrum">
+                        <img class="chain-badge" src="./assets/chains/arbitrum.png" alt="Arbitrum">
+                        <span class="chain-tooltip">Arbitrum</span>
+                    </a>
+                    <a class="chain-badge-link" href="/dashboard?chain=optimism" aria-label="Analyze a protocol on Optimism">
+                        <img class="chain-badge" src="./assets/chains/optimism.png" alt="Optimism">
+                        <span class="chain-tooltip">Optimism</span>
+                    </a>
+                    <a class="chain-badge-link" href="/dashboard?chain=base" aria-label="Analyze a protocol on Base">
+                        <img class="chain-badge" src="./assets/chains/base.png" alt="Base">
+                        <span class="chain-tooltip">Base</span>
+                    </a>
+                    <a class="chain-badge-link" href="/dashboard?chain=zksync" aria-label="Analyze a protocol on zkSync">
+                        <img class="chain-badge" src="./assets/chains/zksync.png" alt="zkSync">
+                        <span class="chain-tooltip">zkSync</span>
+                    </a>
+                    <a class="chain-badge-link" href="/dashboard?chain=bsc" aria-label="Analyze a protocol on BNB Chain">
+                        <img class="chain-badge" src="./assets/chains/bsc.png" alt="BNB Chain">
+                        <span class="chain-tooltip">BNB Chain</span>
+                    </a>
+                    <a class="chain-badge-link" href="/dashboard?chain=avalanche" aria-label="Analyze a protocol on Avalanche">
+                        <img class="chain-badge" src="./assets/chains/avalanche.png" alt="Avalanche">
+                        <span class="chain-tooltip">Avalanche</span>
+                    </a>
                 </div>
-                <p class="chain-caption">Supports 6+ Blockchains</p>
+                <p class="chain-caption">Supports 8+ Blockchains</p>
             </div>
         </section>
 

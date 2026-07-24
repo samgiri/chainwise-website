@@ -215,23 +215,49 @@
             box-shadow: 0 0 0 2px rgba(247, 147, 26, 0.1);
         }
 
-        .search-select {
+        .chain-select-wrap {
             flex: 0 0 auto;
-            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0 1rem;
             background: var(--color-bg-secondary);
             border: 1px solid var(--color-border);
             border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .chain-select-wrap:focus-within {
+            border-color: var(--color-accent-orange);
+            box-shadow: 0 0 0 2px rgba(247, 147, 26, 0.1);
+        }
+
+        .chain-indicator {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .chain-select {
+            flex: 0 0 auto;
+            padding: 1rem 0;
+            background: transparent;
+            border: none;
             color: var(--color-text-primary);
             font-size: 1rem;
             font-family: inherit;
             cursor: pointer;
-            transition: all 0.2s;
         }
 
-        .search-select:focus {
+        .chain-select:focus {
             outline: none;
-            border-color: var(--color-accent-orange);
-            box-shadow: 0 0 0 2px rgba(247, 147, 26, 0.1);
+        }
+
+        .format-hint {
+            font-size: 0.8rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 1rem;
         }
 
         .search-btn {
@@ -713,19 +739,24 @@
                     type="text"
                     class="search-input"
                     id="protocolInput"
-                    placeholder="Enter protocol address, contract name, or smart contract address (0x...)"
+                    placeholder="Paste contract address here..."
                 >
-                <select class="search-select" id="chainSelect">
-                    <option value="ethereum">Ethereum</option>
-                    <option value="bsc">BNB Chain</option>
-                    <option value="polygon">Polygon</option>
-                    <option value="arbitrum">Arbitrum</option>
-                    <option value="optimism">Optimism</option>
-                    <option value="base">Base</option>
-                    <option value="avalanche">Avalanche</option>
-                </select>
+                <div class="chain-select-wrap">
+                    <img class="chain-indicator" id="chainIndicator" src="./assets/chains/ethereum.png" alt="">
+                    <select class="chain-select" id="chainSelect">
+                        <option value="ethereum">Ethereum</option>
+                        <option value="polygon">Polygon</option>
+                        <option value="arbitrum">Arbitrum</option>
+                        <option value="optimism">Optimism</option>
+                        <option value="base">Base</option>
+                        <option value="zksync">zkSync</option>
+                        <option value="bsc">BNB Chain</option>
+                        <option value="avalanche">Avalanche</option>
+                    </select>
+                </div>
                 <button class="search-btn" id="analyzeBtn">Analyze Protocol</button>
             </div>
+            <p class="format-hint">All 8 supported chains use standard EVM address format (0x + 40 hex characters).</p>
             <div class="status-line" id="statusLine">
                 <span class="spinner" id="statusSpinner"></span>
                 <span id="statusText"></span>
@@ -1142,8 +1173,25 @@
         const analyzeBtn = document.getElementById('analyzeBtn');
         const protocolInput = document.getElementById('protocolInput');
         const chainSelect = document.getElementById('chainSelect');
+        const chainIndicator = document.getElementById('chainIndicator');
         const downloadReportBtn = document.getElementById('downloadReportBtn');
 
+        const SUPPORTED_CHAINS = ['ethereum', 'polygon', 'arbitrum', 'optimism', 'base', 'zksync', 'bsc', 'avalanche'];
+
+        function updateChainIndicator() {
+            chainIndicator.src = `./assets/chains/${chainSelect.value}.png`;
+            chainIndicator.alt = chainSelect.options[chainSelect.selectedIndex].textContent;
+        }
+
+        // Pre-populate chain from the ?chain= URL parameter (e.g. set when a user
+        // clicks a chain badge on the homepage).
+        const urlChain = new URLSearchParams(window.location.search).get('chain');
+        if (urlChain && SUPPORTED_CHAINS.includes(urlChain.toLowerCase())) {
+            chainSelect.value = urlChain.toLowerCase();
+        }
+        updateChainIndicator();
+
+        chainSelect.addEventListener('change', updateChainIndicator);
         analyzeBtn.addEventListener('click', () => analyzeProtocol(protocolInput.value.trim(), chainSelect.value));
         protocolInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') analyzeProtocol(protocolInput.value.trim(), chainSelect.value);
