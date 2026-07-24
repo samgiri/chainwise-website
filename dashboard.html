@@ -3,229 +3,816 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Chainwise - Risk Dashboard</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <meta name="description" content="ChainWise Risk Dashboard - Real-time DeFi protocol analysis and risk assessment.">
+    <title>Risk Dashboard | The Chainwise</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.10.0/chart.min.js"></script>
     <style>
-        :root {
-            --color-red: #FF3D5C;
-            --color-blue: #00D4FF;
-            --color-orange: #FF8C3D;
-            --color-navy: #0F1629;
-            --color-gray-dark: #1A2847;
-            --color-white: #F7F9FC;
-            --gradient-primary: linear-gradient(135deg, #FF3D5C 0%, #FF8C3D 50%, #00D4FF 100%);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: var(--color-navy); color: var(--color-white); line-height: 1.6; }
-        header { padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center; }
-        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--color-white); }
-        .logo-text { font-size: 20px; font-weight: 700; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
-        .status-badge { display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: rgba(0, 212, 255, 0.1); border: 1px solid var(--color-blue); border-radius: 20px; font-size: 12px; color: var(--color-blue); }
-        .search-section { margin-bottom: 32px; display: flex; gap: 16px; }
-        .search-input { flex: 1; max-width: 600px; padding: 12px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--color-white); font-family: 'Inter', sans-serif; }
-        .search-btn { padding: 12px 24px; background: var(--gradient-primary); border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer; }
-        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 32px; }
-        .card { background: rgba(26, 40, 71, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 24px; }
-        .card h3 { font-size: 14px; color: #A0A0A0; margin-bottom: 12px; text-transform: uppercase; }
-        .card-value { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
-        .card-subtext { font-size: 13px; color: #A0A0A0; }
-        .risk-score-card { grid-column: span 2; background: linear-gradient(135deg, rgba(255, 61, 92, 0.1) 0%, rgba(255, 140, 61, 0.1) 100%); border: 1px solid rgba(255, 61, 92, 0.3); }
-        .risk-score-content { display: flex; align-items: center; gap: 32px; }
-        .risk-score-circle { width: 120px; height: 120px; background: conic-gradient(var(--gradient-primary) 0deg 342deg, rgba(255,255,255,0.1) 342deg 360deg); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 48px; font-weight: 700; color: var(--color-red); }
-        .risk-score-details h4 { font-size: 24px; margin-bottom: 8px; color: var(--color-red); }
-        .charts-section { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; }
-        .chart-card { background: rgba(26, 40, 71, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 24px; }
-        .chart-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 20px; color: var(--color-white); }
-        .chart-container { position: relative; height: 300px; }
-        .layers-section { background: rgba(26, 40, 71, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 24px; margin-bottom: 32px; }
-        .layers-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
-        .layer-item { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 16px; }
-        .layer-name { font-size: 13px; font-weight: 600; color: #A0A0A0; margin-bottom: 8px; text-transform: uppercase; }
-        .layer-value { font-size: 24px; font-weight: 700; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
-        .layer-bar { width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
-        .layer-bar-fill { height: 100%; background: var(--gradient-primary); border-radius: 2px; }
-        .cases-section { background: rgba(26, 40, 71, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 24px; margin-bottom: 32px; }
-        .case-item { background: rgba(255,61,92,0.05); border-left: 3px solid var(--color-red); padding: 16px; margin-bottom: 16px; border-radius: 8px; }
-        .alerts-section { background: rgba(26, 40, 71, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 24px; }
-        .alert-item { background: rgba(255,140,61,0.05); border-left: 3px solid var(--color-orange); padding: 12px; margin-bottom: 12px; border-radius: 6px; font-size: 13px; }
-        footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; color: #A0A0A0; font-size: 13px; }
+
+        :root {
+            --color-bg-primary: #0a0e27;
+            --color-bg-secondary: #111629;
+            --color-bg-tertiary: #1a1f3a;
+            --color-text-primary: #ffffff;
+            --color-text-secondary: #a0a8c8;
+            --color-accent-orange: #f7931a;
+            --color-accent-purple: #7b3fe4;
+            --color-border: #2a3047;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-critical: #ef4444;
+        }
+
+        body {
+            background: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+        }
+
+        nav.header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            transition: opacity 0.2s;
+        }
+
+        .logo:hover {
+            opacity: 0.8;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--color-accent-orange), var(--color-accent-purple));
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 900;
+            color: white;
+        }
+
+        .nav-primary {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-primary a {
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s;
+            position: relative;
+        }
+
+        .nav-primary a:hover {
+            color: var(--color-text-primary);
+        }
+
+        .nav-primary a::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--color-accent-orange), var(--color-accent-purple));
+            transition: width 0.3s;
+        }
+
+        .nav-primary a:hover::after {
+            width: 100%;
+        }
+
+        .nav-secondary {
+            display: flex;
+            gap: 1rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .btn-nav {
+            padding: 0.5rem 1.25rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            border: none;
+        }
+
+        .btn-nav.primary {
+            background: linear-gradient(90deg, var(--color-accent-orange), var(--color-accent-purple));
+            color: white;
+        }
+
+        .btn-nav.primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn-nav.secondary {
+            border: 1px solid var(--color-border);
+            color: var(--color-text-primary);
+            background: transparent;
+        }
+
+        .btn-nav.secondary:hover {
+            background: var(--color-bg-tertiary);
+            border-color: var(--color-accent-orange);
+        }
+
+        main {
+            min-height: calc(100vh - 320px);
+            background: var(--color-bg-primary);
+            padding: 2rem 1.5rem;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .dashboard-header {
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--color-text-primary);
+        }
+
+        .dashboard-header p {
+            color: var(--color-text-secondary);
+            font-size: 1rem;
+        }
+
+        .search-section {
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .status-line {
+            font-size: 0.85rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 1.5rem;
+            min-height: 1.2em;
+        }
+
+        .status-line.error {
+            color: var(--color-warning);
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 1rem;
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            color: var(--color-text-primary);
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--color-accent-orange);
+            box-shadow: 0 0 0 2px rgba(247, 147, 26, 0.1);
+        }
+
+        .search-btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(90deg, var(--color-accent-orange), var(--color-accent-purple));
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .search-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .result-card {
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .result-card:hover {
+            background: var(--color-bg-tertiary);
+            border-color: var(--color-accent-orange);
+        }
+
+        .risk-score {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .risk-score.critical {
+            background: linear-gradient(90deg, var(--color-critical), var(--color-accent-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .risk-score.warning {
+            background: linear-gradient(90deg, var(--color-warning), var(--color-accent-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .risk-score.success {
+            background: linear-gradient(90deg, var(--color-success), var(--color-accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .risk-score.unknown {
+            color: var(--color-text-secondary);
+            -webkit-text-fill-color: var(--color-text-secondary);
+        }
+
+        .risk-label {
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .risk-details {
+            border-top: 1px solid var(--color-border);
+            padding-top: 1.5rem;
+        }
+
+        .detail-item {
+            margin-bottom: 1rem;
+        }
+
+        .detail-label {
+            font-size: 0.85rem;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        .layer-bars {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .layer-bar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .layer-label {
+            min-width: 100px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-text-secondary);
+        }
+
+        .layer-bar-fill {
+            flex: 1;
+            height: 8px;
+            background: var(--color-bg-tertiary);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .layer-bar-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-accent-orange), var(--color-accent-purple));
+            border-radius: 4px;
+            transition: width 0.6s ease-out;
+        }
+
+        .layer-score {
+            min-width: 40px;
+            text-align: right;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-accent-orange);
+        }
+
+        .alerts {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--color-critical);
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .alerts.none {
+            background: rgba(160, 168, 200, 0.08);
+            border-color: var(--color-border);
+        }
+
+        .alert-title {
+            font-weight: 600;
+            color: var(--color-critical);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .alerts.none .alert-title {
+            color: var(--color-text-secondary);
+        }
+
+        .alert-content {
+            font-size: 0.95rem;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+        }
+
+        .alert-line {
+            margin-bottom: 0.5rem;
+        }
+
+        .alert-line:last-child {
+            margin-bottom: 0;
+        }
+
+        .charts-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .chart-card {
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 2rem;
+        }
+
+        .chart-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--color-text-primary);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 280px;
+        }
+
+        footer {
+            background: var(--color-bg-secondary);
+            border-top: 1px solid var(--color-border);
+            padding: 4rem 1.5rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .footer-section h3 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--color-accent-orange);
+            margin-bottom: 1rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-section a {
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .footer-section a:hover {
+            color: var(--color-accent-orange);
+        }
+
+        .footer-brand .logo {
+            margin-bottom: 1rem;
+        }
+
+        .footer-tagline {
+            color: var(--color-text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            max-width: 260px;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            background: var(--color-bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            transition: all 0.2s;
+            font-size: 1.2rem;
+        }
+
+        .social-link:hover {
+            background: linear-gradient(135deg, var(--color-accent-orange), var(--color-accent-purple));
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: var(--color-text-secondary);
+        }
+
+        .footer-badge {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .badge-icon {
+            width: 16px;
+            height: 16px;
+            background: var(--color-success);
+            border-radius: 50%;
+        }
+
         @media (max-width: 1024px) {
-            .charts-section { grid-template-columns: 1fr; }
-            .risk-score-card { grid-column: span 1; }
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-primary {
+                display: none;
+            }
+
+            .nav-secondary {
+                display: none;
+            }
+
+            .dashboard-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .search-section {
+                flex-direction: column;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-container {
+                height: auto;
+                padding: 1rem;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-section {
+                border-bottom: 1px solid var(--color-border);
+                padding-bottom: 1.5rem;
+            }
+
+            .footer-section:last-child {
+                border-bottom: none;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
+    <nav class="header">
+        <div class="nav-container">
             <a href="/" class="logo">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" width="32" height="32">
-                    <defs>
-                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#FF3D5C;stop-opacity:1" />
-                            <stop offset="50%" style="stop-color:#FF8C3D;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#00D4FF;stop-opacity:1" />
-                        </linearGradient>
-                    </defs>
-                    <path d="M 160 30 A 70 70 0 0 0 40 100 A 70 70 0 0 0 160 170" stroke="url(#logoGradient)" stroke-width="20" fill="none" stroke-linecap="round"/>
-                    <rect x="115" y="75" width="50" height="50" rx="4" fill="none" stroke="url(#logoGradient)" stroke-width="3"/>
-                    <circle cx="100" cy="100" r="6" fill="#FF8C3D"/>
-                </svg>
-                <span class="logo-text">The Chainwise</span>
+                <span class="logo-icon">⚡</span>
+                <span>ChainWise</span>
             </a>
-            <div class="status-badge">
-                <div style="width: 8px; height: 8px; background: var(--color-blue); border-radius: 50%; animation: pulse 2s infinite;"></div>
-                Live Monitoring
-            </div>
-        </header>
-
-        <div class="search-section">
-            <input type="text" class="search-input" id="searchInput" placeholder="Enter contract address or protocol name...">
-            <button class="search-btn" id="analyzeBtn">Analyze</button>
+            <ul class="nav-primary">
+                <li><a href="/#features">Features</a></li>
+                <li><a href="/#methodology">Methodology</a></li>
+                <li><a href="/#cases">Cases</a></li>
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/#pricing">Pricing</a></li>
+            </ul>
+            <ul class="nav-secondary">
+                <li><a href="#contact" class="btn-nav secondary">Contact</a></li>
+                <li><a href="/" class="btn-nav primary">Back to Home</a></li>
+            </ul>
         </div>
-        <div id="statusLine" style="font-size: 13px; color: #A0A0A0; margin-top: -20px; margin-bottom: 20px;"></div>
+    </nav>
 
-        <div class="dashboard-grid">
-            <div class="card risk-score-card">
-                <div class="risk-score-content">
-                    <div class="risk-score-circle" id="riskScoreCircle">95</div>
-                    <div class="risk-score-details">
-                        <h4 id="riskHeadline">Critical Risk Detected</h4>
-                        <p id="riskSummary">Smart Solve DeFi exhibits parameters consistent with MLM pyramid scheme.</p>
-                        <div id="riskBadge" style="padding: 8px 12px; background: rgba(255, 61, 92, 0.2); border-left: 3px solid var(--color-red); border-radius: 4px; font-weight: 600; color: var(--color-red); font-size: 13px; margin-top: 12px;">CRITICAL - 95/100</div>
+    <main>
+        <div class="dashboard-container">
+            <div class="dashboard-header">
+                <h1>Risk Analysis Dashboard</h1>
+                <p>Enter a protocol address or name to analyze its smart contract risk profile using our 8-layer detection framework.</p>
+            </div>
+
+            <div class="search-section">
+                <input
+                    type="text"
+                    class="search-input"
+                    id="protocolInput"
+                    placeholder="Enter protocol address, contract name, or smart contract address (0x...)"
+                >
+                <button class="search-btn" id="analyzeBtn">Analyze Protocol</button>
+            </div>
+            <div class="status-line" id="statusLine"></div>
+
+            <div class="results-grid" id="resultsGrid">
+                <div class="result-card">
+                    <div class="risk-score" id="riskScoreValue">--</div>
+                    <div class="risk-label" id="riskLabel">Loading...</div>
+                    <div class="risk-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Protocol</div>
+                            <div class="detail-value" id="detailProtocol">--</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Chain</div>
+                            <div class="detail-value" id="detailChain">--</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Confidence</div>
+                            <div class="detail-value" id="detailConfidence">--</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Operator Control</div>
+                            <div class="detail-value" id="detailOperatorControl">--</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Estimated Loss</div>
+                            <div class="detail-value" id="detailEstimatedLoss">--</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Users at Risk</div>
+                            <div class="detail-value" id="detailUsersAtRisk">--</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Collapse Timeline</div>
+                            <div class="detail-value" id="detailCollapseTimeline">--</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Detection Time</div>
+                            <div class="detail-value" id="detailDetectionTime">--</div>
+                        </div>
+                    </div>
+
+                    <div class="alerts" id="alertsBox">
+                        <div class="alert-title" id="alertsTitle">⚠️ Alerts</div>
+                        <div class="alert-content" id="alertContent"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 style="margin-bottom: 1.5rem; color: var(--color-text-primary);">Layer Analysis</h3>
+                    <div class="layer-bars" id="layerBars">
+                        <div class="layer-bar">
+                            <div class="layer-label">Layer 1: Patterns</div>
+                            <div class="layer-bar-fill"><div class="layer-bar-progress" id="layer-patterns-progress" style="width: 0%;"></div></div>
+                            <div class="layer-score" id="layer-patterns-score">0</div>
+                        </div>
+                        <div class="layer-bar">
+                            <div class="layer-label">Layer 2: Bytecode</div>
+                            <div class="layer-bar-fill"><div class="layer-bar-progress" id="layer-bytecode-progress" style="width: 0%;"></div></div>
+                            <div class="layer-score" id="layer-bytecode-score">0</div>
+                        </div>
+                        <div class="layer-bar">
+                            <div class="layer-label">Layer 3: Treasury</div>
+                            <div class="layer-bar-fill"><div class="layer-bar-progress" id="layer-treasury-progress" style="width: 0%;"></div></div>
+                            <div class="layer-score" id="layer-treasury-score">0</div>
+                        </div>
+                        <div class="layer-bar">
+                            <div class="layer-label">Layer 4: Withdrawals</div>
+                            <div class="layer-bar-fill"><div class="layer-bar-progress" id="layer-withdrawals-progress" style="width: 0%;"></div></div>
+                            <div class="layer-score" id="layer-withdrawals-score">0</div>
+                        </div>
+                        <div class="layer-bar">
+                            <div class="layer-label">Layer 5: Bridges</div>
+                            <div class="layer-bar-fill"><div class="layer-bar-progress" id="layer-bridges-progress" style="width: 0%;"></div></div>
+                            <div class="layer-score" id="layer-bridges-score">0</div>
+                        </div>
+                        <div class="layer-bar">
+                            <div class="layer-label">Layer 6: Off-Ramps</div>
+                            <div class="layer-bar-fill"><div class="layer-bar-progress" id="layer-offRamps-progress" style="width: 0%;"></div></div>
+                            <div class="layer-score" id="layer-offRamps-score">0</div>
+                        </div>
+                        <div class="layer-bar">
+                            <div class="layer-label">Layer 7: Sybil</div>
+                            <div class="layer-bar-fill"><div class="layer-bar-progress" id="layer-sybil-progress" style="width: 0%;"></div></div>
+                            <div class="layer-score" id="layer-sybil-score">0</div>
+                        </div>
+                        <div class="layer-bar">
+                            <div class="layer-label">Layer 8: Attribution</div>
+                            <div class="layer-bar-fill"><div class="layer-bar-progress" id="layer-attribution-progress" style="width: 0%;"></div></div>
+                            <div class="layer-score" id="layer-attribution-score">0</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card">
-                <h3>Detection Time</h3>
-                <div class="card-value" id="detectionTimeValue">&lt;24h</div>
-                <div class="card-subtext">From deployment to alert</div>
-            </div>
-
-            <div class="card">
-                <h3>Confidence</h3>
-                <div class="card-value" id="confidenceValue">98%</div>
-                <div class="card-subtext">Evidence-based score</div>
-            </div>
-
-            <div class="card">
-                <h3>Estimated Loss</h3>
-                <div class="card-value" id="estimatedLossValue">$100M+</div>
-                <div class="card-subtext">If unchecked</div>
-            </div>
-
-            <div class="card">
-                <h3>Users at Risk</h3>
-                <div class="card-value" id="usersAtRiskValue">15,000+</div>
-                <div class="card-subtext">Active participants</div>
-            </div>
-
-            <div class="card">
-                <h3>Days to Collapse</h3>
-                <div class="card-value" id="collapseDaysValue">180-365</div>
-                <div class="card-subtext">Est. timeline</div>
-            </div>
-
-            <div class="card">
-                <h3>Operator Control</h3>
-                <div class="card-value" id="operatorControlValue">60%</div>
-                <div class="card-subtext">Of treasury</div>
-            </div>
-        </div>
-
-        <div class="charts-section">
-            <div class="chart-card">
-                <h3>Risk Score Distribution</h3>
-                <div class="chart-container">
-                    <canvas id="riskChart"></canvas>
+            <div class="charts-section">
+                <div class="chart-card">
+                    <h3>Risk Score Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="riskChart"></canvas>
+                    </div>
                 </div>
-            </div>
-            <div class="chart-card">
-                <h3>8-Layer Analysis</h3>
-                <div class="chart-container">
-                    <canvas id="layersChart"></canvas>
+                <div class="chart-card">
+                    <h3>8-Layer Analysis</h3>
+                    <div class="chart-container">
+                        <canvas id="layersChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
+    </main>
 
-        <div class="layers-section">
-            <h3>8-Layer Detection Breakdown</h3>
-            <div class="layers-grid" id="layersGrid">
-                <div class="layer-item">
-                    <div class="layer-name">Layer 1: Patterns</div>
-                    <div class="layer-value" id="layer-patterns-value">85%</div>
-                    <div class="layer-bar"><div class="layer-bar-fill" id="layer-patterns-bar" style="width: 85%"></div></div>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-section footer-brand">
+                    <div class="logo">
+                        <span class="logo-icon">⚡</span>
+                        <span>ChainWise</span>
+                    </div>
+                    <p class="footer-tagline">The industry standard for DeFi risk intelligence. Real-time protocol analysis designed to identify high-risk smart contracts and treasury anomalies before capital is compromised.</p>
+                    <div class="footer-socials">
+                        <a href="https://twitter.com/ChainWiseOfficial" class="social-link" title="X">𝕏</a>
+                        <a href="https://t.me/ChainWiseOfficial" class="social-link" title="Telegram">✈️</a>
+                        <a href="https://youtube.com/@ChainWiseOfficial" class="social-link" title="YouTube">▶️</a>
+                        <a href="https://discord.gg/chainwise" class="social-link" title="Discord">💬</a>
+                    </div>
                 </div>
-                <div class="layer-item">
-                    <div class="layer-name">Layer 2: Bytecode</div>
-                    <div class="layer-value" id="layer-bytecode-value">55%</div>
-                    <div class="layer-bar"><div class="layer-bar-fill" id="layer-bytecode-bar" style="width: 55%"></div></div>
+
+                <div class="footer-section">
+                    <h3>Product</h3>
+                    <ul>
+                        <li><a href="/#features">Features</a></li>
+                        <li><a href="/#methodology">Methodology</a></li>
+                        <li><a href="/dashboard">Dashboard</a></li>
+                        <li><a href="#pricing">Pricing</a></li>
+                        <li><a href="#api">API Docs</a></li>
+                    </ul>
                 </div>
-                <div class="layer-item">
-                    <div class="layer-name">Layer 3: Treasury</div>
-                    <div class="layer-value" id="layer-treasury-value">30%</div>
-                    <div class="layer-bar"><div class="layer-bar-fill" id="layer-treasury-bar" style="width: 30%"></div></div>
+
+                <div class="footer-section">
+                    <h3>Research</h3>
+                    <ul>
+                        <li><a href="/#cases">Case Studies</a></li>
+                        <li><a href="#threats">Live Threats</a></li>
+                        <li><a href="#detection">Detection Framework</a></li>
+                        <li><a href="#blog">Research Blog</a></li>
+                    </ul>
                 </div>
-                <div class="layer-item">
-                    <div class="layer-name">Layer 4: Withdrawals</div>
-                    <div class="layer-value" id="layer-withdrawals-value">50%</div>
-                    <div class="layer-bar"><div class="layer-bar-fill" id="layer-withdrawals-bar" style="width: 50%"></div></div>
+
+                <div class="footer-section">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#team">Team</a></li>
+                        <li><a href="#press">Press Kit</a></li>
+                        <li><a href="https://satoshilab.ai">Satoshi Lab</a></li>
+                    </ul>
                 </div>
-                <div class="layer-item">
-                    <div class="layer-name">Layer 5: Bridges</div>
-                    <div class="layer-value" id="layer-bridges-value">20%</div>
-                    <div class="layer-bar"><div class="layer-bar-fill" id="layer-bridges-bar" style="width: 20%"></div></div>
+
+                <div class="footer-section">
+                    <h3>Trust</h3>
+                    <ul>
+                        <li><a href="#security">Security</a></li>
+                        <li><a href="#compliance">Compliance</a></li>
+                        <li><a href="#right-of-reply">Right of Reply</a></li>
+                        <li><a href="#audit">Third-Party Audits</a></li>
+                    </ul>
                 </div>
-                <div class="layer-item">
-                    <div class="layer-name">Layer 6: Off-Ramps</div>
-                    <div class="layer-value" id="layer-offRamps-value">25%</div>
-                    <div class="layer-bar"><div class="layer-bar-fill" id="layer-offRamps-bar" style="width: 25%"></div></div>
+
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#privacy">Privacy Policy</a></li>
+                        <li><a href="#terms">Terms of Service</a></li>
+                        <li><a href="#disclaimer">Disclaimer</a></li>
+                        <li><a href="#cookies">Cookie Policy</a></li>
+                    </ul>
                 </div>
-                <div class="layer-item">
-                    <div class="layer-name">Layer 7: Sybil</div>
-                    <div class="layer-value" id="layer-sybil-value">40%</div>
-                    <div class="layer-bar"><div class="layer-bar-fill" id="layer-sybil-bar" style="width: 40%"></div></div>
-                </div>
-                <div class="layer-item">
-                    <div class="layer-name">Layer 8: Attribution</div>
-                    <div class="layer-value" id="layer-attribution-value">35%</div>
-                    <div class="layer-bar"><div class="layer-bar-fill" id="layer-attribution-bar" style="width: 35%"></div></div>
+            </div>
+
+            <div class="footer-bottom">
+                <div>© 2024 ChainWise. All rights reserved. | Built by <a href="https://satoshilab.ai" style="color: var(--color-accent-orange); text-decoration: none;">Satoshi Lab</a></div>
+                <div class="footer-badge">
+                    <span class="badge-icon"></span>
+                    <span>Enterprise-Grade Security</span>
                 </div>
             </div>
         </div>
-
-        <div class="cases-section">
-            <h3>Active Cases</h3>
-            <div class="case-item" id="caseItem">
-                <h4 id="caseName">Smart Solve DeFi</h4>
-                <div style="display: flex; gap: 16px; font-size: 12px; color: #A0A0A0;">
-                    <span id="caseChain">BSC Chain</span>
-                    <span id="caseRiskLevel" style="padding: 4px 8px; background: rgba(255,61,92,0.2); border-radius: 4px; color: var(--color-red); font-weight: 600;">CRITICAL</span>
-                    <span id="caseRiskScore">95/100 Risk</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="alerts-section">
-            <h3>Recent Alerts</h3>
-            <div id="alertsList">
-                <div class="alert-item"><strong>CRITICAL:</strong> Withdrawal queue exceeds threshold (127 pending)</div>
-                <div class="alert-item"><strong>HIGH:</strong> Treasury drain detected - $21K/day outflow</div>
-                <div class="alert-item"><strong>HIGH:</strong> Operator pause() function ready</div>
-                <div class="alert-item"><strong>MEDIUM:</strong> Sybil cluster detected (89 wallets)</div>
-            </div>
-        </div>
-
-        <footer>
-            <p>The Chainwise Risk Dashboard | Real-time DeFi Intelligence</p>
-            <p style="margin-top: 12px;">Built by Satoshi Lab</p>
-        </footer>
-    </div>
+    </footer>
 
     <script>
         const LAYER_KEYS = ['patterns', 'bytecode', 'treasury', 'withdrawals', 'bridges', 'offRamps', 'sybil', 'attribution'];
@@ -238,9 +825,9 @@
                 data: {
                     labels: ['Risk', 'Safe'],
                     datasets: [{
-                        data: [95, 5],
-                        backgroundColor: ['#FF3D5C', 'rgba(255,255,255,0.1)'],
-                        borderColor: ['#FF3D5C', 'rgba(255,255,255,0.1)'],
+                        data: [0, 100],
+                        backgroundColor: ['#ef4444', 'rgba(255,255,255,0.1)'],
+                        borderColor: ['#ef4444', 'rgba(255,255,255,0.1)'],
                         borderWidth: 0
                     }]
                 },
@@ -258,10 +845,10 @@
                     labels: ['Patterns', 'Bytecode', 'Treasury', 'Withdrawals', 'Bridges', 'Off-Ramps', 'Sybil', 'Attribution'],
                     datasets: [{
                         label: 'Risk Score',
-                        data: [85, 55, 30, 50, 20, 25, 40, 35],
-                        borderColor: '#FF3D5C',
-                        backgroundColor: 'rgba(255, 61, 92, 0.1)',
-                        pointBackgroundColor: '#FF3D5C',
+                        data: [0, 0, 0, 0, 0, 0, 0, 0],
+                        borderColor: '#f7931a',
+                        backgroundColor: 'rgba(247, 147, 26, 0.15)',
+                        pointBackgroundColor: '#f7931a',
                         borderWidth: 2
                     }]
                 },
@@ -271,7 +858,7 @@
                     scales: {
                         r: {
                             grid: { color: 'rgba(255,255,255,0.1)' },
-                            ticks: { color: '#A0A0A0' },
+                            ticks: { color: '#a0a8c8' },
                             max: 100
                         }
                     }
@@ -284,37 +871,60 @@
         function setStatus(text, isError) {
             const el = document.getElementById('statusLine');
             el.textContent = text;
-            el.style.color = isError ? 'var(--color-orange)' : '#A0A0A0';
+            el.classList.toggle('error', !!isError);
         }
 
-        function renderData(data) {
+        function riskClass(score) {
+            if (score === null || score === undefined) return 'unknown';
+            if (score >= 70) return 'critical';
+            if (score >= 40) return 'warning';
+            return 'success';
+        }
+
+        function renderResults(data) {
             const analyzed = data.riskScore !== null && data.riskScore !== undefined;
             const score = analyzed ? data.riskScore : 0;
 
-            document.getElementById('riskScoreCircle').textContent = analyzed ? score : 'N/A';
-            document.getElementById('riskScoreCircle').style.background =
-                `conic-gradient(var(--gradient-primary) 0deg ${score * 3.6}deg, rgba(255,255,255,0.1) ${score * 3.6}deg 360deg)`;
-            document.getElementById('riskHeadline').textContent = analyzed
-                ? (data.riskLevel === 'CRITICAL' ? 'Critical Risk Detected' : `${data.riskLevel} Risk Detected`)
-                : 'Not Yet Analyzed';
-            document.getElementById('riskSummary').textContent = data.summary || '';
-            const badge = document.getElementById('riskBadge');
-            badge.textContent = analyzed ? `${data.riskLevel} - ${score}/100` : 'NO ON-CHAIN DATA YET';
+            const scoreEl = document.getElementById('riskScoreValue');
+            scoreEl.textContent = analyzed ? score : 'N/A';
+            scoreEl.className = 'risk-score ' + riskClass(analyzed ? score : null);
 
-            document.getElementById('detectionTimeValue').innerHTML = data.detectionHours ? `&lt;${data.detectionHours}h` : '--';
-            document.getElementById('confidenceValue').textContent = analyzed ? `${data.confidence}%` : '--';
-            document.getElementById('estimatedLossValue').textContent = data.estimatedLoss || '--';
-            document.getElementById('usersAtRiskValue').textContent = data.usersAtRisk ? `${data.usersAtRisk.toLocaleString()}+` : '--';
-            document.getElementById('collapseDaysValue').textContent = data.collapseTimelineDays
-                ? `${data.collapseTimelineDays[0]}-${data.collapseTimelineDays[1]}` : '--';
-            document.getElementById('operatorControlValue').textContent = data.operatorControlPct ? `${data.operatorControlPct}%` : '--';
+            document.getElementById('riskLabel').textContent = analyzed
+                ? `Risk Score: ${data.riskLevel}`
+                : 'Not yet analyzed';
+
+            document.getElementById('detailProtocol').textContent = data.protocol || '--';
+            document.getElementById('detailChain').textContent = data.chain || '--';
+            document.getElementById('detailConfidence').textContent = analyzed ? `${data.confidence}%` : '--';
+            document.getElementById('detailOperatorControl').textContent = data.operatorControlPct ? `${data.operatorControlPct}% of Treasury` : '--';
+            document.getElementById('detailEstimatedLoss').textContent = data.estimatedLoss || '--';
+            document.getElementById('detailUsersAtRisk').textContent = data.usersAtRisk ? `${data.usersAtRisk.toLocaleString()}+` : '--';
+            document.getElementById('detailCollapseTimeline').textContent = data.collapseTimelineDays
+                ? `${data.collapseTimelineDays[0]}-${data.collapseTimelineDays[1]} days` : '--';
+            document.getElementById('detailDetectionTime').textContent = data.detectionHours ? `<${data.detectionHours}h` : '--';
 
             const layers = data.layers || {};
             LAYER_KEYS.forEach(key => {
                 const value = layers[key] || 0;
-                document.getElementById(`layer-${key}-value`).textContent = `${value}%`;
-                document.getElementById(`layer-${key}-bar`).style.width = `${value}%`;
+                document.getElementById(`layer-${key}-progress`).style.width = `${value}%`;
+                document.getElementById(`layer-${key}-score`).textContent = value;
             });
+
+            const alertsBox = document.getElementById('alertsBox');
+            const alertContent = document.getElementById('alertContent');
+            if (data.alerts && data.alerts.length) {
+                alertsBox.classList.remove('none');
+                document.getElementById('alertsTitle').textContent = '⚠️ Alerts';
+                alertContent.innerHTML = data.alerts
+                    .map(a => `<div class="alert-line"><strong>${a.level}:</strong> ${a.message}</div>`)
+                    .join('');
+            } else {
+                alertsBox.classList.add('none');
+                document.getElementById('alertsTitle').textContent = 'No Alerts';
+                alertContent.textContent = analyzed
+                    ? 'No alerts for this protocol.'
+                    : 'This address/protocol has not been analyzed yet.';
+            }
 
             if (riskChart) {
                 riskChart.data.datasets[0].data = [score, 100 - score];
@@ -324,46 +934,34 @@
                 layersChart.data.datasets[0].data = LAYER_KEYS.map(key => layers[key] || 0);
                 layersChart.update();
             }
-
-            document.getElementById('caseName').textContent = data.protocol || 'Unknown';
-            document.getElementById('caseChain').textContent = `${data.chain || 'unknown'} Chain`;
-            document.getElementById('caseRiskLevel').textContent = data.riskLevel || 'N/A';
-            document.getElementById('caseRiskScore').textContent = analyzed ? `${score}/100 Risk` : 'Not analyzed';
-
-            const alertsList = document.getElementById('alertsList');
-            if (data.alerts && data.alerts.length) {
-                alertsList.innerHTML = data.alerts
-                    .map(a => `<div class="alert-item"><strong>${a.level}:</strong> ${a.message}</div>`)
-                    .join('');
-            } else {
-                alertsList.innerHTML = '<div class="alert-item">No alerts for this query.</div>';
-            }
         }
 
-        async function fetchAnalysis(query) {
+        async function analyzeProtocol(protocol) {
             setStatus('Analyzing...');
             try {
-                const url = query ? `/api/analyze?address=${encodeURIComponent(query)}` : '/api/analyze';
-                const res = await fetch(url);
-                if (!res.ok) throw new Error(`API returned ${res.status}`);
-                const data = await res.json();
-                renderData(data);
+                const url = protocol ? `/api/analyze?address=${encodeURIComponent(protocol)}` : '/api/analyze';
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`API returned ${response.status}`);
+                const data = await response.json();
+                renderResults(data);
                 setStatus(data.demo
                     ? 'Demo data from /api/analyze (no live on-chain analysis engine connected yet).'
                     : 'Live data from /api/analyze.');
-            } catch (err) {
-                setStatus(`Could not reach /api/analyze (${err.message}). Showing last known data.`, true);
+            } catch (error) {
+                console.error('Error:', error);
+                setStatus(`Could not reach /api/analyze (${error.message}).`, true);
             }
         }
 
-        document.getElementById('analyzeBtn').addEventListener('click', () => {
-            fetchAnalysis(document.getElementById('searchInput').value.trim());
-        });
-        document.getElementById('searchInput').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') fetchAnalysis(document.getElementById('searchInput').value.trim());
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const protocolInput = document.getElementById('protocolInput');
+
+        analyzeBtn.addEventListener('click', () => analyzeProtocol(protocolInput.value.trim()));
+        protocolInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') analyzeProtocol(protocolInput.value.trim());
         });
 
-        fetchAnalysis();
+        analyzeProtocol();
     </script>
 </body>
 </html>
