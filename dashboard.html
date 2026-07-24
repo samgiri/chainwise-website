@@ -270,42 +270,52 @@
             border-color: var(--color-accent-orange);
         }
 
+        .risk-ring-wrap {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .risk-ring {
+            --ring-color: #6b7280;
+            --ring-pct: 0;
+            width: 190px;
+            height: 190px;
+            border-radius: 50%;
+            background: conic-gradient(var(--ring-color) calc(var(--ring-pct) * 1%), var(--color-bg-tertiary) 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: background 0.5s ease;
+        }
+
+        .risk-ring::before {
+            content: '';
+            position: absolute;
+            inset: 12px;
+            border-radius: 50%;
+            background: var(--color-bg-secondary);
+        }
+
+        .risk-ring-inner {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
         .risk-score {
             font-size: 2.5rem;
             font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .risk-score.critical {
-            background: linear-gradient(90deg, var(--color-critical), var(--color-accent-orange));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .risk-score.warning {
-            background: linear-gradient(90deg, var(--color-warning), var(--color-accent-orange));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .risk-score.success {
-            background: linear-gradient(90deg, var(--color-success), var(--color-accent-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .risk-score.unknown {
-            color: var(--color-text-secondary);
-            -webkit-text-fill-color: var(--color-text-secondary);
+            margin-bottom: 0.25rem;
+            color: var(--color-text-primary);
         }
 
         .risk-label {
             font-size: 0.9rem;
-            color: var(--color-text-secondary);
-            margin-bottom: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
         .risk-details {
@@ -367,11 +377,61 @@
         }
 
         .layer-score {
-            min-width: 40px;
+            min-width: 30px;
             text-align: right;
             font-size: 0.85rem;
             font-weight: 600;
             color: var(--color-accent-orange);
+        }
+
+        .layer-status {
+            min-width: 90px;
+            text-align: right;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .spinner {
+            display: none;
+            width: 14px;
+            height: 14px;
+            border: 2px solid var(--color-border);
+            border-top-color: var(--color-accent-orange);
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            vertical-align: -2px;
+            animation: spin 0.7s linear infinite;
+        }
+
+        .spinner.active {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .download-btn {
+            margin-top: 1.5rem;
+            width: 100%;
+            padding: 0.85rem;
+            background: var(--color-bg-tertiary);
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            color: var(--color-text-primary);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .download-btn:hover:not(:disabled) {
+            border-color: var(--color-accent-orange);
+        }
+
+        .download-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .alerts {
@@ -666,12 +726,23 @@
                 </select>
                 <button class="search-btn" id="analyzeBtn">Analyze Protocol</button>
             </div>
-            <div class="status-line" id="statusLine"></div>
+            <div class="status-line" id="statusLine">
+                <span class="spinner" id="statusSpinner"></span>
+                <span id="statusText"></span>
+            </div>
 
             <div class="results-grid" id="resultsGrid">
                 <div class="result-card">
-                    <div class="risk-score" id="riskScoreValue">--</div>
-                    <div class="risk-label" id="riskLabel">Loading...</div>
+                    <div class="risk-ring-wrap">
+                        <div class="risk-ring" id="riskRing">
+                            <div class="risk-ring-inner">
+                                <div class="risk-score" id="riskScoreValue">--</div>
+                                <div class="risk-label" id="riskLabel">Loading...</div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="download-btn" id="downloadReportBtn" disabled>📄 Download Report (JSON)</button>
+                    <p style="font-size: 0.75rem; color: var(--color-text-secondary); text-align: center; margin-top: 0.75rem;">Not financial advice. Independent verification recommended.</p>
                     <div class="risk-details">
                         <div class="detail-item">
                             <div class="detail-label">Protocol</div>
@@ -720,41 +791,49 @@
                             <div class="layer-label">Layer 1: Patterns</div>
                             <div class="layer-bar-fill"><div class="layer-bar-progress" id="layer-patterns-progress" style="width: 0%;"></div></div>
                             <div class="layer-score" id="layer-patterns-score">0</div>
+                            <div class="layer-status" id="layer-patterns-status">— N/A</div>
                         </div>
                         <div class="layer-bar">
                             <div class="layer-label">Layer 2: Bytecode</div>
                             <div class="layer-bar-fill"><div class="layer-bar-progress" id="layer-bytecode-progress" style="width: 0%;"></div></div>
                             <div class="layer-score" id="layer-bytecode-score">0</div>
+                            <div class="layer-status" id="layer-bytecode-status">— N/A</div>
                         </div>
                         <div class="layer-bar">
                             <div class="layer-label">Layer 3: Treasury</div>
                             <div class="layer-bar-fill"><div class="layer-bar-progress" id="layer-treasury-progress" style="width: 0%;"></div></div>
                             <div class="layer-score" id="layer-treasury-score">0</div>
+                            <div class="layer-status" id="layer-treasury-status">— N/A</div>
                         </div>
                         <div class="layer-bar">
                             <div class="layer-label">Layer 4: Withdrawals</div>
                             <div class="layer-bar-fill"><div class="layer-bar-progress" id="layer-withdrawals-progress" style="width: 0%;"></div></div>
                             <div class="layer-score" id="layer-withdrawals-score">0</div>
+                            <div class="layer-status" id="layer-withdrawals-status">— N/A</div>
                         </div>
                         <div class="layer-bar">
                             <div class="layer-label">Layer 5: Bridges</div>
                             <div class="layer-bar-fill"><div class="layer-bar-progress" id="layer-bridges-progress" style="width: 0%;"></div></div>
                             <div class="layer-score" id="layer-bridges-score">0</div>
+                            <div class="layer-status" id="layer-bridges-status">— N/A</div>
                         </div>
                         <div class="layer-bar">
                             <div class="layer-label">Layer 6: Off-Ramps</div>
                             <div class="layer-bar-fill"><div class="layer-bar-progress" id="layer-offRamps-progress" style="width: 0%;"></div></div>
                             <div class="layer-score" id="layer-offRamps-score">0</div>
+                            <div class="layer-status" id="layer-offRamps-status">— N/A</div>
                         </div>
                         <div class="layer-bar">
                             <div class="layer-label">Layer 7: Sybil</div>
                             <div class="layer-bar-fill"><div class="layer-bar-progress" id="layer-sybil-progress" style="width: 0%;"></div></div>
                             <div class="layer-score" id="layer-sybil-score">0</div>
+                            <div class="layer-status" id="layer-sybil-status">— N/A</div>
                         </div>
                         <div class="layer-bar">
                             <div class="layer-label">Layer 8: Attribution</div>
                             <div class="layer-bar-fill"><div class="layer-bar-progress" id="layer-attribution-progress" style="width: 0%;"></div></div>
                             <div class="layer-score" id="layer-attribution-score">0</div>
+                            <div class="layer-status" id="layer-attribution-status">— N/A</div>
                         </div>
                     </div>
                 </div>
@@ -925,28 +1004,48 @@
 
         function setStatus(text, isError) {
             const el = document.getElementById('statusLine');
-            el.textContent = text;
+            document.getElementById('statusText').textContent = text;
             el.classList.toggle('error', !!isError);
         }
 
-        function riskClass(score) {
-            if (score === null || score === undefined) return 'unknown';
-            if (score >= 70) return 'critical';
-            if (score >= 40) return 'warning';
-            return 'success';
+        function setLoading(isLoading) {
+            document.getElementById('statusSpinner').classList.toggle('active', isLoading);
+            document.getElementById('analyzeBtn').disabled = isLoading;
         }
+
+        // 3-band color scheme (Green 0-33 / Yellow 34-66 / Red 67-100), with the red band
+        // split into HIGH (67-89) and CRITICAL (90-100) risk labels.
+        function riskBand(score) {
+            if (score === null || score === undefined) {
+                return { color: '#6b7280', tier: 'NOT ANALYZED' };
+            }
+            if (score <= 33) return { color: 'var(--color-success)', tier: 'LOW' };
+            if (score <= 66) return { color: 'var(--color-warning)', tier: 'MEDIUM' };
+            if (score <= 89) return { color: 'var(--color-critical)', tier: 'HIGH' };
+            return { color: 'var(--color-critical)', tier: 'CRITICAL' };
+        }
+
+        function layerStatus(value) {
+            if (value <= 33) return { icon: '✅', text: 'Safe', color: 'var(--color-success)' };
+            if (value <= 66) return { icon: '⚠️', text: 'Warning', color: 'var(--color-warning)' };
+            return { icon: '❌', text: 'Risky', color: 'var(--color-critical)' };
+        }
+
+        let lastReportData = null;
 
         function renderResults(data) {
             const analyzed = data.riskScore !== null && data.riskScore !== undefined;
             const score = analyzed ? data.riskScore : 0;
+            const band = riskBand(analyzed ? score : null);
 
-            const scoreEl = document.getElementById('riskScoreValue');
-            scoreEl.textContent = analyzed ? score : 'N/A';
-            scoreEl.className = 'risk-score ' + riskClass(analyzed ? score : null);
+            document.getElementById('riskScoreValue').textContent = analyzed ? score : '--';
+            const labelEl = document.getElementById('riskLabel');
+            labelEl.textContent = band.tier;
+            labelEl.style.color = band.color;
 
-            document.getElementById('riskLabel').textContent = analyzed
-                ? `Risk Score: ${data.riskLevel}`
-                : 'Not yet analyzed';
+            const ring = document.getElementById('riskRing');
+            ring.style.setProperty('--ring-color', band.color);
+            ring.style.setProperty('--ring-pct', analyzed ? score : 0);
 
             document.getElementById('detailProtocol').textContent = data.protocol || '--';
             document.getElementById('detailChain').textContent = data.chain || '--';
@@ -963,6 +1062,16 @@
                 const value = layers[key] || 0;
                 document.getElementById(`layer-${key}-progress`).style.width = `${value}%`;
                 document.getElementById(`layer-${key}-score`).textContent = value;
+
+                const statusEl = document.getElementById(`layer-${key}-status`);
+                if (!analyzed) {
+                    statusEl.textContent = '— N/A';
+                    statusEl.style.color = 'var(--color-text-secondary)';
+                } else {
+                    const s = layerStatus(value);
+                    statusEl.textContent = `${s.icon} ${s.text}`;
+                    statusEl.style.color = s.color;
+                }
             });
 
             const alertsBox = document.getElementById('alertsBox');
@@ -989,9 +1098,26 @@
                 layersChart.data.datasets[0].data = LAYER_KEYS.map(key => layers[key] || 0);
                 layersChart.update();
             }
+
+            lastReportData = {
+                protocol: data.protocol || null,
+                chain: data.chain || null,
+                queried: data.queried || null,
+                analyzed,
+                riskScore: analyzed ? score : null,
+                riskTier: band.tier,
+                confidence: analyzed ? data.confidence : null,
+                summary: data.summary || null,
+                layers,
+                alerts: data.alerts || [],
+                generatedAt: new Date().toISOString(),
+                disclaimer: 'Not financial advice. Independent verification recommended.',
+            };
+            document.getElementById('downloadReportBtn').disabled = false;
         }
 
         async function analyzeProtocol(protocol, chain) {
+            setLoading(true);
             setStatus('Analyzing...');
             try {
                 const params = new URLSearchParams();
@@ -1008,16 +1134,33 @@
             } catch (error) {
                 console.error('Error:', error);
                 setStatus(`Could not reach /api/analyze (${error.message}).`, true);
+            } finally {
+                setLoading(false);
             }
         }
 
         const analyzeBtn = document.getElementById('analyzeBtn');
         const protocolInput = document.getElementById('protocolInput');
         const chainSelect = document.getElementById('chainSelect');
+        const downloadReportBtn = document.getElementById('downloadReportBtn');
 
         analyzeBtn.addEventListener('click', () => analyzeProtocol(protocolInput.value.trim(), chainSelect.value));
         protocolInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') analyzeProtocol(protocolInput.value.trim(), chainSelect.value);
+        });
+
+        downloadReportBtn.addEventListener('click', () => {
+            if (!lastReportData) return;
+            const blob = new Blob([JSON.stringify(lastReportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const safeName = (lastReportData.protocol || 'report').toString().replace(/[^a-z0-9-_]+/gi, '_');
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `chainwise-risk-report-${safeName}.json`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
         });
 
         analyzeProtocol();
