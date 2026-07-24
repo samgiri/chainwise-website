@@ -108,6 +108,20 @@
         .feature-card-hint { position: relative; z-index: 1; font-size: 0.8rem; color: var(--orange); font-weight: 600; margin-top: 1.25rem; opacity: 0; transform: translateY(4px); transition: opacity 0.25s ease-out, transform 0.25s ease-out; }
         .feature-card:hover .feature-card-hint,
         .feature-card:focus-visible .feature-card-hint { opacity: 1; transform: translateY(0); }
+
+        .section-intro { max-width: 760px; margin: 0 auto 2.5rem; text-align: center; color: var(--text2); font-size: 1rem; line-height: 1.7; }
+
+        .workflow-diagram-wrap { overflow-x: auto; margin-bottom: 3rem; padding-bottom: 0.5rem; }
+        .workflow-diagram { display: block; min-width: 900px; margin: 0 auto; }
+
+        .layer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem; margin-bottom: 4rem; }
+        .layer-card { padding: 2.5rem; background: var(--bg2); border: 1px solid #2a3047; border-radius: 8px; transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, border-color 0.3s ease-out; }
+        .layer-card:hover { transform: scale(1.02); box-shadow: 0 12px 32px rgba(247, 147, 26, 0.15); border-color: var(--orange); }
+        .layer-card-icon { width: 32px; height: 32px; margin-bottom: 1.25rem; display: block; }
+        .layer-card:hover .layer-card-icon { animation: iconPulse 1s ease-in-out infinite; }
+        @keyframes iconPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+        .layer-card-name { font-weight: 700; color: var(--orange); font-size: 1.05rem; margin-bottom: 0.85rem; }
+        .layer-card p { color: var(--text2); font-size: 0.92rem; line-height: 1.7; }
         .disclaimer { background: rgba(239,68,68,0.05); border: 1px solid #2a3047; border-radius: 8px; padding: 2rem; max-width: 900px; margin: 4rem auto; }
         .disclaimer h2 { font-size: 1.3rem; margin-bottom: 1rem; }
         .disclaimer p { font-size: 0.95rem; color: var(--text2); line-height: 1.8; margin-bottom: 0.75rem; }
@@ -369,15 +383,111 @@
         </div>
 
         <h2 class="section-title" id="methodology">8-Layer Detection Framework</h2>
-        <div class="grid">
-            <div class="card"><div style="font-weight:700; color:var(--orange)">Layer 1: Patterns</div><p>Guaranteed returns, MLM language, unsustainable APY</p></div>
-            <div class="card"><div style="font-weight:700; color:var(--orange)">Layer 2: Bytecode</div><p>Dangerous functions, owner controls, time-locks</p></div>
-            <div class="card"><div style="font-weight:700; color:var(--orange)">Layer 3: Treasury</div><p>Fund flows, outflows, mixer transfers, drain velocity</p></div>
-            <div class="card"><div style="font-weight:700; color:var(--orange)">Layer 4: Withdrawals</div><p>Pause events, queue depth, cooldowns, collapse signals</p></div>
-            <div class="card"><div style="font-weight:700; color:var(--orange)">Layer 5: Bridges</div><p>Cross-chain tracking, bridge monitoring, exit detection</p></div>
-            <div class="card"><div style="font-weight:700; color:var(--orange)">Layer 6: Off-Ramps</div><p>CEX proximity, VASP detection, operator exit paths</p></div>
-            <div class="card"><div style="font-weight:700; color:var(--orange)">Layer 7: Sybil</div><p>Wallet clustering, timing analysis, coordinated behavior</p></div>
-            <div class="card"><div style="font-weight:700; color:var(--orange)">Layer 8: Attribution</div><p>Transaction tracing, confidence scoring, forensics</p></div>
+        <p class="section-intro">Our 8-layer detection framework analyzes smart contracts across multiple dimensions — from code structure to treasury dynamics to behavioral patterns. Each layer represents a distinct threat surface; comprehensive assessment requires simultaneous evaluation across all eight.</p>
+
+        <div class="workflow-diagram-wrap">
+            <svg class="workflow-diagram" viewBox="0 0 1480 170" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Workflow: Contract Address flows through Layers 1 through 8 to produce a Risk Score">
+                <defs>
+                    <linearGradient id="workflowGrad" x1="0" y1="0" x2="1480" y2="0" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#10b981"/>
+                        <stop offset="50%" stop-color="#f59e0b"/>
+                        <stop offset="100%" stop-color="#ef4444"/>
+                    </linearGradient>
+                </defs>
+
+                <rect x="10" y="55" width="170" height="50" rx="8" fill="#111629" stroke="#2a3047" stroke-width="2"/>
+                <text x="95" y="85" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">Contract Address</text>
+
+                <line x1="180" y1="80" x2="1250" y2="80" stroke="url(#workflowGrad)" stroke-width="3"/>
+                <path d="M 209 74 L 221 80 L 209 86 Z" fill="#a0a8c8"/>
+                <path d="M 308.3 74 L 320.3 80 L 308.3 86 Z" fill="#a0a8c8"/>
+                <path d="M 436.9 74 L 448.9 80 L 436.9 86 Z" fill="#a0a8c8"/>
+                <path d="M 565.4 74 L 577.4 80 L 565.4 86 Z" fill="#a0a8c8"/>
+                <path d="M 694.0 74 L 706.0 80 L 694.0 86 Z" fill="#a0a8c8"/>
+                <path d="M 822.6 74 L 834.6 80 L 822.6 86 Z" fill="#a0a8c8"/>
+                <path d="M 951.1 74 L 963.1 80 L 951.1 86 Z" fill="#a0a8c8"/>
+                <path d="M 1079.7 74 L 1091.7 80 L 1079.7 86 Z" fill="#a0a8c8"/>
+                <path d="M 1194 74 L 1206 80 L 1194 86 Z" fill="#a0a8c8"/>
+
+                <circle cx="250.0" cy="80" r="24" fill="#0a0e27" stroke="url(#workflowGrad)" stroke-width="3"/>
+                <text x="250.0" y="85" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">1</text>
+                <text x="250.0" y="124" text-anchor="middle" font-size="11" fill="#a0a8c8">Patterns</text>
+
+                <circle cx="378.6" cy="80" r="24" fill="#0a0e27" stroke="url(#workflowGrad)" stroke-width="3"/>
+                <text x="378.6" y="85" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">2</text>
+                <text x="378.6" y="124" text-anchor="middle" font-size="11" fill="#a0a8c8">Bytecode</text>
+
+                <circle cx="507.1" cy="80" r="24" fill="#0a0e27" stroke="url(#workflowGrad)" stroke-width="3"/>
+                <text x="507.1" y="85" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">3</text>
+                <text x="507.1" y="124" text-anchor="middle" font-size="11" fill="#a0a8c8">Treasury</text>
+
+                <circle cx="635.7" cy="80" r="24" fill="#0a0e27" stroke="url(#workflowGrad)" stroke-width="3"/>
+                <text x="635.7" y="85" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">4</text>
+                <text x="635.7" y="124" text-anchor="middle" font-size="11" fill="#a0a8c8">Withdrawals</text>
+
+                <circle cx="764.3" cy="80" r="24" fill="#0a0e27" stroke="url(#workflowGrad)" stroke-width="3"/>
+                <text x="764.3" y="85" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">5</text>
+                <text x="764.3" y="124" text-anchor="middle" font-size="11" fill="#a0a8c8">Bridges</text>
+
+                <circle cx="892.9" cy="80" r="24" fill="#0a0e27" stroke="url(#workflowGrad)" stroke-width="3"/>
+                <text x="892.9" y="85" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">6</text>
+                <text x="892.9" y="124" text-anchor="middle" font-size="11" fill="#a0a8c8">Off-Ramps</text>
+
+                <circle cx="1021.4" cy="80" r="24" fill="#0a0e27" stroke="url(#workflowGrad)" stroke-width="3"/>
+                <text x="1021.4" y="85" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">7</text>
+                <text x="1021.4" y="124" text-anchor="middle" font-size="11" fill="#a0a8c8">Sybil</text>
+
+                <circle cx="1150.0" cy="80" r="24" fill="#0a0e27" stroke="url(#workflowGrad)" stroke-width="3"/>
+                <text x="1150.0" y="85" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">8</text>
+                <text x="1150.0" y="124" text-anchor="middle" font-size="11" fill="#a0a8c8">Attribution</text>
+
+                <rect x="1250" y="50" width="220" height="60" rx="8" fill="url(#workflowGrad)"/>
+                <text x="1360" y="76" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">Risk Score</text>
+                <text x="1360" y="96" text-anchor="middle" font-size="11" fill="#ffffff" opacity="0.85">0-100</text>
+            </svg>
+        </div>
+
+        <div class="layer-grid">
+            <div class="layer-card">
+                <svg class="layer-card-icon" viewBox="0 0 24 24" fill="none" stroke="#f7931a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 7v4"/><path d="M11 15h.01"/></svg>
+                <div class="layer-card-name">Layer 1: Patterns</div>
+                <p>Scans website copy, whitepapers, and promotional materials for guaranteed-return language, MLM/pyramid structuring, and unsustainable APY claims (&gt;100% annually) — the same red flags present in nearly every historical rug pull.</p>
+            </div>
+            <div class="layer-card">
+                <svg class="layer-card-icon" viewBox="0 0 24 24" fill="none" stroke="#f7931a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
+                <div class="layer-card-name">Layer 2: Bytecode</div>
+                <p>Decompiles verified and unverified contract bytecode to flag owner-only mint/pause/blacklist functions, missing or fake time-locks, and upgrade proxies that let an operator silently swap the logic behind a "verified" contract.</p>
+            </div>
+            <div class="layer-card">
+                <svg class="layer-card-icon" viewBox="0 0 24 24" fill="none" stroke="#f7931a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="7.5" cy="7.5" r=".5" fill="#f7931a"/><path d="m7.9 7.9 2.7 2.7"/><circle cx="16.5" cy="7.5" r=".5" fill="#f7931a"/><path d="m13.4 10.6 2.7-2.7"/><circle cx="7.5" cy="16.5" r=".5" fill="#f7931a"/><path d="m7.9 16.1 2.7-2.7"/><circle cx="16.5" cy="16.5" r=".5" fill="#f7931a"/><path d="m13.4 13.4 2.7 2.7"/><circle cx="12" cy="12" r="2"/></svg>
+                <div class="layer-card-name">Layer 3: Treasury Flow Analysis</div>
+                <p>Continuously tracks treasury and multisig wallets for abnormal outflows, mixer transfers, and drain velocity — the rate of fund departure relative to historical baseline — that precedes most insolvency events by days, not minutes.</p>
+            </div>
+            <div class="layer-card">
+                <svg class="layer-card-icon" viewBox="0 0 24 24" fill="none" stroke="#f7931a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="16" r="1"/><rect x="3" y="10" width="18" height="12" rx="2"/><path d="M7 10V7a5 5 0 0 1 10 0v3"/></svg>
+                <div class="layer-card-name">Layer 4: Withdrawals</div>
+                <p>Monitors withdrawal queue depth, cooldown period changes, and pause() invocations in real time, flagging the moment a protocol quietly slows redemptions before any public freeze announcement.</p>
+            </div>
+            <div class="layer-card">
+                <svg class="layer-card-icon" viewBox="0 0 24 24" fill="none" stroke="#f7931a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.586 5.414-5.172 5.172"/><path d="m18.586 13.414-5.172 5.172"/><path d="M6 12h12"/><circle cx="12" cy="20" r="2"/><circle cx="12" cy="4" r="2"/><circle cx="20" cy="12" r="2"/><circle cx="4" cy="12" r="2"/></svg>
+                <div class="layer-card-name">Layer 5: Bridges</div>
+                <p>Follows fund movement and contract behavior across every bridge and chain a protocol touches, correlating cross-chain transfers so risk signals on one network aren't missed because you were only watching another.</p>
+            </div>
+            <div class="layer-card">
+                <svg class="layer-card-icon" viewBox="0 0 24 24" fill="none" stroke="#f7931a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg>
+                <div class="layer-card-name">Layer 6: Exchange & Off-Ramp Detection</div>
+                <p>Identifies wallet proximity to centralized exchange deposit addresses and known VASP (Virtual Asset Service Provider) clusters, surfacing the operator exit paths used to convert on-chain funds to fiat before disappearing.</p>
+            </div>
+            <div class="layer-card">
+                <svg class="layer-card-icon" viewBox="0 0 24 24" fill="none" stroke="#f7931a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>
+                <div class="layer-card-name">Layer 7: Sybil</div>
+                <p>Clusters wallets by funding source, transaction timing, and gas behavior to detect machine-like, coordinated activity — the fingerprint of a handful of operators simulating an organic community or user base.</p>
+            </div>
+            <div class="layer-card">
+                <svg class="layer-card-icon" viewBox="0 0 24 24" fill="none" stroke="#f7931a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/><path d="M14 13.12c0 2.38 0 6.38-1 8.88"/><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/><path d="M2 12a10 10 0 0 1 18-6"/><path d="M2 16h.01"/><path d="M21.8 16c.2-2 .131-5.354 0-6"/><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"/><path d="M8.65 22c.21-.66.45-1.32.57-2"/><path d="M9 6.8a6 6 0 0 1 9 5.2v2"/></svg>
+                <div class="layer-card-name">Layer 8: Attribution</div>
+                <p>Applies on-chain forensics to trace capital through mixers and intermediary wallets, attributing activity to real-world operators with a measurable confidence score rather than a guess.</p>
+            </div>
         </div>
 
         <h2 class="section-title" id="research">Research & Case Studies</h2>
