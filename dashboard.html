@@ -691,6 +691,32 @@
                 border-bottom: none;
             }
         }
+
+        .engage-modal-overlay { position: fixed; inset: 0; background: rgba(5, 7, 20, 0.75); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 1.5rem; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.2s ease-out; }
+        .engage-modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .engage-modal-box { position: relative; max-width: 440px; width: 100%; background: var(--color-bg-secondary); border: 1px solid var(--color-border); border-radius: 12px; padding: 2.25rem; transform: scale(0.95) translateY(8px); transition: transform 0.2s ease-out; }
+        .engage-modal-overlay.active .engage-modal-box { transform: scale(1) translateY(0); }
+        .engage-modal-close { position: absolute; top: 1rem; right: 1rem; width: 32px; height: 32px; border-radius: 6px; border: 1px solid var(--color-border); background: transparent; color: var(--color-text-secondary); font-size: 1rem; cursor: pointer; transition: all 0.2s; }
+        .engage-modal-close:hover { background: var(--color-bg-tertiary); color: var(--color-text-primary); border-color: var(--color-accent-orange); }
+        .engage-modal-box h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .engage-modal-sub { color: var(--color-text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem; }
+        .engage-input { width: 100%; padding: 0.85rem 1rem; margin-bottom: 0.75rem; background: var(--color-bg-primary); border: 1px solid var(--color-border); border-radius: 6px; color: var(--color-text-primary); font-size: 0.95rem; font-family: inherit; }
+        .engage-input:focus { outline: none; border-color: var(--color-accent-orange); box-shadow: 0 0 0 2px rgba(247, 147, 26, 0.15); }
+        .engage-submit { width: 100%; padding: 0.9rem; background: linear-gradient(90deg, var(--color-accent-orange), var(--color-accent-purple)); border: none; border-radius: 6px; color: white; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: opacity 0.2s; }
+        .engage-submit:hover { opacity: 0.9; }
+        .engage-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+        .engage-status { font-size: 0.85rem; margin-top: 0.75rem; min-height: 1.2em; }
+        .engage-status.success { color: var(--color-success); }
+        .engage-status.error { color: var(--color-critical); }
+        .engage-note { font-size: 0.78rem; color: var(--color-text-secondary); margin-top: 1rem; line-height: 1.5; }
+        .engage-note a { color: var(--color-accent-orange); }
+        .engage-social { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--color-border); font-size: 0.85rem; color: var(--color-text-secondary); }
+        .engage-social a { color: var(--color-text-primary); text-decoration: none; font-weight: 600; }
+        .engage-social a:hover { color: var(--color-accent-orange); }
+
+        .post-analysis-social { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border); font-size: 0.85rem; color: var(--color-text-secondary); }
+        .post-analysis-social a { color: var(--color-text-primary); text-decoration: none; font-weight: 600; }
+        .post-analysis-social a:hover { color: var(--color-accent-orange); }
     </style>
 </head>
 <body>
@@ -718,7 +744,7 @@
                 <li><a href="/#methodology">Methodology</a></li>
                 <li><a href="/#cases">Cases</a></li>
                 <li><a href="/dashboard">Dashboard</a></li>
-                <li><a href="/#pricing">Pricing</a></li>
+                <li><a href="/#alerts">Get Alerts</a></li>
             </ul>
             <ul class="nav-secondary">
                 <li><a href="#contact" class="btn-nav secondary">Contact</a></li>
@@ -812,6 +838,15 @@
                     <div class="alerts" id="alertsBox">
                         <div class="alert-title" id="alertsTitle">⚠️ Alerts</div>
                         <div class="alert-content" id="alertContent"></div>
+                    </div>
+
+                    <div class="post-analysis-social" id="postAnalysisSocial" style="display: none;">
+                        <span>Follow for more threat alerts:</span>
+                        <a href="https://twitter.com/chainwise" target="_blank" rel="noopener">Follow Twitter</a>
+                        <span>|</span>
+                        <a href="https://medium.com/@chainwise" target="_blank" rel="noopener">Follow Medium</a>
+                        <span>|</span>
+                        <a href="https://youtube.com/@chainwise" target="_blank" rel="noopener">Follow YouTube</a>
                     </div>
                 </div>
 
@@ -910,10 +945,9 @@
                     </div>
                     <p class="footer-tagline">The industry standard for DeFi risk intelligence. Real-time protocol analysis designed to identify high-risk smart contracts and treasury anomalies before capital is compromised.</p>
                     <div class="footer-socials">
-                        <a href="https://twitter.com/ChainWiseOfficial" class="social-link" title="X">𝕏</a>
-                        <a href="https://t.me/ChainWiseOfficial" class="social-link" title="Telegram">✈️</a>
-                        <a href="https://youtube.com/@ChainWiseOfficial" class="social-link" title="YouTube">▶️</a>
-                        <a href="https://discord.gg/chainwise" class="social-link" title="Discord">💬</a>
+                        <a href="https://twitter.com/chainwise" class="social-link" title="Twitter">𝕏</a>
+                        <a href="https://medium.com/@chainwise" class="social-link" title="Medium">📝</a>
+                        <a href="https://youtube.com/@chainwise" class="social-link" title="YouTube">▶️</a>
                     </div>
                 </div>
 
@@ -923,7 +957,7 @@
                         <li><a href="/#features">Features</a></li>
                         <li><a href="/#methodology">Methodology</a></li>
                         <li><a href="/dashboard">Dashboard</a></li>
-                        <li><a href="#pricing">Pricing</a></li>
+                        <li><a href="/#alerts">Get Alerts</a></li>
                         <li><a href="#api">API Docs</a></li>
                     </ul>
                 </div>
@@ -961,7 +995,7 @@
                 <div class="footer-section">
                     <h3>Legal</h3>
                     <ul>
-                        <li><a href="#privacy">Privacy Policy</a></li>
+                        <li><a href="/privacy.html">Privacy Policy</a></li>
                         <li><a href="#terms">Terms of Service</a></li>
                         <li><a href="#disclaimer">Disclaimer</a></li>
                         <li><a href="#cookies">Cookie Policy</a></li>
@@ -978,6 +1012,27 @@
             </div>
         </div>
     </footer>
+
+    <div class="engage-modal-overlay" id="engageModal" aria-hidden="true">
+        <div class="engage-modal-box" role="dialog" aria-modal="true" aria-labelledby="engageModalTitle">
+            <button class="engage-modal-close" id="engageModalClose" aria-label="Close">✕</button>
+            <h3 id="engageModalTitle">Stay updated on new threats</h3>
+            <p class="engage-modal-sub">Get notified the moment we flag a new high-risk protocol.</p>
+            <form id="engageForm">
+                <input type="email" class="engage-input" id="engageEmail" placeholder="you@example.com" required>
+                <input type="tel" class="engage-input" id="engageMobile" placeholder="Mobile number (optional) — get SMS alerts">
+                <button type="submit" class="engage-submit" id="engageSubmit">Notify Me</button>
+            </form>
+            <div class="engage-status" id="engageStatus" role="status"></div>
+            <p class="engage-note">We'll only use this to send risk alerts. No spam, unsubscribe anytime. See our <a href="/privacy.html">Privacy Policy</a>.</p>
+            <div class="engage-social">
+                Follow us:
+                <a href="https://twitter.com/chainwise" target="_blank" rel="noopener">Twitter</a> |
+                <a href="https://medium.com/@chainwise" target="_blank" rel="noopener">Medium</a> |
+                <a href="https://youtube.com/@chainwise" target="_blank" rel="noopener">YouTube</a>
+            </div>
+        </div>
+    </div>
 
     <script>
         const LAYER_KEYS = ['patterns', 'bytecode', 'treasury', 'withdrawals', 'bridges', 'offRamps', 'sybil', 'attribution'];
@@ -1145,6 +1200,7 @@
                 disclaimer: 'Not financial advice. Independent verification recommended.',
             };
             document.getElementById('downloadReportBtn').disabled = false;
+            document.getElementById('postAnalysisSocial').style.display = analyzed ? 'flex' : 'none';
         }
 
         async function analyzeProtocol(protocol, chain) {
@@ -1192,9 +1248,19 @@
         updateChainIndicator();
 
         chainSelect.addEventListener('change', updateChainIndicator);
-        analyzeBtn.addEventListener('click', () => analyzeProtocol(protocolInput.value.trim(), chainSelect.value));
+
+        let hasShownEngageModal = false;
+        async function runUserAnalysis(protocol, chain) {
+            await analyzeProtocol(protocol, chain);
+            if (!hasShownEngageModal && lastReportData && lastReportData.analyzed) {
+                hasShownEngageModal = true;
+                openEngageModal();
+            }
+        }
+
+        analyzeBtn.addEventListener('click', () => runUserAnalysis(protocolInput.value.trim(), chainSelect.value));
         protocolInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') analyzeProtocol(protocolInput.value.trim(), chainSelect.value);
+            if (e.key === 'Enter') runUserAnalysis(protocolInput.value.trim(), chainSelect.value);
         });
 
         downloadReportBtn.addEventListener('click', () => {
@@ -1212,6 +1278,62 @@
         });
 
         analyzeProtocol();
+
+        (function () {
+            const modal = document.getElementById('engageModal');
+            const closeBtn = document.getElementById('engageModalClose');
+            const form = document.getElementById('engageForm');
+            const emailInput = document.getElementById('engageEmail');
+            const mobileInput = document.getElementById('engageMobile');
+            const submitBtn = document.getElementById('engageSubmit');
+            const statusEl = document.getElementById('engageStatus');
+
+            window.openEngageModal = function () {
+                modal.classList.add('active');
+                modal.setAttribute('aria-hidden', 'false');
+                emailInput.focus();
+            };
+
+            function closeEngageModal() {
+                modal.classList.remove('active');
+                modal.setAttribute('aria-hidden', 'true');
+            }
+
+            closeBtn.addEventListener('click', closeEngageModal);
+            modal.addEventListener('click', (e) => { if (e.target === modal) closeEngageModal(); });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.classList.contains('active')) closeEngageModal();
+            });
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                submitBtn.disabled = true;
+                statusEl.textContent = 'Submitting...';
+                statusEl.className = 'engage-status';
+                try {
+                    const response = await fetch('/api/subscribe', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            email: emailInput.value.trim(),
+                            mobile: mobileInput.value.trim(),
+                            source: 'dashboard-popup',
+                        }),
+                    });
+                    const data = await response.json().catch(() => ({}));
+                    if (!response.ok) throw new Error(data.error || `Request failed (${response.status})`);
+                    statusEl.textContent = "You're on the list — thanks!";
+                    statusEl.className = 'engage-status success';
+                    form.reset();
+                    setTimeout(closeEngageModal, 1500);
+                } catch (err) {
+                    statusEl.textContent = err.message;
+                    statusEl.className = 'engage-status error';
+                } finally {
+                    submitBtn.disabled = false;
+                }
+            });
+        })();
     </script>
 </body>
 </html>

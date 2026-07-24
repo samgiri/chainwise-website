@@ -111,6 +111,29 @@
         .disclaimer { background: rgba(239,68,68,0.05); border: 1px solid #2a3047; border-radius: 8px; padding: 2rem; max-width: 900px; margin: 4rem auto; }
         .disclaimer h2 { font-size: 1.3rem; margin-bottom: 1rem; }
         .disclaimer p { font-size: 0.95rem; color: var(--text2); line-height: 1.8; margin-bottom: 0.75rem; }
+
+        .capture-box { max-width: 640px; margin: 0 auto; text-align: center; padding: 2.5rem; background: var(--bg2); border: 1px solid #2a3047; border-radius: 8px; }
+        .capture-box h3 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+        .capture-box .capture-sub { color: var(--text2); font-size: 0.95rem; margin-bottom: 1.5rem; }
+        .capture-form { display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; margin-bottom: 1rem; }
+        .capture-input { flex: 1; min-width: 220px; padding: 0.85rem 1rem; background: var(--bg); border: 1px solid #2a3047; border-radius: 6px; color: var(--text); font-size: 0.95rem; }
+        .capture-input:focus { outline: none; border-color: var(--orange); box-shadow: 0 0 0 2px rgba(247,147,26,0.15); }
+        .capture-form .btn { padding: 0.85rem 1.75rem; white-space: nowrap; }
+        .capture-note { font-size: 0.8rem; color: var(--text2); margin-top: 0.75rem; }
+        .capture-note a { color: var(--orange); text-decoration: none; }
+        .capture-status { font-size: 0.9rem; margin-top: 0.75rem; min-height: 1.2em; }
+        .capture-status.success { color: #10b981; }
+        .capture-status.error { color: #ef4444; }
+        .follow-row { display: flex; gap: 1.25rem; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap; }
+        .follow-row a { color: var(--text2); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: color 0.2s; }
+        .follow-row a:hover { color: var(--orange); }
+        .footer-newsletter { display: flex; gap: 0.5rem; margin: 1.25rem 0; max-width: 320px; }
+        .footer-newsletter input { flex: 1; min-width: 0; padding: 0.6rem 0.75rem; background: var(--bg); border: 1px solid #2a3047; border-radius: 6px; color: var(--text); font-size: 0.85rem; }
+        .footer-newsletter input:focus { outline: none; border-color: var(--orange); }
+        .footer-newsletter button { padding: 0.6rem 1rem; font-size: 0.85rem; border-radius: 6px; border: none; background: linear-gradient(90deg, var(--orange), var(--purple)); color: white; font-weight: 600; cursor: pointer; white-space: nowrap; }
+        .footer-newsletter-status { font-size: 0.78rem; min-height: 1.1em; margin-bottom: 0.5rem; }
+        .footer-newsletter-status.success { color: #10b981; }
+        .footer-newsletter-status.error { color: #ef4444; }
         footer { background: var(--bg2); border-top: 1px solid #2a3047; padding: 4rem 1.5rem 2rem; margin-top: 4rem; }
         .footer-container { max-width: 1400px; margin: 0 auto; }
         .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2rem; margin-bottom: 3rem; padding-bottom: 3rem; border-bottom: 1px solid #2a3047; }
@@ -178,7 +201,7 @@
                 <li><a href="#features">Features</a></li>
                 <li><a href="#methodology">Methodology</a></li>
                 <li><a href="#research">Research</a></li>
-                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#alerts">Get Alerts</a></li>
             </ul>
             <div class="nav-buttons">
                 <a href="#contact" class="btn btn-secondary">Contact</a>
@@ -358,13 +381,33 @@
         </div>
 
         <h2 class="section-title" id="research">Research & Case Studies</h2>
-        <div style="max-width:900px; margin:0 auto; text-align:center; padding:2rem; background:var(--bg2); border:1px solid #2a3047; border-radius:8px;">
-            <p style="color:var(--text2); font-size:1.1rem; margin-bottom:1rem;">Detailed case studies and threat analysis coming soon.</p>
+        <div class="capture-box">
+            <p style="color:var(--text2); font-size:1.1rem; margin-bottom:1.5rem;">Detailed case studies and threat analysis are in progress.</p>
+            <h3>Get the case study PDFs</h3>
+            <p class="capture-sub">Leave your email and we'll send each case study the moment it's published.</p>
+            <form class="capture-form" data-capture-source="research">
+                <input type="email" class="capture-input" placeholder="you@example.com" required>
+                <button type="submit" class="btn btn-primary">Notify Me</button>
+            </form>
+            <div class="capture-status" role="status"></div>
+            <p class="capture-note">We'll only email you about new case studies. No spam. See our <a href="/privacy.html">Privacy Policy</a>.</p>
         </div>
 
-        <h2 class="section-title" id="pricing">Pricing Plans</h2>
-        <div style="max-width:900px; margin:0 auto; text-align:center; padding:2rem; background:var(--bg2); border:1px solid #2a3047; border-radius:8px;">
-            <p style="color:var(--text2); font-size:1.1rem; margin-bottom:1rem;">Flexible pricing for individuals, teams, and enterprises.</p>
+        <h2 class="section-title" id="alerts">Get Alerts on Risky Protocols</h2>
+        <div class="capture-box">
+            <p class="capture-sub">Be the first to know when we flag a high-risk protocol — before it makes headlines.</p>
+            <form class="capture-form" data-capture-source="homepage">
+                <input type="email" class="capture-input" placeholder="you@example.com" required>
+                <button type="submit" class="btn btn-primary">Get Alerts</button>
+            </form>
+            <div class="capture-status" role="status"></div>
+            <p class="capture-note">We'll only use this to send risk alerts. No spam, unsubscribe anytime. See our <a href="/privacy.html">Privacy Policy</a>.</p>
+            <div class="follow-row">
+                <span style="color:var(--text2); font-size:0.9rem;">Follow us:</span>
+                <a href="https://twitter.com/chainwise" target="_blank" rel="noopener">Twitter</a>
+                <a href="https://medium.com/@chainwise" target="_blank" rel="noopener">Medium</a>
+                <a href="https://youtube.com/@chainwise" target="_blank" rel="noopener">YouTube</a>
+            </div>
         </div>
 
         <div class="disclaimer" id="disclaimer">
@@ -390,6 +433,11 @@
                         <span style="font-size:1.1rem; font-weight:700;">The Chainwise</span>
                     </div>
                     <p style="color:var(--text2); font-size:0.9rem; line-height:1.6; max-width:260px; margin-bottom:1.5rem;">The industry standard for DeFi risk intelligence. Real-time protocol analysis for smart contract safety.</p>
+                    <form class="footer-newsletter" data-capture-source="footer">
+                        <input type="email" placeholder="Get risk alerts by email" required>
+                        <button type="submit">Subscribe</button>
+                    </form>
+                    <div class="footer-newsletter-status" role="status"></div>
                     <div class="social-links">
                         <a href="https://twitter.com/chainwise" class="social-link" title="Twitter">𝕏</a>
                         <a href="https://medium.com/@chainwise" class="social-link" title="Medium">📝</a>
@@ -399,7 +447,7 @@
 
                 <div class="footer-section">
                     <h3>Product</h3>
-                    <ul><li><a href="#features">Features</a></li><li><a href="#methodology">Methodology</a></li><li><a href="/dashboard">Dashboard</a></li><li><a href="#pricing">Pricing</a></li></ul>
+                    <ul><li><a href="#features">Features</a></li><li><a href="#methodology">Methodology</a></li><li><a href="/dashboard">Dashboard</a></li><li><a href="#alerts">Get Alerts</a></li></ul>
                 </div>
 
                 <div class="footer-section">
@@ -419,7 +467,7 @@
 
                 <div class="footer-section">
                     <h3>Legal</h3>
-                    <ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li><li><a href="#">Cookie Policy</a></li></ul>
+                    <ul><li><a href="/privacy.html">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li><li><a href="#">Cookie Policy</a></li></ul>
                 </div>
             </div>
 
@@ -494,6 +542,60 @@
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
             });
+        })();
+
+        (function () {
+            async function submitCapture(email, mobile, source) {
+                const response = await fetch('/api/subscribe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, mobile, source }),
+                });
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(data.error || `Request failed (${response.status})`);
+                return data;
+            }
+
+            document.querySelectorAll('form.capture-form').forEach(form => {
+                const statusEl = form.parentElement.querySelector('.capture-status');
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const input = form.querySelector('.capture-input');
+                    const button = form.querySelector('button');
+                    button.disabled = true;
+                    if (statusEl) { statusEl.textContent = 'Submitting...'; statusEl.className = 'capture-status'; }
+                    try {
+                        await submitCapture(input.value.trim(), '', form.dataset.captureSource);
+                        if (statusEl) { statusEl.textContent = "You're on the list — thanks!"; statusEl.className = 'capture-status success'; }
+                        form.reset();
+                    } catch (err) {
+                        if (statusEl) { statusEl.textContent = err.message; statusEl.className = 'capture-status error'; }
+                    } finally {
+                        button.disabled = false;
+                    }
+                });
+            });
+
+            const footerForm = document.querySelector('.footer-newsletter');
+            if (footerForm) {
+                const statusEl = document.querySelector('.footer-newsletter-status');
+                footerForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const input = footerForm.querySelector('input');
+                    const button = footerForm.querySelector('button');
+                    button.disabled = true;
+                    if (statusEl) { statusEl.textContent = 'Submitting...'; statusEl.className = 'footer-newsletter-status'; }
+                    try {
+                        await submitCapture(input.value.trim(), '', footerForm.dataset.captureSource);
+                        if (statusEl) { statusEl.textContent = 'Subscribed!'; statusEl.className = 'footer-newsletter-status success'; }
+                        footerForm.reset();
+                    } catch (err) {
+                        if (statusEl) { statusEl.textContent = err.message; statusEl.className = 'footer-newsletter-status error'; }
+                    } finally {
+                        button.disabled = false;
+                    }
+                });
+            }
         })();
     </script>
 </body>
