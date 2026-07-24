@@ -215,43 +215,59 @@
             box-shadow: 0 0 0 2px rgba(247, 147, 26, 0.1);
         }
 
-        .chain-select-wrap {
-            flex: 0 0 auto;
+        .chain-tabs-wrap {
+            overflow-x: auto;
+            margin-bottom: 1rem;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .chain-tabs {
+            display: flex;
+            gap: 0.6rem;
+            padding-bottom: 0.35rem;
+            min-width: max-content;
+        }
+
+        .chain-tab {
             display: flex;
             align-items: center;
-            gap: 0.6rem;
-            padding: 0 1rem;
-            background: var(--color-bg-secondary);
+            gap: 0.55rem;
+            min-height: 48px;
+            padding: 0.6rem 1.1rem;
+            background: var(--color-bg-tertiary);
             border: 1px solid var(--color-border);
-            border-radius: 6px;
-            transition: all 0.2s;
+            border-radius: 8px;
+            color: var(--color-text-secondary);
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
         }
 
-        .chain-select-wrap:focus-within {
-            border-color: var(--color-accent-orange);
-            box-shadow: 0 0 0 2px rgba(247, 147, 26, 0.1);
-        }
-
-        .chain-indicator {
+        .chain-tab-icon {
             width: 22px;
             height: 22px;
             border-radius: 50%;
             flex-shrink: 0;
         }
 
-        .chain-select {
-            flex: 0 0 auto;
-            padding: 1rem 0;
-            background: transparent;
-            border: none;
+        .chain-tab:hover {
+            background: #232a47;
             color: var(--color-text-primary);
-            font-size: 1rem;
-            font-family: inherit;
-            cursor: pointer;
         }
 
-        .chain-select:focus {
+        .chain-tab.active {
+            background: rgba(247, 147, 26, 0.15);
+            border-color: var(--color-accent-orange);
+            color: var(--color-accent-orange);
+        }
+
+        .chain-tab:focus-visible {
             outline: none;
+            box-shadow: 0 0 0 2px rgba(247, 147, 26, 0.4);
         }
 
         .format-hint {
@@ -760,6 +776,43 @@
                 <p>Enter a protocol address or name to analyze its smart contract risk profile using our 8-layer detection framework.</p>
             </div>
 
+            <div class="chain-tabs-wrap">
+                <div class="chain-tabs" id="chainTabs" role="tablist" aria-label="Select blockchain">
+                    <button type="button" class="chain-tab" data-chain="ethereum" role="tab" aria-selected="false">
+                        <img class="chain-tab-icon" src="./assets/chains/ethereum.png" alt="">
+                        <span>Ethereum</span>
+                    </button>
+                    <button type="button" class="chain-tab" data-chain="polygon" role="tab" aria-selected="false">
+                        <img class="chain-tab-icon" src="./assets/chains/polygon.png" alt="">
+                        <span>Polygon</span>
+                    </button>
+                    <button type="button" class="chain-tab" data-chain="arbitrum" role="tab" aria-selected="false">
+                        <img class="chain-tab-icon" src="./assets/chains/arbitrum.png" alt="">
+                        <span>Arbitrum</span>
+                    </button>
+                    <button type="button" class="chain-tab" data-chain="optimism" role="tab" aria-selected="false">
+                        <img class="chain-tab-icon" src="./assets/chains/optimism.png" alt="">
+                        <span>Optimism</span>
+                    </button>
+                    <button type="button" class="chain-tab" data-chain="base" role="tab" aria-selected="false">
+                        <img class="chain-tab-icon" src="./assets/chains/base.png" alt="">
+                        <span>Base</span>
+                    </button>
+                    <button type="button" class="chain-tab" data-chain="zksync" role="tab" aria-selected="false">
+                        <img class="chain-tab-icon" src="./assets/chains/zksync.png" alt="">
+                        <span>zkSync</span>
+                    </button>
+                    <button type="button" class="chain-tab" data-chain="bsc" role="tab" aria-selected="false">
+                        <img class="chain-tab-icon" src="./assets/chains/bsc.png" alt="">
+                        <span>BNB Chain</span>
+                    </button>
+                    <button type="button" class="chain-tab" data-chain="avalanche" role="tab" aria-selected="false">
+                        <img class="chain-tab-icon" src="./assets/chains/avalanche.png" alt="">
+                        <span>Avalanche</span>
+                    </button>
+                </div>
+            </div>
+
             <div class="search-section">
                 <input
                     type="text"
@@ -767,19 +820,6 @@
                     id="protocolInput"
                     placeholder="Paste contract address here..."
                 >
-                <div class="chain-select-wrap">
-                    <img class="chain-indicator" id="chainIndicator" src="./assets/chains/ethereum.png" alt="">
-                    <select class="chain-select" id="chainSelect">
-                        <option value="ethereum">Ethereum</option>
-                        <option value="polygon">Polygon</option>
-                        <option value="arbitrum">Arbitrum</option>
-                        <option value="optimism">Optimism</option>
-                        <option value="base">Base</option>
-                        <option value="zksync">zkSync</option>
-                        <option value="bsc">BNB Chain</option>
-                        <option value="avalanche">Avalanche</option>
-                    </select>
-                </div>
                 <button class="search-btn" id="analyzeBtn">Analyze Protocol</button>
             </div>
             <p class="format-hint">All 8 supported chains use standard EVM address format (0x + 40 hex characters).</p>
@@ -1228,26 +1268,31 @@
 
         const analyzeBtn = document.getElementById('analyzeBtn');
         const protocolInput = document.getElementById('protocolInput');
-        const chainSelect = document.getElementById('chainSelect');
-        const chainIndicator = document.getElementById('chainIndicator');
         const downloadReportBtn = document.getElementById('downloadReportBtn');
+        const chainTabs = document.querySelectorAll('.chain-tab');
 
         const SUPPORTED_CHAINS = ['ethereum', 'polygon', 'arbitrum', 'optimism', 'base', 'zksync', 'bsc', 'avalanche'];
+        let selectedChain = 'ethereum';
 
-        function updateChainIndicator() {
-            chainIndicator.src = `./assets/chains/${chainSelect.value}.png`;
-            chainIndicator.alt = chainSelect.options[chainSelect.selectedIndex].textContent;
+        function selectChain(chain) {
+            selectedChain = chain;
+            chainTabs.forEach(tab => {
+                const isActive = tab.dataset.chain === chain;
+                tab.classList.toggle('active', isActive);
+                tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+                if (isActive) tab.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+            });
         }
+
+        chainTabs.forEach(tab => {
+            tab.addEventListener('click', () => selectChain(tab.dataset.chain));
+        });
 
         // Pre-populate chain from the ?chain= URL parameter (e.g. set when a user
-        // clicks a chain badge on the homepage).
-        const urlChain = new URLSearchParams(window.location.search).get('chain');
-        if (urlChain && SUPPORTED_CHAINS.includes(urlChain.toLowerCase())) {
-            chainSelect.value = urlChain.toLowerCase();
-        }
-        updateChainIndicator();
-
-        chainSelect.addEventListener('change', updateChainIndicator);
+        // clicks a chain badge on the homepage). Defaults to Ethereum if the
+        // parameter is missing or not one of the 8 supported chains.
+        const urlChain = (new URLSearchParams(window.location.search).get('chain') || '').toLowerCase();
+        selectChain(SUPPORTED_CHAINS.includes(urlChain) ? urlChain : 'ethereum');
 
         let hasShownEngageModal = false;
         async function runUserAnalysis(protocol, chain) {
@@ -1258,9 +1303,9 @@
             }
         }
 
-        analyzeBtn.addEventListener('click', () => runUserAnalysis(protocolInput.value.trim(), chainSelect.value));
+        analyzeBtn.addEventListener('click', () => runUserAnalysis(protocolInput.value.trim(), selectedChain));
         protocolInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') runUserAnalysis(protocolInput.value.trim(), chainSelect.value);
+            if (e.key === 'Enter') runUserAnalysis(protocolInput.value.trim(), selectedChain);
         });
 
         downloadReportBtn.addEventListener('click', () => {

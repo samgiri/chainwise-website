@@ -45,14 +45,16 @@
         .trust-item { display: flex; align-items: center; gap: 0.5rem; }
         .trust-item .trust-icon { font-size: 1rem; }
 
-        .chain-logos { display: flex; flex-wrap: wrap; gap: 1.1rem; justify-content: center; margin-bottom: 0.75rem; }
-        .chain-badge-link { position: relative; display: inline-flex; text-decoration: none; padding-top: 0.5rem; }
+        .chain-logos { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-bottom: 2rem; }
+        .chain-badge-link { position: relative; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.4rem; text-decoration: none; cursor: pointer; min-width: 48px; min-height: 48px; padding: 6px 10px 22px; border-radius: 12px; transition: background 0.25s ease; }
+        .chain-badge-link:hover,
+        .chain-badge-link:focus-visible { background: rgba(247, 147, 26, 0.08); }
         .chain-badge { width: 40px; height: 40px; border-radius: 50%; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.35); transition: transform 0.25s ease, box-shadow 0.25s ease; }
         .chain-badge-link:hover .chain-badge,
-        .chain-badge-link:focus-visible .chain-badge { transform: translateY(-4px) scale(1.15); box-shadow: 0 0 18px rgba(247, 147, 26, 0.6), 0 6px 16px rgba(0,0,0,0.45); }
-        .chain-tooltip { position: absolute; top: 0; left: 50%; transform: translateX(-50%) translateY(4px); background: var(--bg2); border: 1px solid #2a3047; color: var(--text); font-size: 0.75rem; font-weight: 600; padding: 0.3rem 0.6rem; border-radius: 4px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease; }
+        .chain-badge-link:focus-visible .chain-badge { transform: scale(1.15); box-shadow: 0 0 18px rgba(247, 147, 26, 0.6), 0 6px 16px rgba(0,0,0,0.45); }
+        .chain-tooltip { position: absolute; top: 100%; left: 50%; transform: translateX(-50%) translateY(-4px); margin-top: 2px; color: #a0a8c8; font-size: 0.75rem; font-weight: 600; white-space: nowrap; text-align: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease, transform 0.3s ease; }
         .chain-badge-link:hover .chain-tooltip,
-        .chain-badge-link:focus-visible .chain-tooltip { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+        .chain-badge-link:focus-visible .chain-tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
         .chain-caption { text-align: center; color: var(--text2); font-size: 0.85rem; margin-bottom: 1rem; }
         .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-bottom: 4rem; max-width: 900px; margin-left: auto; margin-right: auto; }
         .stat { text-align: center; padding: 1.5rem; background: var(--bg2); border: 1px solid #2a3047; border-radius: 8px; }
