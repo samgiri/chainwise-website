@@ -84,55 +84,56 @@
         </header>
 
         <div class="search-section">
-            <input type="text" class="search-input" placeholder="Enter contract address or protocol name...">
-            <button class="search-btn">Analyze</button>
+            <input type="text" class="search-input" id="searchInput" placeholder="Enter contract address or protocol name...">
+            <button class="search-btn" id="analyzeBtn">Analyze</button>
         </div>
+        <div id="statusLine" style="font-size: 13px; color: #A0A0A0; margin-top: -20px; margin-bottom: 20px;"></div>
 
         <div class="dashboard-grid">
             <div class="card risk-score-card">
                 <div class="risk-score-content">
-                    <div class="risk-score-circle">95</div>
+                    <div class="risk-score-circle" id="riskScoreCircle">95</div>
                     <div class="risk-score-details">
-                        <h4>Critical Risk Detected</h4>
-                        <p>Smart Solve DeFi exhibits parameters consistent with MLM pyramid scheme.</p>
-                        <div style="padding: 8px 12px; background: rgba(255, 61, 92, 0.2); border-left: 3px solid var(--color-red); border-radius: 4px; font-weight: 600; color: var(--color-red); font-size: 13px; margin-top: 12px;">CRITICAL - 95/100</div>
+                        <h4 id="riskHeadline">Critical Risk Detected</h4>
+                        <p id="riskSummary">Smart Solve DeFi exhibits parameters consistent with MLM pyramid scheme.</p>
+                        <div id="riskBadge" style="padding: 8px 12px; background: rgba(255, 61, 92, 0.2); border-left: 3px solid var(--color-red); border-radius: 4px; font-weight: 600; color: var(--color-red); font-size: 13px; margin-top: 12px;">CRITICAL - 95/100</div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
                 <h3>Detection Time</h3>
-                <div class="card-value">&lt;24h</div>
+                <div class="card-value" id="detectionTimeValue">&lt;24h</div>
                 <div class="card-subtext">From deployment to alert</div>
             </div>
 
             <div class="card">
                 <h3>Confidence</h3>
-                <div class="card-value">98%</div>
+                <div class="card-value" id="confidenceValue">98%</div>
                 <div class="card-subtext">Evidence-based score</div>
             </div>
 
             <div class="card">
                 <h3>Estimated Loss</h3>
-                <div class="card-value">$100M+</div>
+                <div class="card-value" id="estimatedLossValue">$100M+</div>
                 <div class="card-subtext">If unchecked</div>
             </div>
 
             <div class="card">
                 <h3>Users at Risk</h3>
-                <div class="card-value">15,000+</div>
+                <div class="card-value" id="usersAtRiskValue">15,000+</div>
                 <div class="card-subtext">Active participants</div>
             </div>
 
             <div class="card">
                 <h3>Days to Collapse</h3>
-                <div class="card-value">180-365</div>
+                <div class="card-value" id="collapseDaysValue">180-365</div>
                 <div class="card-subtext">Est. timeline</div>
             </div>
 
             <div class="card">
                 <h3>Operator Control</h3>
-                <div class="card-value">60%</div>
+                <div class="card-value" id="operatorControlValue">60%</div>
                 <div class="card-subtext">Of treasury</div>
             </div>
         </div>
@@ -154,68 +155,70 @@
 
         <div class="layers-section">
             <h3>8-Layer Detection Breakdown</h3>
-            <div class="layers-grid">
+            <div class="layers-grid" id="layersGrid">
                 <div class="layer-item">
                     <div class="layer-name">Layer 1: Patterns</div>
-                    <div class="layer-value">85%</div>
-                    <div class="layer-bar"><div class="layer-bar-fill" style="width: 85%"></div></div>
+                    <div class="layer-value" id="layer-patterns-value">85%</div>
+                    <div class="layer-bar"><div class="layer-bar-fill" id="layer-patterns-bar" style="width: 85%"></div></div>
                 </div>
                 <div class="layer-item">
                     <div class="layer-name">Layer 2: Bytecode</div>
-                    <div class="layer-value">55%</div>
-                    <div class="layer-bar"><div class="layer-bar-fill" style="width: 55%"></div></div>
+                    <div class="layer-value" id="layer-bytecode-value">55%</div>
+                    <div class="layer-bar"><div class="layer-bar-fill" id="layer-bytecode-bar" style="width: 55%"></div></div>
                 </div>
                 <div class="layer-item">
                     <div class="layer-name">Layer 3: Treasury</div>
-                    <div class="layer-value">30%</div>
-                    <div class="layer-bar"><div class="layer-bar-fill" style="width: 30%"></div></div>
+                    <div class="layer-value" id="layer-treasury-value">30%</div>
+                    <div class="layer-bar"><div class="layer-bar-fill" id="layer-treasury-bar" style="width: 30%"></div></div>
                 </div>
                 <div class="layer-item">
                     <div class="layer-name">Layer 4: Withdrawals</div>
-                    <div class="layer-value">50%</div>
-                    <div class="layer-bar"><div class="layer-bar-fill" style="width: 50%"></div></div>
+                    <div class="layer-value" id="layer-withdrawals-value">50%</div>
+                    <div class="layer-bar"><div class="layer-bar-fill" id="layer-withdrawals-bar" style="width: 50%"></div></div>
                 </div>
                 <div class="layer-item">
                     <div class="layer-name">Layer 5: Bridges</div>
-                    <div class="layer-value">20%</div>
-                    <div class="layer-bar"><div class="layer-bar-fill" style="width: 20%"></div></div>
+                    <div class="layer-value" id="layer-bridges-value">20%</div>
+                    <div class="layer-bar"><div class="layer-bar-fill" id="layer-bridges-bar" style="width: 20%"></div></div>
                 </div>
                 <div class="layer-item">
                     <div class="layer-name">Layer 6: Off-Ramps</div>
-                    <div class="layer-value">25%</div>
-                    <div class="layer-bar"><div class="layer-bar-fill" style="width: 25%"></div></div>
+                    <div class="layer-value" id="layer-offRamps-value">25%</div>
+                    <div class="layer-bar"><div class="layer-bar-fill" id="layer-offRamps-bar" style="width: 25%"></div></div>
                 </div>
                 <div class="layer-item">
                     <div class="layer-name">Layer 7: Sybil</div>
-                    <div class="layer-value">40%</div>
-                    <div class="layer-bar"><div class="layer-bar-fill" style="width: 40%"></div></div>
+                    <div class="layer-value" id="layer-sybil-value">40%</div>
+                    <div class="layer-bar"><div class="layer-bar-fill" id="layer-sybil-bar" style="width: 40%"></div></div>
                 </div>
                 <div class="layer-item">
                     <div class="layer-name">Layer 8: Attribution</div>
-                    <div class="layer-value">35%</div>
-                    <div class="layer-bar"><div class="layer-bar-fill" style="width: 35%"></div></div>
+                    <div class="layer-value" id="layer-attribution-value">35%</div>
+                    <div class="layer-bar"><div class="layer-bar-fill" id="layer-attribution-bar" style="width: 35%"></div></div>
                 </div>
             </div>
         </div>
 
         <div class="cases-section">
             <h3>Active Cases</h3>
-            <div class="case-item">
-                <h4>Smart Solve DeFi</h4>
+            <div class="case-item" id="caseItem">
+                <h4 id="caseName">Smart Solve DeFi</h4>
                 <div style="display: flex; gap: 16px; font-size: 12px; color: #A0A0A0;">
-                    <span>BSC Chain</span>
-                    <span style="padding: 4px 8px; background: rgba(255,61,92,0.2); border-radius: 4px; color: var(--color-red); font-weight: 600;">CRITICAL</span>
-                    <span>95/100 Risk</span>
+                    <span id="caseChain">BSC Chain</span>
+                    <span id="caseRiskLevel" style="padding: 4px 8px; background: rgba(255,61,92,0.2); border-radius: 4px; color: var(--color-red); font-weight: 600;">CRITICAL</span>
+                    <span id="caseRiskScore">95/100 Risk</span>
                 </div>
             </div>
         </div>
 
         <div class="alerts-section">
             <h3>Recent Alerts</h3>
-            <div class="alert-item"><strong>CRITICAL:</strong> Withdrawal queue exceeds threshold (127 pending)</div>
-            <div class="alert-item"><strong>HIGH:</strong> Treasury drain detected - $21K/day outflow</div>
-            <div class="alert-item"><strong>HIGH:</strong> Operator pause() function ready</div>
-            <div class="alert-item"><strong>MEDIUM:</strong> Sybil cluster detected (89 wallets)</div>
+            <div id="alertsList">
+                <div class="alert-item"><strong>CRITICAL:</strong> Withdrawal queue exceeds threshold (127 pending)</div>
+                <div class="alert-item"><strong>HIGH:</strong> Treasury drain detected - $21K/day outflow</div>
+                <div class="alert-item"><strong>HIGH:</strong> Operator pause() function ready</div>
+                <div class="alert-item"><strong>MEDIUM:</strong> Sybil cluster detected (89 wallets)</div>
+            </div>
         </div>
 
         <footer>
@@ -224,54 +227,143 @@
         </footer>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script>
-        const riskCtx = document.getElementById('riskChart').getContext('2d');
-        new Chart(riskCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Risk', 'Safe'],
-                datasets: [{
-                    data: [95, 5],
-                    backgroundColor: ['#FF3D5C', 'rgba(255,255,255,0.1)'],
-                    borderColor: ['#FF3D5C', 'rgba(255,255,255,0.1)'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                cutout: '70%'
-            }
-        });
+        const LAYER_KEYS = ['patterns', 'bytecode', 'treasury', 'withdrawals', 'bridges', 'offRamps', 'sybil', 'attribution'];
 
-        const layersCtx = document.getElementById('layersChart').getContext('2d');
-        new Chart(layersCtx, {
-            type: 'radar',
-            data: {
-                labels: ['Patterns', 'Bytecode', 'Treasury', 'Withdrawals', 'Bridges', 'Off-Ramps', 'Sybil', 'Attribution'],
-                datasets: [{
-                    label: 'Risk Score',
-                    data: [85, 55, 30, 50, 20, 25, 40, 35],
-                    borderColor: '#FF3D5C',
-                    backgroundColor: 'rgba(255, 61, 92, 0.1)',
-                    pointBackgroundColor: '#FF3D5C',
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    r: {
-                        grid: { color: 'rgba(255,255,255,0.1)' },
-                        ticks: { color: '#A0A0A0' },
-                        max: 100
+        let riskChart = null;
+        let layersChart = null;
+        try {
+            riskChart = new Chart(document.getElementById('riskChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Risk', 'Safe'],
+                    datasets: [{
+                        data: [95, 5],
+                        backgroundColor: ['#FF3D5C', 'rgba(255,255,255,0.1)'],
+                        borderColor: ['#FF3D5C', 'rgba(255,255,255,0.1)'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    cutout: '70%'
+                }
+            });
+
+            layersChart = new Chart(document.getElementById('layersChart').getContext('2d'), {
+                type: 'radar',
+                data: {
+                    labels: ['Patterns', 'Bytecode', 'Treasury', 'Withdrawals', 'Bridges', 'Off-Ramps', 'Sybil', 'Attribution'],
+                    datasets: [{
+                        label: 'Risk Score',
+                        data: [85, 55, 30, 50, 20, 25, 40, 35],
+                        borderColor: '#FF3D5C',
+                        backgroundColor: 'rgba(255, 61, 92, 0.1)',
+                        pointBackgroundColor: '#FF3D5C',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            ticks: { color: '#A0A0A0' },
+                            max: 100
+                        }
                     }
                 }
+            });
+        } catch (err) {
+            console.error('Chart.js failed to load/initialize; charts will stay static.', err);
+        }
+
+        function setStatus(text, isError) {
+            const el = document.getElementById('statusLine');
+            el.textContent = text;
+            el.style.color = isError ? 'var(--color-orange)' : '#A0A0A0';
+        }
+
+        function renderData(data) {
+            const analyzed = data.riskScore !== null && data.riskScore !== undefined;
+            const score = analyzed ? data.riskScore : 0;
+
+            document.getElementById('riskScoreCircle').textContent = analyzed ? score : 'N/A';
+            document.getElementById('riskScoreCircle').style.background =
+                `conic-gradient(var(--gradient-primary) 0deg ${score * 3.6}deg, rgba(255,255,255,0.1) ${score * 3.6}deg 360deg)`;
+            document.getElementById('riskHeadline').textContent = analyzed
+                ? (data.riskLevel === 'CRITICAL' ? 'Critical Risk Detected' : `${data.riskLevel} Risk Detected`)
+                : 'Not Yet Analyzed';
+            document.getElementById('riskSummary').textContent = data.summary || '';
+            const badge = document.getElementById('riskBadge');
+            badge.textContent = analyzed ? `${data.riskLevel} - ${score}/100` : 'NO ON-CHAIN DATA YET';
+
+            document.getElementById('detectionTimeValue').innerHTML = data.detectionHours ? `&lt;${data.detectionHours}h` : '--';
+            document.getElementById('confidenceValue').textContent = analyzed ? `${data.confidence}%` : '--';
+            document.getElementById('estimatedLossValue').textContent = data.estimatedLoss || '--';
+            document.getElementById('usersAtRiskValue').textContent = data.usersAtRisk ? `${data.usersAtRisk.toLocaleString()}+` : '--';
+            document.getElementById('collapseDaysValue').textContent = data.collapseTimelineDays
+                ? `${data.collapseTimelineDays[0]}-${data.collapseTimelineDays[1]}` : '--';
+            document.getElementById('operatorControlValue').textContent = data.operatorControlPct ? `${data.operatorControlPct}%` : '--';
+
+            const layers = data.layers || {};
+            LAYER_KEYS.forEach(key => {
+                const value = layers[key] || 0;
+                document.getElementById(`layer-${key}-value`).textContent = `${value}%`;
+                document.getElementById(`layer-${key}-bar`).style.width = `${value}%`;
+            });
+
+            if (riskChart) {
+                riskChart.data.datasets[0].data = [score, 100 - score];
+                riskChart.update();
             }
+            if (layersChart) {
+                layersChart.data.datasets[0].data = LAYER_KEYS.map(key => layers[key] || 0);
+                layersChart.update();
+            }
+
+            document.getElementById('caseName').textContent = data.protocol || 'Unknown';
+            document.getElementById('caseChain').textContent = `${data.chain || 'unknown'} Chain`;
+            document.getElementById('caseRiskLevel').textContent = data.riskLevel || 'N/A';
+            document.getElementById('caseRiskScore').textContent = analyzed ? `${score}/100 Risk` : 'Not analyzed';
+
+            const alertsList = document.getElementById('alertsList');
+            if (data.alerts && data.alerts.length) {
+                alertsList.innerHTML = data.alerts
+                    .map(a => `<div class="alert-item"><strong>${a.level}:</strong> ${a.message}</div>`)
+                    .join('');
+            } else {
+                alertsList.innerHTML = '<div class="alert-item">No alerts for this query.</div>';
+            }
+        }
+
+        async function fetchAnalysis(query) {
+            setStatus('Analyzing...');
+            try {
+                const url = query ? `/api/analyze?address=${encodeURIComponent(query)}` : '/api/analyze';
+                const res = await fetch(url);
+                if (!res.ok) throw new Error(`API returned ${res.status}`);
+                const data = await res.json();
+                renderData(data);
+                setStatus(data.demo
+                    ? 'Demo data from /api/analyze (no live on-chain analysis engine connected yet).'
+                    : 'Live data from /api/analyze.');
+            } catch (err) {
+                setStatus(`Could not reach /api/analyze (${err.message}). Showing last known data.`, true);
+            }
+        }
+
+        document.getElementById('analyzeBtn').addEventListener('click', () => {
+            fetchAnalysis(document.getElementById('searchInput').value.trim());
         });
+        document.getElementById('searchInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') fetchAnalysis(document.getElementById('searchInput').value.trim());
+        });
+
+        fetchAnalysis();
     </script>
 </body>
 </html>
