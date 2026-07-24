@@ -46,7 +46,7 @@
         .trust-item .trust-icon { font-size: 1rem; }
 
         .chain-logos { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-bottom: 0.75rem; }
-        .chain-badge { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.95rem; box-shadow: 0 2px 8px rgba(0,0,0,0.35); transition: transform 0.2s ease, box-shadow 0.2s ease; cursor: default; }
+        .chain-badge { width: 32px; height: 32px; border-radius: 50%; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.35); transition: transform 0.2s ease, box-shadow 0.2s ease; }
         .chain-badge:hover { transform: translateY(-3px) scale(1.1); box-shadow: 0 6px 16px rgba(0,0,0,0.45); }
         .chain-caption { text-align: center; color: var(--text2); font-size: 0.85rem; margin-bottom: 1rem; }
         .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-bottom: 4rem; max-width: 900px; margin-left: auto; margin-right: auto; }
@@ -169,12 +169,12 @@
                 </div>
 
                 <div class="chain-logos">
-                    <div class="chain-badge" style="background:#627EEA" title="Ethereum">Ξ</div>
-                    <div class="chain-badge" style="background:#8247E5" title="Polygon">P</div>
-                    <div class="chain-badge" style="background:#28A0F0" title="Arbitrum">A</div>
-                    <div class="chain-badge" style="background:#FF0420" title="Optimism">O</div>
-                    <div class="chain-badge" style="background:#0052FF" title="Base">B</div>
-                    <div class="chain-badge" style="background:#4E529A" title="zkSync">Z</div>
+                    <img class="chain-badge" src="./assets/chains/ethereum.png" alt="Ethereum" title="Ethereum">
+                    <img class="chain-badge" src="./assets/chains/polygon.png" alt="Polygon" title="Polygon">
+                    <img class="chain-badge" src="./assets/chains/arbitrum.png" alt="Arbitrum" title="Arbitrum">
+                    <img class="chain-badge" src="./assets/chains/optimism.png" alt="Optimism" title="Optimism">
+                    <img class="chain-badge" src="./assets/chains/base.png" alt="Base" title="Base">
+                    <img class="chain-badge" src="./assets/chains/zksync.png" alt="zkSync" title="zkSync">
                 </div>
                 <p class="chain-caption">Supports 6+ Blockchains</p>
             </div>
