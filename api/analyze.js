@@ -12,35 +12,7 @@
 //      protocol, this returns the same honest "not analyzed" response as before rather
 //      than fabricating a verdict. PDF export is not implemented yet (JSON download only).
 
-const SMART_SOLVE_CASE = {
-  protocol: 'Smart Solve DeFi',
-  chain: 'BSC',
-  riskScore: 95,
-  riskLevel: 'CRITICAL',
-  summary: 'Smart Solve DeFi exhibits parameters consistent with MLM pyramid scheme.',
-  confidence: 98,
-  estimatedLoss: '$100M+',
-  usersAtRisk: 15000,
-  collapseTimelineDays: [180, 365],
-  operatorControlPct: 60,
-  detectionHours: 24,
-  layers: {
-    patterns: 85,
-    bytecode: 55,
-    treasury: 30,
-    withdrawals: 50,
-    bridges: 20,
-    offRamps: 25,
-    sybil: 40,
-    attribution: 35,
-  },
-  alerts: [
-    { level: 'CRITICAL', message: 'Withdrawal queue exceeds threshold (127 pending)' },
-    { level: 'HIGH', message: 'Treasury drain detected - $21K/day outflow' },
-    { level: 'HIGH', message: 'Operator pause() function ready' },
-    { level: 'MEDIUM', message: 'Sybil cluster detected (89 wallets)' },
-  ],
-};
+const { SMART_SOLVE_CASE } = require('./_lib/caseStudies');
 
 const LAYER_KEYS = ['patterns', 'bytecode', 'treasury', 'withdrawals', 'bridges', 'offRamps', 'sybil', 'attribution'];
 const CACHE_TTL_SECONDS = 6 * 60 * 60; // 6 hours
