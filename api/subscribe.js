@@ -1,5 +1,5 @@
 // Vercel serverless function: POST /api/subscribe
-// Body: { email: string, mobile?: string, source: string }
+// Body: { email: string, mobile?: string (or phone), source?: string, interest?: string }
 //
 // This validates and accepts email/SMS opt-ins from the homepage newsletter
 // form, the research-section case-study capture, the dashboard post-analysis
@@ -12,6 +12,10 @@
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MOBILE_RE = /^\+?[0-9()\-.\s]{7,20}$/;
+
+function generateSubscriberId() {
+  return `sub_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
+}
 
 module.exports = (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -29,28 +33,37 @@ module.exports = (req, res) => {
 
   const body = req.body || {};
   const email = String(body.email || '').trim();
-  const mobile = String(body.mobile || '').trim();
+  const mobile = String(body.mobile || body.phone || '').trim();
   const source = String(body.source || 'unknown').trim();
+  const interest = String(body.interest || '').trim();
 
   if (!EMAIL_RE.test(email)) {
-    res.status(400).json({ error: 'A valid email address is required.' });
+    res.status(400).json({ success: false, error: 'A valid email address is required.' });
     return;
   }
   if (mobile && !MOBILE_RE.test(mobile)) {
-    res.status(400).json({ error: 'That mobile number doesn\'t look valid.' });
+    res.status(400).json({ success: false, error: 'That mobile number doesn\'t look valid.' });
     return;
   }
 
+  const subscriberId = generateSubscriberId();
+
   console.log('[subscribe]', JSON.stringify({
+    subscriberId,
     email,
     mobile: mobile || null,
     source,
+    interest: interest || null,
     at: new Date().toISOString(),
   }));
 
-  res.status(200).json({
+  res.status(201).json({
     success: true,
-    message: 'Submission received.',
+    subscriber_id: subscriberId,
+    email,
+    phone: mobile || null,
+    message: 'Successfully subscribed',
+    timestamp: new Date().toISOString(),
     demo: true,
   });
 };
