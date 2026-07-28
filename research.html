@@ -123,7 +123,7 @@
                     <div class="case-layers">
                         ${Object.entries(c.layers || {}).map(([key, score]) => `<span class="layer-tag">${LAYER_LABELS[key] || key}: ${score}</span>`).join('')}
                     </div>
-                    <a href="/dashboard?address=${encodeURIComponent(c.protocol)}" class="btn btn-primary">View Details</a>
+                    <a href="${c.slug === 'smart-solve-defi' ? '/case-smart-solve' : `/dashboard?address=${encodeURIComponent(c.protocol)}`}" class="btn btn-primary">View Details</a>
                 </div>
             `).join('');
         }
