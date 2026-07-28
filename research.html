@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research & Case Studies | ChainWise</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto; background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%); color: #e0e0e0; min-height: 100vh; }
+        nav { background: rgba(10, 14, 39, 0.95); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(247, 147, 26, 0.2); position: sticky; top: 0; z-index: 100; }
+        nav .logo { font-size: 1.5rem; font-weight: bold; color: #f7931a; }
+        nav .nav-links { display: flex; gap: 2rem; list-style: none; }
+        nav .nav-links a { color: #e0e0e0; text-decoration: none; transition: color 0.3s; }
+        nav .nav-links a:hover { color: #f7931a; }
+        .hero { padding: 4rem 2rem; text-align: center; background: linear-gradient(180deg, rgba(247, 147, 26, 0.1) 0%, transparent 100%); }
+        .hero h1 { font-size: 3rem; background: linear-gradient(90deg, #f7931a 0%, #7b3fe4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem; }
+        .hero p { font-size: 1.2rem; color: #a0a0a0; max-width: 600px; margin: 0 auto; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 3rem 2rem; }
+        .filters { display: flex; gap: 1rem; margin-bottom: 3rem; flex-wrap: wrap; }
+        .filter-btn { padding: 0.7rem 1.5rem; background: rgba(247, 147, 26, 0.1); border: 1px solid rgba(247, 147, 26, 0.3); color: #e0e0e0; border-radius: 4px; cursor: pointer; transition: all 0.3s; }
+        .filter-btn:hover, .filter-btn.active { background: rgba(247, 147, 26, 0.3); border-color: #f7931a; color: #f7931a; }
+        .cases-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem; }
+        .case-card { background: rgba(20, 25, 45, 0.8); border: 1px solid rgba(247, 147, 26, 0.2); border-radius: 8px; padding: 2rem; transition: all 0.3s; }
+        .case-card:hover { border-color: #f7931a; transform: translateY(-5px); box-shadow: 0 10px 30px rgba(247, 147, 26, 0.2); }
+        .case-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; gap: 1rem; }
+        .case-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .case-chain { font-size: 0.85rem; color: #a0a0a0; background: rgba(247, 147, 26, 0.1); padding: 0.3rem 0.8rem; border-radius: 3px; }
+        .risk-badge { padding: 0.5rem 1rem; border-radius: 4px; font-weight: 600; white-space: nowrap; }
+        .risk-critical { background: rgba(220, 53, 69, 0.2); color: #ff6b6b; }
+        .risk-high { background: rgba(247, 147, 26, 0.2); color: #f7931a; }
+        .risk-medium { background: rgba(255, 193, 7, 0.2); color: #ffc107; }
+        .risk-low { background: rgba(40, 167, 69, 0.2); color: #4caf50; }
+        .case-summary { color: #c0c0c0; font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.5rem; }
+        .case-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; padding: 1rem; background: rgba(247, 147, 26, 0.05); border-radius: 4px; }
+        .metric-value { font-size: 1.3rem; font-weight: 600; color: #f7931a; }
+        .metric-label { font-size: 0.8rem; color: #a0a0a0; }
+        .case-layers { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+        .layer-tag { font-size: 0.75rem; padding: 0.3rem 0.6rem; background: rgba(123, 63, 228, 0.2); border: 1px solid rgba(123, 63, 228, 0.4); border-radius: 3px; color: #9b8dd9; }
+        .btn { padding: 0.7rem 1rem; border: 1px solid rgba(247, 147, 26, 0.3); background: rgba(247, 147, 26, 0.1); color: #f7931a; border-radius: 4px; cursor: pointer; text-decoration: none; transition: all 0.3s; display: inline-block; }
+        .btn:hover { background: rgba(247, 147, 26, 0.2); }
+        .btn-primary { background: linear-gradient(90deg, #f7931a 0%, #7b3fe4 100%); border: none; color: white; }
+        .loading, .empty, .error { text-align: center; padding: 3rem; font-size: 1.1rem; color: #a0a0a0; }
+        .spinner { display: inline-block; width: 40px; height: 40px; border: 4px solid rgba(247, 147, 26, 0.2); border-top: 4px solid #f7931a; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .in-progress-note { text-align: center; color: #a0a0a0; margin-top: 2rem; font-size: 0.9rem; }
+        footer { background: rgba(10, 14, 39, 0.95); padding: 2rem; text-align: center; color: #a0a0a0; border-top: 1px solid rgba(247, 147, 26, 0.2); }
+        @media (max-width: 768px) { .hero h1 { font-size: 2rem; } .cases-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">⚡ ChainWise</div>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/research">Research</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+        </ul>
+    </nav>
+
+    <div class="hero">
+        <h1>Research & Case Studies</h1>
+        <p>Institutional-grade DeFi risk analysis. Learn from real-world protocol failures.</p>
+    </div>
+
+    <div class="container">
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="CRITICAL">Critical Risk</button>
+            <button class="filter-btn" data-filter="HIGH">High Risk</button>
+        </div>
+
+        <div class="cases-grid" id="casesGrid">
+            <div class="loading"><div class="spinner"></div><p>Loading case studies...</p></div>
+        </div>
+        <p class="in-progress-note" id="inProgressNote" style="display:none;">More case studies are in progress.</p>
+    </div>
+
+    <footer>
+        <p>ChainWise | DeFi Risk Intelligence Platform</p>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem;">Built by Satoshi Lab</p>
+    </footer>
+
+    <script>
+        const RISK_CLASS = { CRITICAL: 'risk-critical', HIGH: 'risk-high', MEDIUM: 'risk-medium', LOW: 'risk-low' };
+        const LAYER_LABELS = { patterns: 'Patterns', bytecode: 'Bytecode', treasury: 'Treasury', withdrawals: 'Withdrawals', bridges: 'Bridges', offRamps: 'Off-Ramps', sybil: 'Sybil', attribution: 'Attribution' };
+
+        async function loadCaseStudies() {
+            const grid = document.getElementById('casesGrid');
+            try {
+                const response = await fetch('/api/cases');
+                if (!response.ok) throw new Error(`API returned ${response.status}`);
+                const data = await response.json();
+                const cases = data.cases || [];
+                if (!cases.length) {
+                    grid.innerHTML = '<div class="empty">No published case studies yet. Check back soon.</div>';
+                    return;
+                }
+                renderCaseStudies(cases);
+                setupFilters();
+                document.getElementById('inProgressNote').style.display = data.inProgress ? 'block' : 'none';
+            } catch (error) {
+                console.error('Error loading case studies:', error);
+                grid.innerHTML = '<div class="error">Could not load case studies right now. Please try again later.</div>';
+            }
+        }
+
+        function renderCaseStudies(cases) {
+            const grid = document.getElementById('casesGrid');
+            grid.innerHTML = cases.map(c => `
+                <div class="case-card" data-status="${c.riskLevel}">
+                    <div class="case-header">
+                        <div>
+                            <div class="case-title">${c.protocol}</div>
+                            <span class="case-chain">${c.chain}</span>
+                        </div>
+                        <span class="risk-badge ${RISK_CLASS[c.riskLevel] || 'risk-medium'}">${c.riskLevel}</span>
+                    </div>
+                    <p class="case-summary">${c.summary}</p>
+                    <div class="case-metrics">
+                        <div><div class="metric-value">${c.riskScore ?? '--'}</div><div class="metric-label">Risk Score</div></div>
+                        <div><div class="metric-value">${c.usersAtRisk ? (c.usersAtRisk / 1000).toFixed(0) + 'K' : '--'}</div><div class="metric-label">Users at Risk</div></div>
+                    </div>
+                    <div class="case-layers">
+                        ${Object.entries(c.layers || {}).map(([key, score]) => `<span class="layer-tag">${LAYER_LABELS[key] || key}: ${score}</span>`).join('')}
+                    </div>
+                    <a href="/dashboard?address=${encodeURIComponent(c.protocol)}" class="btn btn-primary">View Details</a>
+                </div>
+            `).join('');
+        }
+
+        function setupFilters() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    const filter = e.target.dataset.filter;
+                    document.querySelectorAll('.case-card').forEach(card => {
+                        card.style.display = filter === 'all' || card.dataset.status === filter ? '' : 'none';
+                    });
+                });
+            });
+        }
+
+        loadCaseStudies();
+    </script>
+</body>
+</html>
