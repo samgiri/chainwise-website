@@ -20,7 +20,15 @@ module.exports = (req, res) => {
 
   res.status(200).json({
     status: 'ok',
+    service: 'chainwise-api',
     timestamp: new Date().toISOString(),
+    uptimeSeconds: Math.floor(process.uptime()),
+    features: {
+      'risk-analysis': true,
+      '8-layer-framework': true,
+      'case-studies': true,
+      'claude-integration': Boolean(process.env.ANTHROPIC_API_KEY),
+    },
     integrations: {
       claudeApi: Boolean(process.env.ANTHROPIC_API_KEY),
       kvCache: Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN),
