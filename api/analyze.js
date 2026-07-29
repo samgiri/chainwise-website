@@ -302,7 +302,6 @@ Call the submit_risk_analysis tool with your findings. Respond only via the tool
     body: JSON.stringify({
       model,
       max_tokens: 1024,
-      temperature: 0.2,
       tools: [RISK_TOOL],
       tool_choice: { type: 'tool', name: 'submit_risk_analysis' },
       messages: [{ role: 'user', content: prompt }],
