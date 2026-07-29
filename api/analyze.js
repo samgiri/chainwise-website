@@ -251,6 +251,17 @@ async function fetchOnChainData(chainKey, address) {
 }
 
 async function analyzeWithClaude(target, chainLabel, onChain) {
+  // TEMP DEBUG (unconditional - runs on every call, remove once the Claude call is
+  // confirmed to actually fire in prod): the "External APIs" trace shows zero calls to
+  // api.anthropic.com, which only happens if this function returns before ever calling
+  // fetch() below - i.e. apiKey is falsy here. Logging existence/length (never the value)
+  // to distinguish "key truly missing at runtime" from some other silent early-return.
+  console.log('[analyze] ANTHROPIC_API_KEY check', {
+    envVarNameReadByCode: 'ANTHROPIC_API_KEY',
+    exists: 'ANTHROPIC_API_KEY' in process.env,
+    length: process.env.ANTHROPIC_API_KEY ? process.env.ANTHROPIC_API_KEY.length : 0,
+  });
+
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return null;
 
