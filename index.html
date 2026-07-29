@@ -161,6 +161,13 @@
         .research-browse-link { text-align: center; margin-bottom: 2.5rem; }
         .research-browse-link a { color: var(--orange); text-decoration: none; font-weight: 600; }
         .research-browse-link a:hover { text-decoration: underline; }
+
+        .risk-legend { max-width: 420px; margin: 0 auto 2rem; }
+        .risk-legend-bar { height: 10px; border-radius: 6px; background: linear-gradient(90deg, #4caf50 0%, #4caf50 33%, #ffc107 33%, #ffc107 66%, #f7931a 66%, #f7931a 89%, #ff6b6b 89%, #ff6b6b 100%); }
+        .risk-legend-labels { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 1rem; margin-top: 0.6rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.3px; }
+        .risk-legend-labels span { display: inline-flex; align-items: center; gap: 0.35rem; white-space: nowrap; }
+        .risk-legend-labels .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .risk-legend-caption { text-align: center; font-size: 0.78rem; color: var(--text2); font-style: italic; margin-top: 0.6rem; }
         .footer-newsletter { display: flex; gap: 0.5rem; margin: 1.25rem 0; max-width: 320px; }
         .footer-newsletter input { flex: 1; min-width: 0; padding: 0.6rem 0.75rem; background: var(--bg); border: 1px solid #2a3047; border-radius: 6px; color: var(--text); font-size: 0.85rem; }
         .footer-newsletter input:focus { outline: none; border-color: var(--orange); }
@@ -512,6 +519,16 @@
 
         <h2 class="section-title" id="research">Research & Case Studies</h2>
         <p class="research-intro">Real, on-chain forensic breakdowns using our 8-layer detection framework — starting with Smart Solve DeFi, a live case with a $100M+ estimated loss. We're also publishing illustrative examples that show how different risk patterns look across the framework while we verify more real-world cases.</p>
+        <div class="risk-legend">
+            <div class="risk-legend-bar"></div>
+            <div class="risk-legend-labels">
+                <span><span class="dot" style="background:#4caf50;"></span>LOW 0-33</span>
+                <span><span class="dot" style="background:#ffc107;"></span>MEDIUM 34-66</span>
+                <span><span class="dot" style="background:#f7931a;"></span>HIGH 67-89</span>
+                <span><span class="dot" style="background:#ff6b6b;"></span>CRITICAL 90-100</span>
+            </div>
+            <p class="risk-legend-caption">Scores are directional risk indicators, not guarantees — always verify independently.</p>
+        </div>
         <div class="case-grid" id="homeCaseGrid">
             <div class="case-card"><p class="case-card-summary">Loading case studies…</p></div>
         </div>
@@ -684,9 +701,10 @@
 
             function riskColor(score) {
                 if (score === null || score === undefined) return '#6b7280';
-                if (score <= 33) return '#10b981';
-                if (score <= 66) return '#f59e0b';
-                return '#ef4444';
+                if (score <= 33) return '#4caf50';
+                if (score <= 66) return '#ffc107';
+                if (score <= 89) return '#f7931a';
+                return '#ff6b6b';
             }
 
             function caseHref(c) {

@@ -360,6 +360,54 @@
             text-transform: uppercase;
         }
 
+        .risk-legend {
+            max-width: 420px;
+            margin: 1.5rem auto;
+        }
+
+        .risk-legend-bar {
+            height: 10px;
+            border-radius: 6px;
+            background: linear-gradient(90deg,
+                var(--color-success) 0%, var(--color-success) 33%,
+                var(--color-warning) 33%, var(--color-warning) 66%,
+                var(--color-accent-orange) 66%, var(--color-accent-orange) 89%,
+                var(--color-critical) 89%, var(--color-critical) 100%);
+        }
+
+        .risk-legend-labels {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem 1rem;
+            margin-top: 0.6rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .risk-legend-labels span {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            white-space: nowrap;
+        }
+
+        .risk-legend-labels .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .risk-legend-caption {
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--color-text-secondary);
+            font-style: italic;
+            margin-top: 0.6rem;
+        }
+
         .risk-details {
             border-top: 1px solid var(--color-border);
             padding-top: 1.5rem;
@@ -837,6 +885,16 @@
                                 <div class="risk-label" id="riskLabel">Loading...</div>
                             </div>
                         </div>
+                    </div>
+                    <div class="risk-legend">
+                        <div class="risk-legend-bar"></div>
+                        <div class="risk-legend-labels">
+                            <span><span class="dot" style="background:var(--color-success);"></span>LOW 0-33</span>
+                            <span><span class="dot" style="background:var(--color-warning);"></span>MEDIUM 34-66</span>
+                            <span><span class="dot" style="background:var(--color-accent-orange);"></span>HIGH 67-89</span>
+                            <span><span class="dot" style="background:var(--color-critical);"></span>CRITICAL 90-100</span>
+                        </div>
+                        <p class="risk-legend-caption">Scores are directional risk indicators, not guarantees — always verify independently.</p>
                     </div>
                     <button class="download-btn" id="downloadReportBtn" disabled>📄 Download Report (JSON)</button>
                     <p style="font-size: 0.75rem; color: var(--color-text-secondary); text-align: center; margin-top: 0.75rem;">Not financial advice. Independent verification recommended.</p>
