@@ -2,6 +2,7 @@
   "rewrites": [
     { "source": "/dashboard", "destination": "/dashboard.html" },
     { "source": "/research", "destination": "/research.html" },
-    { "source": "/case-smart-solve", "destination": "/case-smart-solve.html" }
+    { "source": "/case-smart-solve", "destination": "/case-smart-solve.html" },
+    { "source": "/case-detail", "destination": "/case-detail.html" }
   ]
 }

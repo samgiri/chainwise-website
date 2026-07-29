@@ -32,6 +32,7 @@
         .risk-high { background: rgba(247, 147, 26, 0.2); color: #f7931a; }
         .risk-medium { background: rgba(255, 193, 7, 0.2); color: #ffc107; }
         .risk-low { background: rgba(40, 167, 69, 0.2); color: #4caf50; }
+        .illustrative-badge { display: inline-block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; padding: 0.3rem 0.6rem; border-radius: 3px; background: rgba(160, 160, 160, 0.15); color: #c9c9c9; border: 1px solid rgba(160, 160, 160, 0.35); margin-bottom: 0.75rem; }
         .case-summary { color: #c0c0c0; font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.5rem; }
         .case-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; padding: 1rem; background: rgba(247, 147, 26, 0.05); border-radius: 4px; }
         .metric-value { font-size: 1.3rem; font-weight: 600; color: #f7931a; }
@@ -122,12 +123,19 @@
             }
         }
 
+        function caseHref(c) {
+            if (c.slug === 'smart-solve-defi') return '/case-smart-solve';
+            if (c.isIllustrative) return `/case-detail?slug=${encodeURIComponent(c.slug)}`;
+            return `/dashboard?address=${encodeURIComponent(c.protocol)}`;
+        }
+
         function renderCaseStudies(cases) {
             const grid = document.getElementById('casesGrid');
             grid.innerHTML = cases.map(c => `
                 <div class="case-card" data-status="${c.riskLevel}">
                     <div class="case-header">
                         <div>
+                            ${c.isIllustrative ? '<div class="illustrative-badge">Illustrative Example</div><br>' : ''}
                             <div class="case-title">${c.protocol}</div>
                             <span class="case-chain">${c.chain}</span>
                         </div>
@@ -136,12 +144,12 @@
                     <p class="case-summary">${c.summary}</p>
                     <div class="case-metrics">
                         <div><div class="metric-value">${c.riskScore ?? '--'}</div><div class="metric-label">Risk Score</div></div>
-                        <div><div class="metric-value">${c.usersAtRisk ? (c.usersAtRisk / 1000).toFixed(0) + 'K' : '--'}</div><div class="metric-label">Users at Risk</div></div>
+                        <div><div class="metric-value">${c.usersAtRisk ? (c.usersAtRisk / 1000).toFixed(1).replace(/\.0$/, '') + 'K' : '--'}</div><div class="metric-label">Users at Risk</div></div>
                     </div>
                     <div class="case-layers">
                         ${Object.entries(c.layers || {}).map(([key, score]) => `<span class="layer-tag">${LAYER_LABELS[key] || key}: ${score}</span>`).join('')}
                     </div>
-                    <a href="${c.slug === 'smart-solve-defi' ? '/case-smart-solve' : `/dashboard?address=${encodeURIComponent(c.protocol)}`}" class="btn btn-primary">View Details</a>
+                    <a href="${caseHref(c)}" class="btn btn-primary">View Details</a>
                 </div>
             `).join('');
         }

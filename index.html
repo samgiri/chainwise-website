@@ -143,6 +143,24 @@
         .follow-row { display: flex; gap: 1.25rem; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap; }
         .follow-row a { color: var(--text2); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: color 0.2s; }
         .follow-row a:hover { color: var(--orange); }
+
+        .research-intro { max-width: 760px; margin: 0 auto 2.5rem; text-align: center; color: var(--text2); font-size: 1.05rem; line-height: 1.7; }
+        .case-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem; }
+        .case-card { background: var(--bg2); border: 1px solid #2a3047; border-radius: 8px; padding: 1.75rem; display: flex; flex-direction: column; transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; }
+        .case-card:hover { transform: translateY(-4px); border-color: var(--orange); box-shadow: 0 12px 32px rgba(247, 147, 26, 0.15); }
+        .case-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.75rem; }
+        .case-card-name { font-size: 1.15rem; font-weight: 700; }
+        .case-card-chain { font-size: 0.8rem; color: var(--text2); background: rgba(247, 147, 26, 0.08); padding: 0.2rem 0.6rem; border-radius: 3px; display: inline-block; margin-top: 0.4rem; }
+        .case-score-badge { text-align: center; flex-shrink: 0; }
+        .case-score-value { font-size: 1.6rem; font-weight: 700; line-height: 1; }
+        .case-score-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-top: 0.2rem; }
+        .case-illustrative-tag { display: inline-block; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; padding: 0.25rem 0.5rem; border-radius: 3px; background: rgba(160, 160, 160, 0.15); color: #c9c9c9; border: 1px solid rgba(160, 160, 160, 0.3); margin-bottom: 0.6rem; align-self: flex-start; }
+        .case-card-summary { color: var(--text2); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.25rem; flex: 1; }
+        .case-card-link { color: var(--orange); text-decoration: none; font-size: 0.9rem; font-weight: 600; }
+        .case-card-link:hover { text-decoration: underline; }
+        .research-browse-link { text-align: center; margin-bottom: 2.5rem; }
+        .research-browse-link a { color: var(--orange); text-decoration: none; font-weight: 600; }
+        .research-browse-link a:hover { text-decoration: underline; }
         .footer-newsletter { display: flex; gap: 0.5rem; margin: 1.25rem 0; max-width: 320px; }
         .footer-newsletter input { flex: 1; min-width: 0; padding: 0.6rem 0.75rem; background: var(--bg); border: 1px solid #2a3047; border-radius: 6px; color: var(--text); font-size: 0.85rem; }
         .footer-newsletter input:focus { outline: none; border-color: var(--orange); }
@@ -493,10 +511,14 @@
         </div>
 
         <h2 class="section-title" id="research">Research & Case Studies</h2>
+        <p class="research-intro">Real, on-chain forensic breakdowns using our 8-layer detection framework — starting with Smart Solve DeFi, a live case with a $100M+ estimated loss. We're also publishing illustrative examples that show how different risk patterns look across the framework while we verify more real-world cases.</p>
+        <div class="case-grid" id="homeCaseGrid">
+            <div class="case-card"><p class="case-card-summary">Loading case studies…</p></div>
+        </div>
+        <p class="research-browse-link"><a href="/research">Browse all case studies →</a></p>
         <div class="capture-box">
-            <p style="color:var(--text2); font-size:1.1rem; margin-bottom:1.5rem;">Detailed case studies and threat analysis are in progress.</p>
             <h3>Get the case study PDFs</h3>
-            <p class="capture-sub">Leave your email and we'll send each case study the moment it's published.</p>
+            <p class="capture-sub">Leave your email and we'll send each new case study the moment it's published.</p>
             <form class="capture-form" data-capture-source="research">
                 <input type="email" class="capture-input" placeholder="you@example.com" required>
                 <button type="submit" class="btn btn-primary">Notify Me</button>
@@ -654,6 +676,59 @@
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
             });
+        })();
+
+        (function () {
+            const grid = document.getElementById('homeCaseGrid');
+            if (!grid) return;
+
+            function riskColor(score) {
+                if (score === null || score === undefined) return '#6b7280';
+                if (score <= 33) return '#10b981';
+                if (score <= 66) return '#f59e0b';
+                return '#ef4444';
+            }
+
+            function caseHref(c) {
+                if (c.slug === 'smart-solve-defi') return '/case-smart-solve';
+                if (c.isIllustrative) return `/case-detail?slug=${encodeURIComponent(c.slug)}`;
+                return `/dashboard?address=${encodeURIComponent(c.protocol)}`;
+            }
+
+            async function loadCases() {
+                try {
+                    const response = await fetch('/api/cases');
+                    if (!response.ok) throw new Error(`API returned ${response.status}`);
+                    const data = await response.json();
+                    const cases = (data.cases || []).slice(0, 4);
+                    if (!cases.length) {
+                        grid.innerHTML = '<div class="case-card"><p class="case-card-summary">No published case studies yet. Check back soon.</p></div>';
+                        return;
+                    }
+                    grid.innerHTML = cases.map(c => `
+                        <div class="case-card">
+                            ${c.isIllustrative ? '<span class="case-illustrative-tag">Illustrative Example</span>' : ''}
+                            <div class="case-card-top">
+                                <div>
+                                    <div class="case-card-name">${c.protocol}</div>
+                                    <span class="case-card-chain">${c.chain}</span>
+                                </div>
+                                <div class="case-score-badge">
+                                    <div class="case-score-value" style="color:${riskColor(c.riskScore)};">${c.riskScore ?? '--'}</div>
+                                    <div class="case-score-label" style="color:${riskColor(c.riskScore)};">${c.riskLevel || ''}</div>
+                                </div>
+                            </div>
+                            <p class="case-card-summary">${c.summary}</p>
+                            <a href="${caseHref(c)}" class="case-card-link">View Full Case Study →</a>
+                        </div>
+                    `).join('');
+                } catch (error) {
+                    console.error('Error loading case studies:', error);
+                    grid.innerHTML = '<div class="case-card"><p class="case-card-summary">Could not load case studies right now. Please try again later.</p></div>';
+                }
+            }
+
+            loadCases();
         })();
 
         (function () {
