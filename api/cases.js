@@ -1,10 +1,10 @@
 // Vercel serverless function: GET /api/cases
 //
-// Lists published case studies. Currently just Smart Solve DeFi - see
-// api/_lib/caseStudies.js for the single source of truth (also used by
-// /api/analyze's demo lookup). `inProgress: true` matches the homepage's
-// Research & Case Studies section, which already tells visitors more
-// cases are coming rather than fabricating ones that don't exist.
+// Lists published case studies - see api/_lib/caseStudies.js for the single
+// source of truth (also used by /api/analyze's demo lookup). Smart Solve
+// DeFi is a real, published case study; the rest carry `isIllustrative: true`
+// and are hypothetical/composite examples, not real findings.
+// `inProgress: true` tells visitors more verified case studies are coming.
 
 const { CASE_STUDIES } = require('./_lib/caseStudies');
 

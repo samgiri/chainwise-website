@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Study | ChainWise</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%23FF3D5C'/><stop offset='50%25' stop-color='%23FF8C3D'/><stop offset='100%25' stop-color='%2300D4FF'/></linearGradient></defs><rect width='200' height='200' rx='36' fill='%230F1629'/><path d='M160 30A70 70 0 0 0 40 100A70 70 0 0 0 160 170' stroke='url(%23g)' stroke-width='20' fill='none' stroke-linecap='round'/><circle cx='100' cy='100' r='10' fill='%23FF8C3D'/></svg>">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg-primary: #0a0e27; --bg-secondary: #111629; --bg-tertiary: #1a1f3a;
+            --text-primary: #e0e0e0; --text-secondary: #a0a8c8;
+            --orange: #f7931a; --purple: #7b3fe4;
+            --success: #10b981; --warning: #f59e0b; --critical: #ef4444; --neutral: #6b7280;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto; background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-tertiary) 100%); color: var(--text-primary); min-height: 100vh; }
+        nav { background: rgba(10, 14, 39, 0.95); padding: 1rem 2rem; display: flex; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+        nav .logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; font-size: 1.3rem; font-weight: 700; color: var(--text-primary); }
+        nav .logo svg { width: 32px; height: 32px; }
+        nav .nav-links { display: flex; gap: 2rem; list-style: none; }
+        nav a { color: var(--text-primary); text-decoration: none; transition: color 0.3s; }
+        nav a:hover { color: var(--orange); }
+        .breadcrumb { padding: 1rem 2rem; background: rgba(247, 147, 26, 0.05); font-size: 0.9rem; color: var(--text-secondary); }
+        .breadcrumb a { color: var(--orange); text-decoration: none; }
+
+        .illustrative-banner { max-width: 1200px; margin: 1.5rem auto 0; padding: 1rem 1.5rem; background: rgba(160, 160, 160, 0.1); border: 1px solid rgba(160, 160, 160, 0.3); border-radius: 6px; color: var(--text-secondary); font-size: 0.9rem; display: none; }
+        .illustrative-banner strong { color: #d8d8d8; }
+
+        .hero-section { background: linear-gradient(180deg, rgba(247, 147, 26, 0.15) 0%, transparent 100%); padding: 3rem 2rem; }
+        .hero-content { max-width: 1200px; margin: 0 auto; }
+        .hero-header { display: grid; grid-template-columns: 1fr auto; gap: 2rem; align-items: center; margin-bottom: 2rem; }
+        .hero-title h1 { font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(90deg, var(--orange) 0%, var(--purple) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-meta { display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; }
+        .meta-badge { padding: 0.5rem 1rem; background: rgba(247, 147, 26, 0.1); border: 1px solid rgba(247, 147, 26, 0.3); border-radius: 4px; font-size: 0.9rem; }
+
+        .risk-ring-wrap { display: flex; justify-content: center; }
+        .risk-ring { --ring-color: var(--neutral); --ring-pct: 0; width: 160px; height: 160px; border-radius: 50%; background: conic-gradient(var(--ring-color) calc(var(--ring-pct) * 1%), var(--bg-tertiary) 0); display: flex; align-items: center; justify-content: center; position: relative; }
+        .risk-ring::before { content: ''; position: absolute; inset: 10px; border-radius: 50%; background: var(--bg-secondary); }
+        .risk-ring-inner { position: relative; z-index: 1; text-align: center; }
+        .risk-score { font-size: 2.2rem; font-weight: 700; }
+        .risk-label { font-size: 0.85rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+
+        .summary-text { font-size: 1.1rem; color: #c0c0c0; line-height: 1.8; margin-bottom: 1.5rem; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 3rem 2rem; }
+        section { margin-bottom: 3rem; }
+        h2 { font-size: 1.8rem; margin-bottom: 1.5rem; color: var(--orange); border-bottom: 2px solid rgba(247, 147, 26, 0.3); padding-bottom: 0.5rem; }
+
+        .layers-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+        .layer-card { background: rgba(20, 25, 45, 0.8); border: 1px solid rgba(247, 147, 26, 0.2); border-radius: 8px; padding: 1.5rem; position: relative; overflow: hidden; }
+        .layer-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--orange) 0%, var(--purple) 100%); }
+        .layer-name { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--orange); }
+        .layer-score { font-size: 2rem; font-weight: bold; color: #ff6b6b; margin-bottom: 1rem; }
+        .score-bar { background: rgba(247, 147, 26, 0.1); border-radius: 4px; height: 8px; overflow: hidden; margin-bottom: 0.5rem; }
+        .score-fill { height: 100%; background: linear-gradient(90deg, var(--orange), var(--purple)); transition: width 0.6s ease; }
+        .layer-desc { font-size: 0.85rem; color: var(--text-secondary); margin-top: 1rem; line-height: 1.5; }
+
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
+        .metric-card { background: rgba(20, 25, 45, 0.8); border: 1px solid rgba(247, 147, 26, 0.2); padding: 1.5rem; border-radius: 8px; text-align: center; }
+        .metric-value { font-size: 1.8rem; font-weight: bold; color: var(--orange); margin-bottom: 0.5rem; }
+        .metric-label { font-size: 0.9rem; color: var(--text-secondary); }
+
+        .timeline { position: relative; padding-left: 2rem; border-left: 2px solid rgba(247, 147, 26, 0.3); }
+        .timeline-item { position: relative; margin-bottom: 2rem; }
+        .timeline-item:last-child { margin-bottom: 0; }
+        .timeline-item::before { content: ''; position: absolute; left: -2.4rem; top: 0.25rem; width: 12px; height: 12px; border-radius: 50%; background: linear-gradient(90deg, var(--orange), var(--purple)); }
+        .timeline-date { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--orange); margin-bottom: 0.25rem; }
+        .timeline-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.35rem; }
+        .timeline-desc { color: #c0c0c0; font-size: 0.95rem; line-height: 1.6; }
+
+        .flow-table { width: 100%; border-collapse: collapse; background: rgba(20, 25, 45, 0.8); border: 1px solid rgba(247, 147, 26, 0.2); border-radius: 8px; overflow: hidden; }
+        .flow-table th, .flow-table td { padding: 0.9rem 1rem; text-align: left; font-size: 0.9rem; border-bottom: 1px solid rgba(247, 147, 26, 0.1); }
+        .flow-table th { color: var(--orange); background: rgba(247, 147, 26, 0.08); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .flow-table td { color: #c0c0c0; }
+        .flow-table tr:last-child td { border-bottom: none; }
+        .flow-step { color: var(--orange); font-weight: 700; }
+        .flow-wrap-note { overflow-x: auto; }
+
+        .evidence-list { background: rgba(20, 25, 45, 0.8); border-left: 4px solid var(--orange); padding: 1.5rem; border-radius: 4px; }
+        .evidence-item { margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(247, 147, 26, 0.1); display: flex; gap: 0.75rem; }
+        .evidence-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+        .evidence-level { font-weight: 600; flex-shrink: 0; }
+        .level-CRITICAL { color: #ff6b6b; }
+        .level-HIGH { color: var(--orange); }
+        .level-MEDIUM { color: #ffc107; }
+        .evidence-text { color: #c0c0c0; font-size: 0.95rem; }
+
+        .actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0; }
+        .btn { padding: 1rem; border-radius: 4px; border: 1px solid rgba(247, 147, 26, 0.3); background: rgba(247, 147, 26, 0.1); color: var(--orange); cursor: pointer; text-decoration: none; text-align: center; transition: all 0.3s; font-weight: 500; }
+        .btn:hover { background: rgba(247, 147, 26, 0.2); border-color: var(--orange); }
+        .btn-primary { background: linear-gradient(90deg, var(--orange) 0%, var(--purple) 100%); border: none; color: white; }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-disabled-wrap { position: relative; display: inline-block; width: 100%; }
+        .btn-disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+        .btn-disabled-wrap::after { content: 'Coming soon'; position: absolute; bottom: 115%; left: 50%; transform: translateX(-50%); background: #000; color: #fff; padding: 0.35rem 0.6rem; border-radius: 4px; font-size: 0.75rem; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+        .btn-disabled-wrap:hover::after { opacity: 1; }
+
+        .disclaimer { font-size: 0.85rem; color: var(--text-secondary); font-style: italic; }
+        footer { background: rgba(10, 14, 39, 0.95); padding: 2rem; text-align: center; color: var(--text-secondary); border-top: 1px solid rgba(247, 147, 26, 0.2); }
+        .loading, .empty { text-align: center; padding: 4rem 2rem; color: var(--text-secondary); }
+        @media (max-width: 768px) { .hero-header { grid-template-columns: 1fr; } .hero-title h1 { font-size: 1.8rem; } .layers-grid { grid-template-columns: 1fr; } .flow-wrap-note { overflow-x: auto; } }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/" class="logo">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#FF3D5C"/>
+                        <stop offset="50%" style="stop-color:#FF8C3D"/>
+                        <stop offset="100%" style="stop-color:#00D4FF"/>
+                    </linearGradient>
+                </defs>
+                <rect width="200" height="200" fill="#0F1629" rx="20"/>
+                <path d="M 160 30 A 70 70 0 0 0 40 100 A 70 70 0 0 0 160 170" stroke="url(#logoGrad)" stroke-width="20" fill="none" stroke-linecap="round"/>
+                <rect x="115" y="75" width="50" height="50" rx="4" fill="none" stroke="url(#logoGrad)" stroke-width="3"/>
+                <circle cx="140" cy="105" r="4" fill="#FF8C3D"/>
+                <circle cx="100" cy="100" r="6" fill="#FF8C3D"/>
+            </svg>
+            <span>The Chainwise</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/research">Research</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+        </ul>
+    </nav>
+
+    <div class="breadcrumb">
+        <a href="/research">Research</a> / <span id="breadcrumbName">Case Study</span>
+    </div>
+
+    <div class="illustrative-banner" id="illustrativeBanner">
+        <strong>Illustrative example.</strong> <span id="illustrativeNote"></span>
+    </div>
+
+    <div id="caseContent">
+        <div class="loading">Loading case study...</div>
+    </div>
+
+    <footer>
+        <p>ChainWise | Institutional-Grade DeFi Risk Intelligence</p>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem;">Built by Satoshi Lab</p>
+    </footer>
+
+    <script>
+        const LAYER_INFO = {
+            patterns: { name: 'Patterns', desc: 'Source/code pattern red flags: known vulnerability signatures, honeypot patterns, hidden fee/mint functions.' },
+            bytecode: { name: 'Bytecode', desc: 'Compiled bytecode risk: unverified source, proxy/upgradeable patterns, unusual opcodes or obfuscation.' },
+            treasury: { name: 'Treasury', desc: 'On-chain treasury wallet analysis: concentration of funds, suspicious outflows.' },
+            withdrawals: { name: 'Withdrawals', desc: 'Fund flow analysis: withdrawal queue health, abnormal withdrawal restrictions or halts.' },
+            bridges: { name: 'Bridges', desc: 'Cross-chain bridge exposure and bridge-related risk.' },
+            offRamps: { name: 'Off-Ramps', desc: 'Exchange/off-ramp cash-out concentration and velocity.' },
+            sybil: { name: 'Sybil', desc: 'Sybil / wallet-clustering risk among holders, referrers, or early participants.' },
+            attribution: { name: 'Attribution', desc: 'Operator/team identity risk: anonymity, prior rug pulls or failed projects by the same actors.' },
+        };
+        const LAYER_ORDER = ['patterns', 'bytecode', 'treasury', 'withdrawals', 'bridges', 'offRamps', 'sybil', 'attribution'];
+
+        function riskBand(score) {
+            if (score === null || score === undefined) return { color: 'var(--neutral)', tier: 'NOT ANALYZED' };
+            if (score <= 33) return { color: 'var(--success)', tier: 'LOW' };
+            if (score <= 66) return { color: 'var(--warning)', tier: 'MEDIUM' };
+            if (score <= 89) return { color: 'var(--critical)', tier: 'HIGH' };
+            return { color: 'var(--critical)', tier: 'CRITICAL' };
+        }
+
+        function getSlug() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('slug');
+        }
+
+        async function loadCase() {
+            const slug = getSlug();
+            const contentEl = document.getElementById('caseContent');
+            if (!slug) {
+                contentEl.innerHTML = '<div class="empty">No case study specified.</div>';
+                return;
+            }
+            try {
+                const response = await fetch('/api/cases');
+                if (!response.ok) throw new Error(`API returned ${response.status}`);
+                const data = await response.json();
+                const caseData = (data.cases || []).find(c => c.slug === slug);
+                if (!caseData) {
+                    contentEl.innerHTML = '<div class="empty">Case study not found. <a href="/research" style="color:#f7931a;">Back to Research</a></div>';
+                    return;
+                }
+                render(caseData);
+            } catch (error) {
+                console.error('Error loading case data:', error);
+                contentEl.innerHTML = '<div class="empty">Could not load this case study right now. Please try again later.</div>';
+            }
+        }
+
+        function render(c) {
+            document.title = `${c.protocol} - Risk Analysis | ChainWise`;
+            document.getElementById('breadcrumbName').textContent = `${c.protocol} Case Study`;
+
+            if (c.isIllustrative) {
+                document.getElementById('illustrativeBanner').style.display = 'block';
+                document.getElementById('illustrativeNote').textContent = c.illustrativeNote || 'This is a hypothetical example, not a real protocol.';
+            }
+
+            const band = riskBand(c.riskScore);
+            const contentEl = document.getElementById('caseContent');
+            contentEl.innerHTML = `
+                <div class="hero-section">
+                    <div class="hero-content">
+                        <div class="hero-header">
+                            <div class="hero-title">
+                                <h1>${c.protocol}</h1>
+                                <div class="hero-meta">
+                                    <span class="meta-badge">${c.chain}</span>
+                                    ${c.usersAtRisk ? `<span class="meta-badge">${c.usersAtRisk.toLocaleString()}+ Users at Risk</span>` : ''}
+                                    ${c.confidence ? `<span class="meta-badge">${c.confidence}% Confidence</span>` : ''}
+                                </div>
+                            </div>
+                            <div class="risk-ring-wrap">
+                                <div class="risk-ring" style="--ring-color:${band.color}; --ring-pct:${c.riskScore ?? 0};">
+                                    <div class="risk-ring-inner">
+                                        <div class="risk-score">${c.riskScore ?? '--'}</div>
+                                        <div class="risk-label" style="color:${band.color};">${c.riskLevel || band.tier}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="summary-text">${c.summary}</p>
+                    </div>
+                </div>
+
+                <div class="container">
+                    <section>
+                        <h2>8-Layer Risk Detection Framework</h2>
+                        <div class="layers-grid">
+                            ${LAYER_ORDER.map((key, i) => {
+                                const score = (c.layers || {})[key] ?? 0;
+                                const info = LAYER_INFO[key];
+                                return `
+                                    <div class="layer-card">
+                                        <div class="layer-name">${i + 1}. ${info.name}</div>
+                                        <div class="layer-score">${score}</div>
+                                        <div class="score-bar"><div class="score-fill" style="width:${score}%"></div></div>
+                                        <div class="layer-desc">${info.desc}</div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </section>
+
+                    <section>
+                        <h2>Key Risk Metrics</h2>
+                        <div class="metrics-grid">
+                            <div class="metric-card"><div class="metric-value">${c.estimatedLoss || '--'}</div><div class="metric-label">Estimated Loss</div></div>
+                            <div class="metric-card"><div class="metric-value">${c.usersAtRisk ? c.usersAtRisk.toLocaleString() : '--'}</div><div class="metric-label">Users at Risk</div></div>
+                            <div class="metric-card"><div class="metric-value">${Array.isArray(c.collapseTimelineDays) ? c.collapseTimelineDays.join('-') : '--'}</div><div class="metric-label">Days to Collapse (Est.)</div></div>
+                            <div class="metric-card"><div class="metric-value">${c.operatorControlPct ?? '--'}%</div><div class="metric-label">Operator Control</div></div>
+                        </div>
+                    </section>
+
+                    ${(c.timeline && c.timeline.length) ? `
+                    <section>
+                        <h2>Timeline of Events</h2>
+                        <div class="timeline">
+                            ${c.timeline.map(t => `
+                                <div class="timeline-item">
+                                    <div class="timeline-date">${t.date}</div>
+                                    <div class="timeline-title">${t.title}</div>
+                                    <div class="timeline-desc">${t.description}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </section>` : ''}
+
+                    ${(c.walletFlow && c.walletFlow.length) ? `
+                    <section>
+                        <h2>Wallet Flow Summary</h2>
+                        <div class="flow-wrap-note">
+                            <table class="flow-table">
+                                <thead><tr><th>Step</th><th>From</th><th>To</th><th>What happens</th></tr></thead>
+                                <tbody>
+                                    ${c.walletFlow.map(w => `
+                                        <tr>
+                                            <td class="flow-step">${w.step}</td>
+                                            <td>${w.from}</td>
+                                            <td>${w.to}</td>
+                                            <td>${w.description}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>` : ''}
+
+                    <section>
+                        <h2>Alerts</h2>
+                        <div class="evidence-list">
+                            ${(c.alerts && c.alerts.length) ? c.alerts.map(a => `
+                                <div class="evidence-item">
+                                    <div class="evidence-level level-${a.level}">${a.level}</div>
+                                    <div class="evidence-text">${a.message}</div>
+                                </div>
+                            `).join('') : '<div class="evidence-item"><div class="evidence-text">No alerts recorded.</div></div>'}
+                        </div>
+                    </section>
+
+                    <section>
+                        <div class="actions">
+                            <a href="/research" class="btn">&larr; Back to Research</a>
+                            <span class="btn-disabled-wrap"><button class="btn btn-disabled" disabled title="Coming soon">Download PDF Report</button></span>
+                        </div>
+                    </section>
+
+                    <section>
+                        <h2>Methodology</h2>
+                        <p class="summary-text">
+                            This analysis uses ChainWise's 8-layer risk detection framework: Patterns, Bytecode, Treasury,
+                            Withdrawals, Bridges, Off-Ramps, Sybil, and Attribution. Per-layer descriptions above reflect what
+                            each layer generally measures, not case-specific forensic claims beyond what's listed under Alerts.
+                        </p>
+                        <p class="disclaimer">${c.isIllustrative ? 'Illustrative example for educational purposes only. Not a real protocol, not financial advice.' : 'Not financial advice. Independent verification recommended.'}</p>
+                    </section>
+                </div>
+            `;
+        }
+
+        loadCase();
+    </script>
+</body>
+</html>
