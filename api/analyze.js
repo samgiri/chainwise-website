@@ -123,6 +123,15 @@ function riskLevelFromScore(score) {
   return 'CRITICAL';
 }
 
+// Only cache genuine AI-generated results. A degraded response (heuristic-only fallback,
+// or "not analyzed") must never get locked into KV for CACHE_TTL_SECONDS - if it did, fixing
+// the underlying LLM issue (bad key, bad model name, transient outage) wouldn't show up for
+// up to 6 hours per address/protocol, since a Vercel redeploy does not touch the external KV
+// store. Also used on read to treat any already-poisoned cache entry as a miss.
+function isCacheableResult(result) {
+  return Boolean(result && result.aiGenerated === true);
+}
+
 function hasFullLayers(layers) {
   return Boolean(layers) && LAYER_KEYS.every((k) => typeof layers[k] === 'number');
 }
@@ -291,7 +300,9 @@ Call the submit_risk_analysis tool with your findings. Respond only via the tool
 
   if (!res.ok) {
     const body = await res.text().catch(() => '');
-    throw new Error(`Claude API returned ${res.status}: ${body.slice(0, 300)}`);
+    const err = new Error(`Claude API returned ${res.status}: ${body.slice(0, 300)}`);
+    err.status = res.status;
+    throw err;
   }
 
   const data = await res.json();
@@ -380,7 +391,7 @@ module.exports = async (req, res) => {
   const cacheKey = `analyze:${chainKey || 'unknown'}:${target.toLowerCase()}`;
 
   const cached = await kvGet(cacheKey);
-  if (cached) {
+  if (isCacheableResult(cached)) {
     res.status(200).json({ ...cached, cached: true });
     return;
   }
@@ -408,12 +419,21 @@ module.exports = async (req, res) => {
     try {
       analysis = await analyzeWithClaude(target, chainConfig.label, onChain);
     } catch (err) {
-      console.error('[analyze] Claude call failed for address path', err);
+      // TEMP DEBUG (remove once ANTHROPIC_API_KEY 401/model-name issue is confirmed fixed in prod):
+      // logs enough to diagnose without ever printing the key itself.
+      console.error('[analyze] Claude call failed for address path', {
+        message: err.message,
+        status: err.status,
+        model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-5',
+        hasApiKey: Boolean(process.env.ANTHROPIC_API_KEY),
+      });
       llmError = `LLM scoring failed, showing on-chain heuristic only: ${err.message}`;
     }
 
     const result = buildAddressResult({ analysis, target, chainConfig, onChain, llmError });
-    await kvSet(cacheKey, result);
+    if (isCacheableResult(result)) {
+      await kvSet(cacheKey, result);
+    }
     res.status(200).json(result);
     return;
   }
@@ -424,7 +444,14 @@ module.exports = async (req, res) => {
   try {
     analysis = await analyzeWithClaude(target, rawChain, null);
   } catch (err) {
-    console.error('[analyze] Claude API call failed', err);
+    // TEMP DEBUG (remove once ANTHROPIC_API_KEY 401/model-name issue is confirmed fixed in prod):
+    // logs enough to diagnose without ever printing the key itself.
+    console.error('[analyze] Claude API call failed', {
+      message: err.message,
+      status: err.status,
+      model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-5',
+      hasApiKey: Boolean(process.env.ANTHROPIC_API_KEY),
+    });
     res.status(200).json(notAnalyzedResponse(target, rawChain, { error: 'Live analysis temporarily unavailable.' }));
     return;
   }
@@ -465,6 +492,8 @@ module.exports = async (req, res) => {
     };
   }
 
-  await kvSet(cacheKey, result);
+  if (isCacheableResult(result)) {
+    await kvSet(cacheKey, result);
+  }
   res.status(200).json(result);
 };
