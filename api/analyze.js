@@ -27,17 +27,19 @@ const CACHE_TTL_SECONDS = 6 * 60 * 60; // 6 hours
 const ADDRESS_REGEX = /^0x[a-fA-F0-9]{40}$/;
 const RPC_TIMEOUT_MS = 8000;
 
-// Free, no-API-key-required public RPC endpoints. Each chain lists one or more
-// fallbacks; rpcCall() tries them in order and only fails if all of them fail.
+// Free, no-API-key-required public RPC endpoints. Each chain lists two endpoints from
+// different providers (never a single point of failure); rpcCall() tries them in order
+// and only fails if all of them fail. Do not add Ankr URLs here - rpc.ankr.com/* now
+// requires an API key for these methods and will fail in production with a 401.
 const CHAIN_CONFIG = {
-  ethereum: { rpcs: ['https://eth.llamarpc.com', 'https://rpc.ankr.com/eth'], symbol: 'ETH', label: 'Ethereum' },
-  polygon: { rpcs: ['https://polygon-rpc.com'], symbol: 'MATIC', label: 'Polygon' },
-  arbitrum: { rpcs: ['https://arb1.arbitrum.io/rpc'], symbol: 'ETH', label: 'Arbitrum' },
-  optimism: { rpcs: ['https://mainnet.optimism.io'], symbol: 'ETH', label: 'Optimism' },
-  base: { rpcs: ['https://mainnet.base.org'], symbol: 'ETH', label: 'Base' },
-  bsc: { rpcs: ['https://bsc-dataseed.binance.org'], symbol: 'BNB', label: 'BSC' },
-  avalanche: { rpcs: ['https://api.avax.network/ext/bc/C/rpc'], symbol: 'AVAX', label: 'Avalanche' },
-  zksync: { rpcs: ['https://mainnet.era.zksync.io'], symbol: 'ETH', label: 'zkSync Era' },
+  ethereum: { rpcs: ['https://eth.llamarpc.com', 'https://ethereum-rpc.publicnode.com'], symbol: 'ETH', label: 'Ethereum' },
+  polygon: { rpcs: ['https://polygon-rpc.com', 'https://polygon-bor-rpc.publicnode.com'], symbol: 'MATIC', label: 'Polygon' },
+  arbitrum: { rpcs: ['https://arb1.arbitrum.io/rpc', 'https://arbitrum-one-rpc.publicnode.com'], symbol: 'ETH', label: 'Arbitrum' },
+  optimism: { rpcs: ['https://mainnet.optimism.io', 'https://optimism-rpc.publicnode.com'], symbol: 'ETH', label: 'Optimism' },
+  base: { rpcs: ['https://mainnet.base.org', 'https://base-rpc.publicnode.com'], symbol: 'ETH', label: 'Base' },
+  bsc: { rpcs: ['https://bsc-dataseed.binance.org', 'https://bsc-rpc.publicnode.com'], symbol: 'BNB', label: 'BSC' },
+  avalanche: { rpcs: ['https://api.avax.network/ext/bc/C/rpc', 'https://avalanche-c-chain-rpc.publicnode.com'], symbol: 'AVAX', label: 'Avalanche' },
+  zksync: { rpcs: ['https://mainnet.era.zksync.io', 'https://zksync-era-rpc.publicnode.com'], symbol: 'ETH', label: 'zkSync Era' },
 };
 
 const LAYER_DEFINITIONS = `
