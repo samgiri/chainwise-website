@@ -91,7 +91,7 @@ const ILLUSTRATIVE_CASES = [
     isIllustrative: true,
     illustrativeNote: 'Hypothetical, composite example built for educational purposes. It does not describe a real protocol or company, and any resemblance to an actual project is coincidental.',
     chain: 'BSC',
-    riskScore: 88,
+    riskScore: 92,
     riskLevel: 'CRITICAL',
     summary: 'Illustrative example: a Southeast Asia-marketed staking club built almost entirely on multi-level referral commissions rather than underlying yield.',
     confidence: 92,
