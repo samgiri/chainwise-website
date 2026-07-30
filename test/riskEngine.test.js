@@ -46,6 +46,19 @@ test('computeDimensions reports insufficient_data (not a fabricated score) when 
   });
 });
 
+test('the three fully roadmap-blocked dimensions (liquidity, ownership, exploit signals) read as "not built yet," never as a per-contract error', () => {
+  const onChain = {
+    isContract: true, bytecode: '0x6080604052', codeSizeBytes: 10, balanceNative: 0, txCount: 0,
+    blockNumber: 1000, proxyImplementation: null, proxyAdmin: null, ownerAddress: null, ownerIsContract: null,
+  };
+  const dims = computeDimensions({ onChain, verification: null, chainConfig, address, retrievedAt });
+  ['liquidity', 'ownership', 'exploitSignals'].forEach((key) => {
+    const dim = dims.find((d) => d.key === key);
+    assert.match(dim.explanation, /roadmap gap, not an error/i);
+    assert.ok(!/we could not gather enough information/i.test(dim.explanation), `${key} must not use the generic per-contract "couldn't gather evidence" wording`);
+  });
+});
+
 test('computeDimensions detects a known admin selector (pause()) from real bytecode', () => {
   const onChain = {
     isContract: true, bytecode: '0x600035' + '8456cb59' + 'deadbeef', codeSizeBytes: 20, balanceNative: 0, txCount: 1,

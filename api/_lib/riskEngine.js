@@ -44,6 +44,28 @@ function insufficientDimension(key, name, dataSource, limitations) {
   };
 }
 
+// Distinct from insufficientDimension: this is for dimensions that have NO code path to
+// ever assess them yet (no integration exists at all, for any contract), versus a
+// per-contract evidence gap. The wording matters - "not built yet" reads very differently
+// from "something went wrong trying to check this contract," and users should never
+// confuse a roadmap gap for a broken feature or a bad sign about the contract itself.
+function notIntegratedDimension(key, name, dataSource, limitations) {
+  return {
+    key,
+    name,
+    state: 'insufficient_data',
+    level: null,
+    levelLabel: 'Insufficient data',
+    subscore: null,
+    confidence: null,
+    findings: [],
+    dataSource,
+    lastChecked: new Date().toISOString(),
+    explanation: 'This risk dimension is not available yet in ChainWise Beta - it depends on a third-party data source that is not connected to the engine (see the limitation below). This is a roadmap gap, not an error, and it is not specific to this contract.',
+    limitations,
+  };
+}
+
 function notApplicableDimension(key, name, reason) {
   return {
     key,
@@ -213,14 +235,14 @@ function computeTokenRestrictions({ verification, chainConfig }) {
 }
 
 function computeLiquidity(key = 'liquidity', name = 'Liquidity & Market Structure') {
-  return insufficientDimension(key, name, 'Not yet integrated', [
-    'Liquidity depth, lock status, and market-structure analysis require a DEX/liquidity data provider that is not yet integrated into this engine.',
+  return notIntegratedDimension(key, name, 'Not yet integrated', [
+    'Liquidity depth, lock status, and market-structure analysis require a DEX/liquidity data provider that is not yet integrated into this engine. (A free, RPC-only path exists for standard Uniswap-V2-style pairs - reading factory/pair reserves directly on-chain - but it has not shipped yet because it needs to be verified against live pairs before release.)',
   ]);
 }
 
 function computeOwnershipConcentration(key = 'ownership', name = 'Ownership & Wallet Concentration') {
-  return insufficientDimension(key, name, 'Not yet integrated', [
-    'Token holder distribution and wallet-concentration analysis require a chain-indexing provider that is not yet integrated into this engine.',
+  return notIntegratedDimension(key, name, 'Not yet integrated', [
+    'Token holder distribution and wallet-concentration analysis require a chain-indexing provider (e.g. Covalent, Moralis, or a paid explorer tier) that is not yet integrated into this engine.',
   ]);
 }
 
@@ -259,7 +281,7 @@ function computeGovernance({ onChain, chainConfig, address, retrievedAt }) {
 }
 
 function computeExploitSignals(key = 'exploitSignals', name = 'Exploit, Anomaly & External Signals') {
-  return insufficientDimension(key, name, 'Not yet integrated', [
+  return notIntegratedDimension(key, name, 'Not yet integrated', [
     'Known-exploit and anomaly-feed correlation requires a threat-intelligence data source that is not yet integrated into this engine.',
   ]);
 }

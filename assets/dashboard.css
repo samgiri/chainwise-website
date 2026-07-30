@@ -275,10 +275,13 @@ main {
 .status-pill.partial { background: rgba(245,158,11,0.15); color: var(--color-warning); border: 1px solid var(--color-warning); }
 .status-pill.insufficient { background: rgba(139,147,184,0.15); color: var(--color-unknown); border: 1px solid var(--color-unknown); }
 
-.result-meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+.result-meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem 1.5rem; margin-bottom: 1.5rem; }
+.meta-item { min-width: 0; }
+.meta-item.meta-item-wide { grid-column: 1 / -1; }
 .meta-item .meta-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-text-secondary); margin-bottom: 0.2rem; }
-.meta-item .meta-value { font-size: 0.92rem; font-weight: 600; word-break: break-all; }
-.address-copy-row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.meta-item .meta-value { font-size: 0.92rem; font-weight: 600; overflow-wrap: anywhere; word-break: break-word; }
+.address-copy-row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; min-width: 0; }
+.address-copy-row code { overflow-wrap: anywhere; word-break: break-word; min-width: 0; }
 .copy-btn, .explorer-link-btn {
     font-size: 0.75rem; padding: 0.2rem 0.55rem; border-radius: 4px; border: 1px solid var(--color-border);
     background: var(--color-bg-tertiary); color: var(--color-text-secondary); cursor: pointer; text-decoration: none;
