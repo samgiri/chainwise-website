@@ -4,6 +4,8 @@
 // the optional integrations configured - it never exposes the values
 // themselves, only whether each is set.
 
+const { ENGINE_VERSION } = require('./_lib/riskEngine');
+
 module.exports = (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -19,19 +21,20 @@ module.exports = (req, res) => {
   }
 
   res.status(200).json({
-    status: 'ok',
+    status: process.env.ANALYZE_ENGINE_DISABLED === 'true' ? 'engine_disabled' : 'ok',
     service: 'chainwise-api',
+    engineVersion: ENGINE_VERSION,
     timestamp: new Date().toISOString(),
     uptimeSeconds: Math.floor(process.uptime()),
     features: {
       'risk-analysis': true,
-      '8-layer-framework': true,
+      '8-dimension-framework': true,
       'case-studies': true,
-      'claude-integration': Boolean(process.env.ANTHROPIC_API_KEY),
     },
     integrations: {
-      claudeApi: Boolean(process.env.ANTHROPIC_API_KEY),
+      explorerVerification: Boolean(process.env.ETHERSCAN_API_KEY),
       kvCache: Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN),
+      distributedRateLimit: Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN),
     },
   });
 };

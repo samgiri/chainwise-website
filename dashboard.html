@@ -3,785 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="ChainWise Risk Dashboard - Real-time DeFi protocol analysis and risk assessment.">
-    <title>Risk Dashboard | The Chainwise</title>
+    <meta name="description" content="ChainWise Beta Risk Dashboard - evidence-linked preliminary smart-contract risk screening for EVM contracts.">
+    <title>Risk Dashboard (Beta) | The Chainwise</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%23FF3D5C'/><stop offset='50%25' stop-color='%23FF8C3D'/><stop offset='100%25' stop-color='%2300D4FF'/></linearGradient></defs><rect width='200' height='200' rx='36' fill='%230F1629'/><path d='M160 30A70 70 0 0 0 40 100A70 70 0 0 0 160 170' stroke='url(%23g)' stroke-width='20' fill='none' stroke-linecap='round'/><circle cx='100' cy='100' r='10' fill='%23FF8C3D'/></svg>">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.10.0/chart.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --color-bg-primary: #0a0e27;
-            --color-bg-secondary: #111629;
-            --color-bg-tertiary: #1a1f3a;
-            --color-text-primary: #ffffff;
-            --color-text-secondary: #a0a8c8;
-            --color-accent-orange: #f7931a;
-            --color-accent-purple: #7b3fe4;
-            --color-border: #2a3047;
-            --color-success: #10b981;
-            --color-warning: #f59e0b;
-            --color-critical: #ef4444;
-        }
-
-        body {
-            background: var(--color-bg-primary);
-            color: var(--color-text-primary);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-        }
-
-        nav.header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: rgba(10, 14, 39, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--color-border);
-        }
-
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 64px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            text-decoration: none;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--color-text-primary);
-            transition: opacity 0.2s;
-        }
-
-        .logo:hover {
-            opacity: 0.8;
-        }
-
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--color-accent-orange), var(--color-accent-purple));
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            font-weight: 900;
-            color: white;
-        }
-
-        .nav-primary {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-
-        .nav-primary a {
-            color: var(--color-text-secondary);
-            text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 500;
-            transition: color 0.2s;
-            position: relative;
-        }
-
-        .nav-primary a:hover {
-            color: var(--color-text-primary);
-        }
-
-        .nav-primary a::after {
-            content: '';
-            position: absolute;
-            bottom: -6px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--color-accent-orange), var(--color-accent-purple));
-            transition: width 0.3s;
-        }
-
-        .nav-primary a:hover::after {
-            width: 100%;
-        }
-
-        .nav-secondary {
-            display: flex;
-            gap: 1rem;
-            list-style: none;
-            align-items: center;
-        }
-
-        .btn-nav {
-            padding: 0.5rem 1.25rem;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-            border: none;
-        }
-
-        .btn-nav.primary {
-            background: linear-gradient(90deg, var(--color-accent-orange), var(--color-accent-purple));
-            color: white;
-        }
-
-        .btn-nav.primary:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
-
-        .btn-nav.secondary {
-            border: 1px solid var(--color-border);
-            color: var(--color-text-primary);
-            background: transparent;
-        }
-
-        .btn-nav.secondary:hover {
-            background: var(--color-bg-tertiary);
-            border-color: var(--color-accent-orange);
-        }
-
-        main {
-            min-height: calc(100vh - 320px);
-            background: var(--color-bg-primary);
-            padding: 2rem 1.5rem;
-        }
-
-        .dashboard-container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .dashboard-header {
-            margin-bottom: 2rem;
-        }
-
-        .dashboard-header h1 {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-            color: var(--color-text-primary);
-        }
-
-        .dashboard-header p {
-            color: var(--color-text-secondary);
-            font-size: 1rem;
-        }
-
-        .search-section {
-            margin-bottom: 1rem;
-            display: flex;
-            gap: 1rem;
-        }
-
-        .status-line {
-            font-size: 0.85rem;
-            color: var(--color-text-secondary);
-            margin-bottom: 1.5rem;
-            min-height: 1.2em;
-        }
-
-        .status-line.error {
-            color: var(--color-warning);
-        }
-
-        .search-input {
-            flex: 1;
-            padding: 1rem;
-            background: var(--color-bg-secondary);
-            border: 1px solid var(--color-border);
-            border-radius: 6px;
-            color: var(--color-text-primary);
-            font-size: 1rem;
-            transition: all 0.2s;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: var(--color-accent-orange);
-            box-shadow: 0 0 0 2px rgba(247, 147, 26, 0.1);
-        }
-
-        .chain-tabs-wrap {
-            overflow-x: auto;
-            margin-bottom: 1rem;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .chain-tabs {
-            display: flex;
-            gap: 0.6rem;
-            padding-bottom: 0.35rem;
-            min-width: max-content;
-        }
-
-        .chain-tab {
-            display: flex;
-            align-items: center;
-            gap: 0.55rem;
-            min-height: 48px;
-            padding: 0.6rem 1.1rem;
-            background: var(--color-bg-tertiary);
-            border: 1px solid var(--color-border);
-            border-radius: 8px;
-            color: var(--color-text-secondary);
-            font-family: inherit;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            white-space: nowrap;
-            flex-shrink: 0;
-            transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-        }
-
-        .chain-tab-icon {
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-
-        .chain-tab:hover {
-            background: #232a47;
-            color: var(--color-text-primary);
-        }
-
-        .chain-tab.active {
-            background: rgba(247, 147, 26, 0.15);
-            border-color: var(--color-accent-orange);
-            color: var(--color-accent-orange);
-        }
-
-        .chain-tab:focus-visible {
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(247, 147, 26, 0.4);
-        }
-
-        .format-hint {
-            font-size: 0.8rem;
-            color: var(--color-text-secondary);
-            margin-bottom: 1rem;
-        }
-
-        .search-btn {
-            padding: 1rem 2rem;
-            background: linear-gradient(90deg, var(--color-accent-orange), var(--color-accent-purple));
-            border: none;
-            border-radius: 6px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .search-btn:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
-        }
-
-        .results-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .result-card {
-            background: var(--color-bg-secondary);
-            border: 1px solid var(--color-border);
-            border-radius: 8px;
-            padding: 2rem;
-            transition: all 0.3s;
-        }
-
-        .result-card:hover {
-            background: var(--color-bg-tertiary);
-            border-color: var(--color-accent-orange);
-        }
-
-        .risk-ring-wrap {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .risk-ring {
-            --ring-color: #6b7280;
-            --ring-pct: 0;
-            width: 190px;
-            height: 190px;
-            border-radius: 50%;
-            background: conic-gradient(var(--ring-color) calc(var(--ring-pct) * 1%), var(--color-bg-tertiary) 0);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            transition: background 0.5s ease;
-        }
-
-        .risk-ring::before {
-            content: '';
-            position: absolute;
-            inset: 12px;
-            border-radius: 50%;
-            background: var(--color-bg-secondary);
-        }
-
-        .risk-ring-inner {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-        }
-
-        .risk-score {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.25rem;
-            color: var(--color-text-primary);
-        }
-
-        .risk-label {
-            font-size: 0.9rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .risk-legend {
-            max-width: 420px;
-            margin: 1.5rem auto;
-        }
-
-        .risk-legend-bar {
-            height: 10px;
-            border-radius: 6px;
-            background: linear-gradient(90deg,
-                var(--color-success) 0%, var(--color-success) 33%,
-                var(--color-warning) 33%, var(--color-warning) 66%,
-                var(--color-accent-orange) 66%, var(--color-accent-orange) 89%,
-                var(--color-critical) 89%, var(--color-critical) 100%);
-        }
-
-        .risk-legend-labels {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 0.5rem 1rem;
-            margin-top: 0.6rem;
-            font-size: 0.72rem;
-            font-weight: 700;
-            letter-spacing: 0.3px;
-        }
-
-        .risk-legend-labels span {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-            white-space: nowrap;
-        }
-
-        .risk-legend-labels .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-
-        .risk-legend-caption {
-            text-align: center;
-            font-size: 0.78rem;
-            color: var(--color-text-secondary);
-            font-style: italic;
-            margin-top: 0.6rem;
-        }
-
-        .risk-details {
-            border-top: 1px solid var(--color-border);
-            padding-top: 1.5rem;
-        }
-
-        .detail-item {
-            margin-bottom: 1rem;
-        }
-
-        .detail-label {
-            font-size: 0.85rem;
-            color: var(--color-text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.25rem;
-        }
-
-        .detail-value {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--color-text-primary);
-        }
-
-        .layer-bars {
-            display: grid;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .layer-bar {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .layer-label {
-            min-width: 100px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--color-text-secondary);
-        }
-
-        .layer-bar-fill {
-            flex: 1;
-            height: 8px;
-            background: var(--color-bg-tertiary);
-            border-radius: 4px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .layer-bar-progress {
-            height: 100%;
-            background: linear-gradient(90deg, var(--color-accent-orange), var(--color-accent-purple));
-            border-radius: 4px;
-            transition: width 0.6s ease-out;
-        }
-
-        .layer-score {
-            min-width: 30px;
-            text-align: right;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--color-accent-orange);
-        }
-
-        .layer-status {
-            min-width: 90px;
-            text-align: right;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .spinner {
-            display: none;
-            width: 14px;
-            height: 14px;
-            border: 2px solid var(--color-border);
-            border-top-color: var(--color-accent-orange);
-            border-radius: 50%;
-            margin-right: 0.5rem;
-            vertical-align: -2px;
-            animation: spin 0.7s linear infinite;
-        }
-
-        .spinner.active {
-            display: inline-block;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .download-btn {
-            margin-top: 1.5rem;
-            width: 100%;
-            padding: 0.85rem;
-            background: var(--color-bg-tertiary);
-            border: 1px solid var(--color-border);
-            border-radius: 6px;
-            color: var(--color-text-primary);
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .download-btn:hover:not(:disabled) {
-            border-color: var(--color-accent-orange);
-        }
-
-        .download-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .alerts {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid var(--color-critical);
-            border-radius: 6px;
-            padding: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .alerts.none {
-            background: rgba(160, 168, 200, 0.08);
-            border-color: var(--color-border);
-        }
-
-        .alert-title {
-            font-weight: 600;
-            color: var(--color-critical);
-            margin-bottom: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .alerts.none .alert-title {
-            color: var(--color-text-secondary);
-        }
-
-        .alert-content {
-            font-size: 0.95rem;
-            color: var(--color-text-secondary);
-            line-height: 1.6;
-        }
-
-        .alert-line {
-            margin-bottom: 0.5rem;
-        }
-
-        .alert-line:last-child {
-            margin-bottom: 0;
-        }
-
-        .charts-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .chart-card {
-            background: var(--color-bg-secondary);
-            border: 1px solid var(--color-border);
-            border-radius: 8px;
-            padding: 2rem;
-        }
-
-        .chart-card h3 {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            color: var(--color-text-primary);
-        }
-
-        .chart-container {
-            position: relative;
-            height: 280px;
-        }
-
-        footer {
-            background: var(--color-bg-secondary);
-            border-top: 1px solid var(--color-border);
-            padding: 4rem 1.5rem 2rem;
-            margin-top: 4rem;
-        }
-
-        .footer-container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-            padding-bottom: 3rem;
-            border-bottom: 1px solid var(--color-border);
-        }
-
-        .footer-section h3 {
-            font-size: 0.9rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--color-accent-orange);
-            margin-bottom: 1rem;
-        }
-
-        .footer-section ul {
-            list-style: none;
-        }
-
-        .footer-section ul li {
-            margin-bottom: 0.75rem;
-        }
-
-        .footer-section a {
-            color: var(--color-text-secondary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.2s;
-        }
-
-        .footer-section a:hover {
-            color: var(--color-accent-orange);
-        }
-
-        .footer-brand .logo {
-            margin-bottom: 1rem;
-        }
-
-        .footer-tagline {
-            color: var(--color-text-secondary);
-            font-size: 0.9rem;
-            line-height: 1.6;
-            max-width: 260px;
-            margin-bottom: 1.5rem;
-        }
-
-        .footer-socials {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .social-link {
-            width: 40px;
-            height: 40px;
-            border-radius: 6px;
-            background: var(--color-bg-tertiary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--color-text-secondary);
-            text-decoration: none;
-            transition: all 0.2s;
-            font-size: 1.2rem;
-        }
-
-        .social-link:hover {
-            background: linear-gradient(135deg, var(--color-accent-orange), var(--color-accent-purple));
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .footer-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-            font-size: 0.85rem;
-            color: var(--color-text-secondary);
-        }
-
-        .footer-badge {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-        }
-
-        .badge-icon {
-            width: 16px;
-            height: 16px;
-            background: var(--color-success);
-            border-radius: 50%;
-        }
-
-        @media (max-width: 1024px) {
-            .charts-section {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .nav-primary {
-                display: none;
-            }
-
-            .nav-secondary {
-                display: none;
-            }
-
-            .dashboard-header h1 {
-                font-size: 1.5rem;
-            }
-
-            .search-section {
-                flex-direction: column;
-            }
-
-            .results-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .footer-bottom {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .nav-container {
-                height: auto;
-                padding: 1rem;
-            }
-
-            .footer-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-section {
-                border-bottom: 1px solid var(--color-border);
-                padding-bottom: 1.5rem;
-            }
-
-            .footer-section:last-child {
-                border-bottom: none;
-            }
-        }
-
-        .engage-modal-overlay { position: fixed; inset: 0; background: rgba(5, 7, 20, 0.75); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 1.5rem; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.2s ease-out; }
-        .engage-modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .engage-modal-box { position: relative; max-width: 440px; width: 100%; background: var(--color-bg-secondary); border: 1px solid var(--color-border); border-radius: 12px; padding: 2.25rem; transform: scale(0.95) translateY(8px); transition: transform 0.2s ease-out; }
-        .engage-modal-overlay.active .engage-modal-box { transform: scale(1) translateY(0); }
-        .engage-modal-close { position: absolute; top: 1rem; right: 1rem; width: 32px; height: 32px; border-radius: 6px; border: 1px solid var(--color-border); background: transparent; color: var(--color-text-secondary); font-size: 1rem; cursor: pointer; transition: all 0.2s; }
-        .engage-modal-close:hover { background: var(--color-bg-tertiary); color: var(--color-text-primary); border-color: var(--color-accent-orange); }
-        .engage-modal-box h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem; }
-        .engage-modal-sub { color: var(--color-text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem; }
-        .engage-input { width: 100%; padding: 0.85rem 1rem; margin-bottom: 0.75rem; background: var(--color-bg-primary); border: 1px solid var(--color-border); border-radius: 6px; color: var(--color-text-primary); font-size: 0.95rem; font-family: inherit; }
-        .engage-input:focus { outline: none; border-color: var(--color-accent-orange); box-shadow: 0 0 0 2px rgba(247, 147, 26, 0.15); }
-        .engage-submit { width: 100%; padding: 0.9rem; background: linear-gradient(90deg, var(--color-accent-orange), var(--color-accent-purple)); border: none; border-radius: 6px; color: white; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: opacity 0.2s; }
-        .engage-submit:hover { opacity: 0.9; }
-        .engage-submit:disabled { opacity: 0.6; cursor: not-allowed; }
-        .engage-status { font-size: 0.85rem; margin-top: 0.75rem; min-height: 1.2em; }
-        .engage-status.success { color: var(--color-success); }
-        .engage-status.error { color: var(--color-critical); }
-        .engage-note { font-size: 0.78rem; color: var(--color-text-secondary); margin-top: 1rem; line-height: 1.5; }
-        .engage-note a { color: var(--color-accent-orange); }
-        .engage-social { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--color-border); font-size: 0.85rem; color: var(--color-text-secondary); }
-        .engage-social a { color: var(--color-text-primary); text-decoration: none; font-weight: 600; }
-        .engage-social a:hover { color: var(--color-accent-orange); }
-
-        .post-analysis-social { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border); font-size: 0.85rem; color: var(--color-text-secondary); }
-        .post-analysis-social a { color: var(--color-text-primary); text-decoration: none; font-weight: 600; }
-        .post-analysis-social a:hover { color: var(--color-accent-orange); }
-    </style>
+    <link rel="stylesheet" href="/assets/dashboard.css">
 </head>
 <body>
     <nav class="header">
@@ -806,12 +31,12 @@
             <ul class="nav-primary">
                 <li><a href="/#features">Features</a></li>
                 <li><a href="/#methodology">Methodology</a></li>
-                <li><a href="/#cases">Cases</a></li>
+                <li><a href="/#research">Cases</a></li>
                 <li><a href="/dashboard">Dashboard</a></li>
                 <li><a href="/#alerts">Get Alerts</a></li>
             </ul>
             <ul class="nav-secondary">
-                <li><a href="#contact" class="btn-nav secondary">Contact</a></li>
+                <li><a href="mailto:contact@thechainwise.io" class="btn-nav secondary">Contact</a></li>
                 <li><a href="/" class="btn-nav primary">Back to Home</a></li>
             </ul>
         </div>
@@ -820,201 +45,94 @@
     <main>
         <div class="dashboard-container">
             <div class="dashboard-header">
-                <h1>Risk Analysis Dashboard</h1>
-                <p>Enter a protocol address or name to analyze its smart contract risk profile using our 8-layer detection framework.</p>
-            </div>
-
-            <div class="chain-tabs-wrap">
-                <div class="chain-tabs" id="chainTabs" role="tablist" aria-label="Select blockchain">
-                    <button type="button" class="chain-tab" data-chain="ethereum" role="tab" aria-selected="false">
-                        <img class="chain-tab-icon" src="./assets/chains/ethereum.png" alt="">
-                        <span>Ethereum</span>
-                    </button>
-                    <button type="button" class="chain-tab" data-chain="polygon" role="tab" aria-selected="false">
-                        <img class="chain-tab-icon" src="./assets/chains/polygon.png" alt="">
-                        <span>Polygon</span>
-                    </button>
-                    <button type="button" class="chain-tab" data-chain="arbitrum" role="tab" aria-selected="false">
-                        <img class="chain-tab-icon" src="./assets/chains/arbitrum.png" alt="">
-                        <span>Arbitrum</span>
-                    </button>
-                    <button type="button" class="chain-tab" data-chain="optimism" role="tab" aria-selected="false">
-                        <img class="chain-tab-icon" src="./assets/chains/optimism.png" alt="">
-                        <span>Optimism</span>
-                    </button>
-                    <button type="button" class="chain-tab" data-chain="base" role="tab" aria-selected="false">
-                        <img class="chain-tab-icon" src="./assets/chains/base.png" alt="">
-                        <span>Base</span>
-                    </button>
-                    <button type="button" class="chain-tab" data-chain="zksync" role="tab" aria-selected="false">
-                        <img class="chain-tab-icon" src="./assets/chains/zksync.png" alt="">
-                        <span>zkSync</span>
-                    </button>
-                    <button type="button" class="chain-tab" data-chain="bsc" role="tab" aria-selected="false">
-                        <img class="chain-tab-icon" src="./assets/chains/bsc.png" alt="">
-                        <span>BNB Chain</span>
-                    </button>
-                    <button type="button" class="chain-tab" data-chain="avalanche" role="tab" aria-selected="false">
-                        <img class="chain-tab-icon" src="./assets/chains/avalanche.png" alt="">
-                        <span>Avalanche</span>
-                    </button>
+                <div class="dashboard-header-row">
+                    <h1>Analyze a Smart Contract</h1>
+                    <span class="beta-badge">Beta</span>
                 </div>
+                <p>Select a supported EVM network and enter a valid contract address to generate an evidence-linked preliminary risk assessment.</p>
             </div>
 
-            <div class="search-section">
-                <input
-                    type="text"
-                    class="search-input"
-                    id="protocolInput"
-                    placeholder="Paste contract address here..."
-                >
-                <button class="search-btn" id="analyzeBtn">Analyze Protocol</button>
-            </div>
-            <p class="format-hint">All 8 supported chains use standard EVM address format (0x + 40 hex characters).</p>
-            <div class="status-line" id="statusLine">
-                <span class="spinner" id="statusSpinner"></span>
-                <span id="statusText"></span>
+            <div class="disclaimer-banner">
+                <strong>Beta automated preliminary screening.</strong> This is not a full smart-contract audit, financial advice, or a legal declaration that a protocol is fraudulent or safe.
             </div>
 
-            <div class="results-grid" id="resultsGrid">
-                <div class="result-card">
-                    <div class="risk-ring-wrap">
-                        <div class="risk-ring" id="riskRing">
-                            <div class="risk-ring-inner">
-                                <div class="risk-score" id="riskScoreValue">--</div>
-                                <div class="risk-label" id="riskLabel">Loading...</div>
+            <section class="legend-section" aria-labelledby="legendHeading">
+                <h2 id="legendHeading">What the risk score means</h2>
+                <div class="legend-grid">
+                    <div class="legend-card" style="--tier-color: var(--color-success);">
+                        <div class="tier-title">0&ndash;33 &middot; Low Risk</div>
+                        <p class="tier-meaning">Few or no warning signs found in what we could check.</p>
+                        <p class="tier-action">Action: <strong>Still do your own research</strong> &mdash; a low score isn't a green light, it means we found less to worry about.</p>
+                    </div>
+                    <div class="legend-card" style="--tier-color: var(--color-warning);">
+                        <div class="tier-title">34&ndash;66 &middot; Medium Risk</div>
+                        <p class="tier-meaning">Some warning signs found &mdash; things worth understanding before you commit money.</p>
+                        <p class="tier-action">Action: <strong>Read the findings carefully.</strong> Consider starting small if you proceed.</p>
+                    </div>
+                    <div class="legend-card" style="--tier-color: var(--color-critical);">
+                        <div class="tier-title">67&ndash;89 &middot; High Risk</div>
+                        <p class="tier-meaning">Several serious warning signs found.</p>
+                        <p class="tier-action">Action: <strong>Strong caution.</strong> Most people should avoid unless you personally verify the findings.</p>
+                    </div>
+                    <div class="legend-card" style="--tier-color: #ffb4b4;">
+                        <div class="tier-title">90&ndash;100 &middot; Critical Risk</div>
+                        <p class="tier-meaning">Severe warning signs &mdash; patterns commonly seen in scams or collapses.</p>
+                        <p class="tier-action">Action: <strong>Avoid.</strong> Don't invest based on this score alone &mdash; but also don't invest despite it without independent verification.</p>
+                    </div>
+                    <div class="legend-card no-score">
+                        <div class="tier-title">No score &middot; Insufficient evidence</div>
+                        <p class="tier-meaning">We couldn't gather enough information to assess this.</p>
+                        <p class="tier-action">Action: <strong>Never treat "no data" as "safe"</strong> &mdash; it means we don't know, not that it's fine.</p>
+                    </div>
+                </div>
+                <p class="legend-caption">A lower score means fewer risk indicators were detected in what we could check &mdash; it does not guarantee the contract is safe.</p>
+            </section>
+
+            <form class="analyze-card" id="analyzeForm" novalidate>
+                <div class="step-row">
+                    <div class="step-number" aria-hidden="true">1</div>
+                    <div class="step-body">
+                        <div class="step-label" id="chainStepLabel">Select the blockchain</div>
+                        <div class="chain-tabs-wrap">
+                            <div class="chain-tabs" id="chainTabs" role="radiogroup" aria-labelledby="chainStepLabel">
                             </div>
                         </div>
-                    </div>
-                    <div class="risk-legend">
-                        <div class="risk-legend-bar"></div>
-                        <div class="risk-legend-labels">
-                            <span><span class="dot" style="background:var(--color-success);"></span>LOW 0-33</span>
-                            <span><span class="dot" style="background:var(--color-warning);"></span>MEDIUM 34-66</span>
-                            <span><span class="dot" style="background:var(--color-accent-orange);"></span>HIGH 67-89</span>
-                            <span><span class="dot" style="background:var(--color-critical);"></span>CRITICAL 90-100</span>
-                        </div>
-                        <p class="risk-legend-caption">Scores are directional risk indicators, not guarantees — always verify independently.</p>
-                    </div>
-                    <button class="download-btn" id="downloadReportBtn" disabled>📄 Download Report (JSON)</button>
-                    <p style="font-size: 0.75rem; color: var(--color-text-secondary); text-align: center; margin-top: 0.75rem;">Not financial advice. Independent verification recommended.</p>
-                    <div class="risk-details">
-                        <div class="detail-item">
-                            <div class="detail-label">Protocol</div>
-                            <div class="detail-value" id="detailProtocol">--</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Chain</div>
-                            <div class="detail-value" id="detailChain">--</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Confidence</div>
-                            <div class="detail-value" id="detailConfidence">--</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Operator Control</div>
-                            <div class="detail-value" id="detailOperatorControl">--</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Estimated Loss</div>
-                            <div class="detail-value" id="detailEstimatedLoss">--</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Users at Risk</div>
-                            <div class="detail-value" id="detailUsersAtRisk">--</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Collapse Timeline</div>
-                            <div class="detail-value" id="detailCollapseTimeline">--</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Detection Time</div>
-                            <div class="detail-value" id="detailDetectionTime">--</div>
-                        </div>
-                    </div>
-
-                    <div class="alerts" id="alertsBox">
-                        <div class="alert-title" id="alertsTitle">⚠️ Alerts</div>
-                        <div class="alert-content" id="alertContent"></div>
-                    </div>
-
-                    <div class="post-analysis-social" id="postAnalysisSocial" style="display: none;">
-                        <span>Follow for more threat alerts:</span>
-                        <a href="https://twitter.com/chainwise" target="_blank" rel="noopener">Follow Twitter</a>
-                        <span>|</span>
-                        <a href="https://medium.com/@chainwise" target="_blank" rel="noopener">Follow Medium</a>
-                        <span>|</span>
-                        <a href="https://youtube.com/@chainwise" target="_blank" rel="noopener">Follow YouTube</a>
+                        <p class="step-hint">Not sure? Ethereum is the most common.</p>
                     </div>
                 </div>
 
-                <div>
-                    <h3 style="margin-bottom: 1.5rem; color: var(--color-text-primary);">Layer Analysis</h3>
-                    <div class="layer-bars" id="layerBars">
-                        <div class="layer-bar">
-                            <div class="layer-label">Layer 1: Patterns</div>
-                            <div class="layer-bar-fill"><div class="layer-bar-progress" id="layer-patterns-progress" style="width: 0%;"></div></div>
-                            <div class="layer-score" id="layer-patterns-score">0</div>
-                            <div class="layer-status" id="layer-patterns-status">— N/A</div>
-                        </div>
-                        <div class="layer-bar">
-                            <div class="layer-label">Layer 2: Bytecode</div>
-                            <div class="layer-bar-fill"><div class="layer-bar-progress" id="layer-bytecode-progress" style="width: 0%;"></div></div>
-                            <div class="layer-score" id="layer-bytecode-score">0</div>
-                            <div class="layer-status" id="layer-bytecode-status">— N/A</div>
-                        </div>
-                        <div class="layer-bar">
-                            <div class="layer-label">Layer 3: Treasury</div>
-                            <div class="layer-bar-fill"><div class="layer-bar-progress" id="layer-treasury-progress" style="width: 0%;"></div></div>
-                            <div class="layer-score" id="layer-treasury-score">0</div>
-                            <div class="layer-status" id="layer-treasury-status">— N/A</div>
-                        </div>
-                        <div class="layer-bar">
-                            <div class="layer-label">Layer 4: Withdrawals</div>
-                            <div class="layer-bar-fill"><div class="layer-bar-progress" id="layer-withdrawals-progress" style="width: 0%;"></div></div>
-                            <div class="layer-score" id="layer-withdrawals-score">0</div>
-                            <div class="layer-status" id="layer-withdrawals-status">— N/A</div>
-                        </div>
-                        <div class="layer-bar">
-                            <div class="layer-label">Layer 5: Bridges</div>
-                            <div class="layer-bar-fill"><div class="layer-bar-progress" id="layer-bridges-progress" style="width: 0%;"></div></div>
-                            <div class="layer-score" id="layer-bridges-score">0</div>
-                            <div class="layer-status" id="layer-bridges-status">— N/A</div>
-                        </div>
-                        <div class="layer-bar">
-                            <div class="layer-label">Layer 6: Off-Ramps</div>
-                            <div class="layer-bar-fill"><div class="layer-bar-progress" id="layer-offRamps-progress" style="width: 0%;"></div></div>
-                            <div class="layer-score" id="layer-offRamps-score">0</div>
-                            <div class="layer-status" id="layer-offRamps-status">— N/A</div>
-                        </div>
-                        <div class="layer-bar">
-                            <div class="layer-label">Layer 7: Sybil</div>
-                            <div class="layer-bar-fill"><div class="layer-bar-progress" id="layer-sybil-progress" style="width: 0%;"></div></div>
-                            <div class="layer-score" id="layer-sybil-score">0</div>
-                            <div class="layer-status" id="layer-sybil-status">— N/A</div>
-                        </div>
-                        <div class="layer-bar">
-                            <div class="layer-label">Layer 8: Attribution</div>
-                            <div class="layer-bar-fill"><div class="layer-bar-progress" id="layer-attribution-progress" style="width: 0%;"></div></div>
-                            <div class="layer-score" id="layer-attribution-score">0</div>
-                            <div class="layer-status" id="layer-attribution-status">— N/A</div>
-                        </div>
+                <div class="step-row">
+                    <div class="step-number" aria-hidden="true">2</div>
+                    <div class="step-body">
+                        <label class="input-label" for="addressInput">Enter an EVM smart-contract address</label>
+                        <input
+                            type="text"
+                            class="address-input"
+                            id="addressInput"
+                            placeholder="0x&hellip; Enter contract address"
+                            autocomplete="off"
+                            spellcheck="false"
+                            aria-describedby="addressHint addressValidation"
+                        >
+                        <p class="step-hint" id="addressHint">This is a long code starting with 0x, usually found on the project's website or pinned in their Telegram/Discord.</p>
+                        <p class="validation-message" id="addressValidation" role="status"></p>
                     </div>
                 </div>
-            </div>
 
-            <div class="charts-section">
-                <div class="chart-card">
-                    <h3>Risk Score Distribution</h3>
-                    <div class="chart-container">
-                        <canvas id="riskChart"></canvas>
+                <div class="step-row">
+                    <div class="step-number" aria-hidden="true">3</div>
+                    <div class="step-body">
+                        <div class="step-label">Run the assessment</div>
+                        <button type="submit" class="analyze-btn" id="analyzeBtn" disabled>Analyze Contract</button>
                     </div>
                 </div>
-                <div class="chart-card">
-                    <h3>8-Layer Analysis</h3>
-                    <div class="chart-container">
-                        <canvas id="layersChart"></canvas>
-                    </div>
+            </form>
+
+            <div class="result-area" id="resultArea">
+                <div class="empty-state" id="emptyState">
+                    <h2>Analyze a Smart Contract</h2>
+                    <p>Select a supported EVM network and enter a valid contract address to generate an evidence-linked preliminary risk assessment.</p>
+                    <p class="supporting">ChainWise Beta evaluates publicly available contract and on-chain data. Results are preliminary indicators and do not constitute a complete smart-contract audit.</p>
                 </div>
             </div>
         </div>
@@ -1041,7 +159,7 @@
                         </svg>
                         <span>ChainWise</span>
                     </div>
-                    <p class="footer-tagline">The industry standard for DeFi risk intelligence. Real-time protocol analysis designed to identify high-risk smart contracts and treasury anomalies before capital is compromised.</p>
+                    <p class="footer-tagline">ChainWise provides evidence-linked preliminary DeFi and smart-contract risk assessments. Results are informational and should not replace independent technical, legal, or financial review.</p>
                     <div class="footer-socials">
                         <a href="https://twitter.com/chainwise" class="social-link" title="Twitter">𝕏</a>
                         <a href="https://medium.com/@chainwise" class="social-link" title="Medium">📝</a>
@@ -1056,26 +174,25 @@
                         <li><a href="/#methodology">Methodology</a></li>
                         <li><a href="/dashboard">Dashboard</a></li>
                         <li><a href="/#alerts">Get Alerts</a></li>
-                        <li><a href="#api">API Docs</a></li>
+                        <li><a href="/api-docs.html">API Docs</a></li>
                     </ul>
                 </div>
 
                 <div class="footer-section">
                     <h3>Research</h3>
                     <ul>
-                        <li><a href="/#cases">Case Studies</a></li>
-                        <li><a href="#threats">Live Threats</a></li>
-                        <li><a href="#detection">Detection Framework</a></li>
-                        <li><a href="#blog">Research Blog</a></li>
+                        <li><a href="/research.html">Case Studies</a></li>
+                        <li><a href="/#methodology">Detection Framework</a></li>
+                        <li><a href="/blog.html">Research Blog</a></li>
                     </ul>
                 </div>
 
                 <div class="footer-section">
                     <h3>Company</h3>
                     <ul>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#team">Team</a></li>
-                        <li><a href="#press">Press Kit</a></li>
+                        <li><a href="/about.html">About</a></li>
+                        <li><a href="/team.html">Team</a></li>
+                        <li><a href="/press.html">Press Kit</a></li>
                         <li><a href="https://satoshilab.ai">Satoshi Lab</a></li>
                     </ul>
                 </div>
@@ -1083,10 +200,10 @@
                 <div class="footer-section">
                     <h3>Trust</h3>
                     <ul>
-                        <li><a href="#security">Security</a></li>
-                        <li><a href="#compliance">Compliance</a></li>
-                        <li><a href="#right-of-reply">Right of Reply</a></li>
-                        <li><a href="#audit">Third-Party Audits</a></li>
+                        <li><a href="/#trust-security">Security</a></li>
+                        <li><a href="/#trust-security">Compliance</a></li>
+                        <li><a href="/right-of-reply.html">Right of Reply</a></li>
+                        <li><a href="/#trust-security">Third-Party Audits</a></li>
                     </ul>
                 </div>
 
@@ -1094,18 +211,16 @@
                     <h3>Legal</h3>
                     <ul>
                         <li><a href="/privacy.html">Privacy Policy</a></li>
-                        <li><a href="#terms">Terms of Service</a></li>
-                        <li><a href="#disclaimer">Disclaimer</a></li>
-                        <li><a href="#cookies">Cookie Policy</a></li>
+                        <li><a href="/terms.html">Terms of Service</a></li>
+                        <li><a href="/#disclaimer">Disclaimer</a></li>
                     </ul>
                 </div>
             </div>
 
             <div class="footer-bottom">
-                <div>© 2024 ChainWise. All rights reserved. | Built by <a href="https://satoshilab.ai" style="color: var(--color-accent-orange); text-decoration: none;">Satoshi Lab</a></div>
+                <div>© 2026 ChainWise Research. All rights reserved. | Built by <a href="https://satoshilab.ai" style="color: var(--color-accent-orange); text-decoration:none;">Satoshi Lab</a></div>
                 <div class="footer-badge">
-                    <span class="badge-icon"></span>
-                    <span>Enterprise-Grade Security</span>
+                    <span>🧪 Beta Product</span>
                 </div>
             </div>
         </div>
@@ -1132,311 +247,6 @@
         </div>
     </div>
 
-    <script>
-        const LAYER_KEYS = ['patterns', 'bytecode', 'treasury', 'withdrawals', 'bridges', 'offRamps', 'sybil', 'attribution'];
-
-        let riskChart = null;
-        let layersChart = null;
-        try {
-            riskChart = new Chart(document.getElementById('riskChart').getContext('2d'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Risk', 'Safe'],
-                    datasets: [{
-                        data: [0, 100],
-                        backgroundColor: ['#ef4444', 'rgba(255,255,255,0.1)'],
-                        borderColor: ['#ef4444', 'rgba(255,255,255,0.1)'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    cutout: '70%'
-                }
-            });
-
-            layersChart = new Chart(document.getElementById('layersChart').getContext('2d'), {
-                type: 'radar',
-                data: {
-                    labels: ['Patterns', 'Bytecode', 'Treasury', 'Withdrawals', 'Bridges', 'Off-Ramps', 'Sybil', 'Attribution'],
-                    datasets: [{
-                        label: 'Risk Score',
-                        data: [0, 0, 0, 0, 0, 0, 0, 0],
-                        borderColor: '#f7931a',
-                        backgroundColor: 'rgba(247, 147, 26, 0.15)',
-                        pointBackgroundColor: '#f7931a',
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        r: {
-                            grid: { color: 'rgba(255,255,255,0.1)' },
-                            ticks: { color: '#a0a8c8' },
-                            max: 100
-                        }
-                    }
-                }
-            });
-        } catch (err) {
-            console.error('Chart.js failed to load/initialize; charts will stay static.', err);
-        }
-
-        function setStatus(text, isError) {
-            const el = document.getElementById('statusLine');
-            document.getElementById('statusText').textContent = text;
-            el.classList.toggle('error', !!isError);
-        }
-
-        function setLoading(isLoading) {
-            document.getElementById('statusSpinner').classList.toggle('active', isLoading);
-            document.getElementById('analyzeBtn').disabled = isLoading;
-        }
-
-        // 3-band color scheme (Green 0-33 / Yellow 34-66 / Red 67-100), with the red band
-        // split into HIGH (67-89) and CRITICAL (90-100) risk labels.
-        function riskBand(score) {
-            if (score === null || score === undefined) {
-                return { color: '#6b7280', tier: 'NOT ANALYZED' };
-            }
-            if (score <= 33) return { color: 'var(--color-success)', tier: 'LOW' };
-            if (score <= 66) return { color: 'var(--color-warning)', tier: 'MEDIUM' };
-            if (score <= 89) return { color: 'var(--color-critical)', tier: 'HIGH' };
-            return { color: 'var(--color-critical)', tier: 'CRITICAL' };
-        }
-
-        function layerStatus(value) {
-            if (value <= 33) return { icon: '✅', text: 'Safe', color: 'var(--color-success)' };
-            if (value <= 66) return { icon: '⚠️', text: 'Warning', color: 'var(--color-warning)' };
-            return { icon: '❌', text: 'Risky', color: 'var(--color-critical)' };
-        }
-
-        let lastReportData = null;
-
-        function renderResults(data) {
-            const analyzed = data.riskScore !== null && data.riskScore !== undefined;
-            const score = analyzed ? data.riskScore : 0;
-            const band = riskBand(analyzed ? score : null);
-
-            document.getElementById('riskScoreValue').textContent = analyzed ? score : '--';
-            const labelEl = document.getElementById('riskLabel');
-            labelEl.textContent = band.tier;
-            labelEl.style.color = band.color;
-
-            const ring = document.getElementById('riskRing');
-            ring.style.setProperty('--ring-color', band.color);
-            ring.style.setProperty('--ring-pct', analyzed ? score : 0);
-
-            document.getElementById('detailProtocol').textContent = data.protocol || '--';
-            document.getElementById('detailChain').textContent = data.chain || '--';
-            document.getElementById('detailConfidence').textContent = analyzed ? `${data.confidence}%` : '--';
-            document.getElementById('detailOperatorControl').textContent = data.operatorControlPct ? `${data.operatorControlPct}% of Treasury` : '--';
-            document.getElementById('detailEstimatedLoss').textContent = data.estimatedLoss || '--';
-            document.getElementById('detailUsersAtRisk').textContent = data.usersAtRisk ? `${data.usersAtRisk.toLocaleString()}+` : '--';
-            document.getElementById('detailCollapseTimeline').textContent = data.collapseTimelineDays
-                ? `${data.collapseTimelineDays[0]}-${data.collapseTimelineDays[1]} days` : '--';
-            document.getElementById('detailDetectionTime').textContent = data.detectionHours ? `<${data.detectionHours}h` : '--';
-
-            const layers = data.layers || {};
-            LAYER_KEYS.forEach(key => {
-                const value = layers[key] || 0;
-                document.getElementById(`layer-${key}-progress`).style.width = `${value}%`;
-                document.getElementById(`layer-${key}-score`).textContent = value;
-
-                const statusEl = document.getElementById(`layer-${key}-status`);
-                if (!analyzed) {
-                    statusEl.textContent = '— N/A';
-                    statusEl.style.color = 'var(--color-text-secondary)';
-                } else {
-                    const s = layerStatus(value);
-                    statusEl.textContent = `${s.icon} ${s.text}`;
-                    statusEl.style.color = s.color;
-                }
-            });
-
-            const alertsBox = document.getElementById('alertsBox');
-            const alertContent = document.getElementById('alertContent');
-            if (data.alerts && data.alerts.length) {
-                alertsBox.classList.remove('none');
-                document.getElementById('alertsTitle').textContent = '⚠️ Alerts';
-                alertContent.innerHTML = data.alerts
-                    .map(a => `<div class="alert-line"><strong>${a.level}:</strong> ${a.message}</div>`)
-                    .join('');
-            } else {
-                alertsBox.classList.add('none');
-                document.getElementById('alertsTitle').textContent = 'No Alerts';
-                alertContent.textContent = analyzed
-                    ? 'No alerts for this protocol.'
-                    : 'This address/protocol has not been analyzed yet.';
-            }
-
-            if (riskChart) {
-                riskChart.data.datasets[0].data = [score, 100 - score];
-                riskChart.update();
-            }
-            if (layersChart) {
-                layersChart.data.datasets[0].data = LAYER_KEYS.map(key => layers[key] || 0);
-                layersChart.update();
-            }
-
-            lastReportData = {
-                protocol: data.protocol || null,
-                chain: data.chain || null,
-                queried: data.queried || null,
-                analyzed,
-                riskScore: analyzed ? score : null,
-                riskTier: band.tier,
-                confidence: analyzed ? data.confidence : null,
-                summary: data.summary || null,
-                layers,
-                alerts: data.alerts || [],
-                generatedAt: new Date().toISOString(),
-                disclaimer: 'Not financial advice. Independent verification recommended.',
-            };
-            document.getElementById('downloadReportBtn').disabled = false;
-            document.getElementById('postAnalysisSocial').style.display = analyzed ? 'flex' : 'none';
-        }
-
-        async function analyzeProtocol(protocol, chain) {
-            setLoading(true);
-            setStatus('Analyzing...');
-            try {
-                const params = new URLSearchParams();
-                if (protocol) params.set('address', protocol);
-                if (chain) params.set('chain', chain);
-                const url = params.toString() ? `/api/analyze?${params.toString()}` : '/api/analyze';
-                const response = await fetch(url);
-                if (!response.ok) throw new Error(`API returned ${response.status}`);
-                const data = await response.json();
-                renderResults(data);
-                setStatus(data.demo
-                    ? 'Demo data from /api/analyze (no live on-chain analysis engine connected yet).'
-                    : 'Live data from /api/analyze.');
-            } catch (error) {
-                console.error('Error:', error);
-                setStatus(`Could not reach /api/analyze (${error.message}).`, true);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        const analyzeBtn = document.getElementById('analyzeBtn');
-        const protocolInput = document.getElementById('protocolInput');
-        const downloadReportBtn = document.getElementById('downloadReportBtn');
-        const chainTabs = document.querySelectorAll('.chain-tab');
-
-        const SUPPORTED_CHAINS = ['ethereum', 'polygon', 'arbitrum', 'optimism', 'base', 'zksync', 'bsc', 'avalanche'];
-        let selectedChain = 'ethereum';
-
-        function selectChain(chain) {
-            selectedChain = chain;
-            chainTabs.forEach(tab => {
-                const isActive = tab.dataset.chain === chain;
-                tab.classList.toggle('active', isActive);
-                tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
-                if (isActive) tab.scrollIntoView({ block: 'nearest', inline: 'nearest' });
-            });
-        }
-
-        chainTabs.forEach(tab => {
-            tab.addEventListener('click', () => selectChain(tab.dataset.chain));
-        });
-
-        // Pre-populate chain from the ?chain= URL parameter (e.g. set when a user
-        // clicks a chain badge on the homepage). Defaults to Ethereum if the
-        // parameter is missing or not one of the 8 supported chains.
-        const urlChain = (new URLSearchParams(window.location.search).get('chain') || '').toLowerCase();
-        selectChain(SUPPORTED_CHAINS.includes(urlChain) ? urlChain : 'ethereum');
-
-        let hasShownEngageModal = false;
-        async function runUserAnalysis(protocol, chain) {
-            await analyzeProtocol(protocol, chain);
-            if (!hasShownEngageModal && lastReportData && lastReportData.analyzed) {
-                hasShownEngageModal = true;
-                openEngageModal();
-            }
-        }
-
-        analyzeBtn.addEventListener('click', () => runUserAnalysis(protocolInput.value.trim(), selectedChain));
-        protocolInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') runUserAnalysis(protocolInput.value.trim(), selectedChain);
-        });
-
-        downloadReportBtn.addEventListener('click', () => {
-            if (!lastReportData) return;
-            const blob = new Blob([JSON.stringify(lastReportData, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const safeName = (lastReportData.protocol || 'report').toString().replace(/[^a-z0-9-_]+/gi, '_');
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `chainwise-risk-report-${safeName}.json`;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            URL.revokeObjectURL(url);
-        });
-
-        analyzeProtocol();
-
-        (function () {
-            const modal = document.getElementById('engageModal');
-            const closeBtn = document.getElementById('engageModalClose');
-            const form = document.getElementById('engageForm');
-            const emailInput = document.getElementById('engageEmail');
-            const mobileInput = document.getElementById('engageMobile');
-            const submitBtn = document.getElementById('engageSubmit');
-            const statusEl = document.getElementById('engageStatus');
-
-            window.openEngageModal = function () {
-                modal.classList.add('active');
-                modal.setAttribute('aria-hidden', 'false');
-                emailInput.focus();
-            };
-
-            function closeEngageModal() {
-                modal.classList.remove('active');
-                modal.setAttribute('aria-hidden', 'true');
-            }
-
-            closeBtn.addEventListener('click', closeEngageModal);
-            modal.addEventListener('click', (e) => { if (e.target === modal) closeEngageModal(); });
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && modal.classList.contains('active')) closeEngageModal();
-            });
-
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                submitBtn.disabled = true;
-                statusEl.textContent = 'Submitting...';
-                statusEl.className = 'engage-status';
-                try {
-                    const response = await fetch('/api/subscribe', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            email: emailInput.value.trim(),
-                            mobile: mobileInput.value.trim(),
-                            source: 'dashboard-popup',
-                        }),
-                    });
-                    const data = await response.json().catch(() => ({}));
-                    if (!response.ok) throw new Error(data.error || `Request failed (${response.status})`);
-                    statusEl.textContent = "You're on the list — thanks!";
-                    statusEl.className = 'engage-status success';
-                    form.reset();
-                    setTimeout(closeEngageModal, 1500);
-                } catch (err) {
-                    statusEl.textContent = err.message;
-                    statusEl.className = 'engage-status error';
-                } finally {
-                    submitBtn.disabled = false;
-                }
-            });
-        })();
-    </script>
+    <script src="/assets/dashboard.js"></script>
 </body>
 </html>
