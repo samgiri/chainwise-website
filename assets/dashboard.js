@@ -420,7 +420,7 @@
     }
 
     var metaGrid = el('div', { class: 'result-meta-grid' }, [
-      metaItem('Contract Address', null, addressRow),
+      metaItem('Contract Address', null, addressRow, true),
       metaItem('Network', data.network),
       metaItem('Verified Name', verifiedName || 'Not available'),
       metaItem('Analyzed At', new Date(data.analyzedAt).toLocaleString()),
@@ -502,10 +502,10 @@
     }
   }
 
-  function metaItem(label, value, customValueNode) {
+  function metaItem(label, value, customValueNode, wide) {
     var valueNode = customValueNode || el('div', { class: 'meta-value', text: value });
     if (!customValueNode) valueNode.className = 'meta-value';
-    return el('div', { class: 'meta-item' }, [
+    return el('div', { class: 'meta-item' + (wide ? ' meta-item-wide' : '') }, [
       el('div', { class: 'meta-label', text: label }),
       valueNode,
     ]);

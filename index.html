@@ -767,7 +767,10 @@
             function caseHref(c) {
                 if (c.slug === 'smart-solve-defi') return '/case-smart-solve';
                 if (c.isIllustrative) return `/case-detail?slug=${encodeURIComponent(c.slug)}`;
-                return `/dashboard?address=${encodeURIComponent(c.protocol)}`;
+                // The dashboard only accepts a real 0x contract address (no free-text protocol
+                // names), and case studies don't carry one - link to the dashboard with just the
+                // chain preselected rather than a stale/invalid ?address=<name> param.
+                return c.chain ? `/dashboard?chain=${encodeURIComponent(c.chain.toLowerCase())}` : '/dashboard';
             }
 
             async function loadCases() {

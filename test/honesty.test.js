@@ -74,6 +74,26 @@ test('no server-side secret env var names leak into client-served files', () => 
   });
 });
 
+test('the result meta grid cannot overlap: address gets its own full-width row and long values wrap', () => {
+  const css = read('assets/dashboard.css');
+  assert.match(css, /\.meta-item\s*\{[^}]*min-width:\s*0/, 'grid items must be able to shrink (min-width: 0) instead of overflowing into neighbors');
+  assert.match(css, /\.meta-item\.meta-item-wide\s*\{[^}]*grid-column:\s*1\s*\/\s*-1/, 'the wide meta item must span the full grid row');
+  assert.match(css, /\.address-copy-row code\s*\{[^}]*overflow-wrap:\s*anywhere/, 'the address itself must wrap instead of overflowing');
+
+  const js = read('assets/dashboard.js');
+  assert.match(js, /metaItem\('Contract Address',\s*null,\s*addressRow,\s*true\)/, 'the Contract Address meta item must be marked wide');
+
+  const demoHtml = read('demo.html');
+  assert.ok(demoHtml.includes('class="meta-item meta-item-wide"'), 'demo.html must apply the same full-width fix to its static Contract Address item');
+});
+
+test('no page links to the dashboard with a stale free-text ?address= param', () => {
+  ['index.html', 'research.html', 'case-smart-solve.html', 'dashboard.html', 'demo.html'].forEach((page) => {
+    const html = read(page);
+    assert.ok(!html.includes('dashboard?address='), `${page} must not link to /dashboard?address=<name> - the dashboard is address-only (0x contracts), not free-text protocol names`);
+  });
+});
+
 test('rate limiting and timeout handling exist for the analyze endpoint', () => {
   const src = read('api/analyze.js');
   assert.ok(src.includes('checkRateLimit'));
