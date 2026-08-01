@@ -112,6 +112,20 @@ test('summarizeDimensions reduces confidence proportionally to evidence coverage
   assert.ok(summary.confidence < 80, 'confidence must be discounted when coverage is low (3/8 dimensions)');
 });
 
+test('summarizeDimensions exposes worstDimensionScore as the max subscore, not the mean, so one severe layer cannot be averaged away', () => {
+  const dims = [
+    { key: 'a', state: 'assessed', subscore: 10, confidence: 90 },
+    { key: 'b', state: 'assessed', subscore: 15, confidence: 90 },
+    { key: 'c', state: 'assessed', subscore: 96, confidence: 90 },
+    { key: 'd', state: 'assessed', subscore: 12, confidence: 90 },
+    { key: 'e', state: 'insufficient_data', subscore: null, confidence: null },
+  ];
+  const summary = summarizeDimensions(dims);
+  assert.equal(summary.worstDimensionScore, 96);
+  assert.notEqual(summary.overallScore, summary.worstDimensionScore, 'the mean overallScore must differ from the worst-layer score in this mixed fixture');
+  assert.ok(summary.overallScore < 66, 'sanity check: the averaged score would misleadingly read as LOW/MEDIUM');
+});
+
 test('ENGINE_VERSION is a stable semver-like string (deterministic, versioned scoring)', () => {
   assert.match(ENGINE_VERSION, /^\d+\.\d+\.\d+/);
 });

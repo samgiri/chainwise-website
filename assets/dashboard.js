@@ -361,8 +361,79 @@
     if (score === null || score === undefined) return { color: 'var(--color-unknown)', tier: 'NOT ANALYZED' };
     if (score <= 33) return { color: 'var(--color-success)', tier: 'LOW' };
     if (score <= 66) return { color: 'var(--color-warning)', tier: 'MEDIUM' };
-    if (score <= 89) return { color: 'var(--color-critical)', tier: 'HIGH' };
-    return { color: '#ffb4b4', tier: 'CRITICAL' };
+    if (score <= 89) return { color: 'var(--color-accent-orange)', tier: 'HIGH' };
+    return { color: 'var(--color-critical)', tier: 'CRITICAL' };
+  }
+
+  // Same LOW/MEDIUM/HIGH/CRITICAL legend shown on the homepage's Research & Case Studies
+  // section, reused here so a result can be read without leaving the dashboard page.
+  function buildRiskLegend() {
+    return el('div', { class: 'risk-legend' }, [
+      el('div', { class: 'risk-legend-bar' }),
+      el('div', { class: 'risk-legend-labels' }, [
+        el('span', {}, [el('span', { class: 'dot', style: 'background:var(--color-success);' }), document.createTextNode('LOW 0–33')]),
+        el('span', {}, [el('span', { class: 'dot', style: 'background:var(--color-warning);' }), document.createTextNode('MEDIUM 34–66')]),
+        el('span', {}, [el('span', { class: 'dot', style: 'background:var(--color-accent-orange);' }), document.createTextNode('HIGH 67–89')]),
+        el('span', {}, [el('span', { class: 'dot', style: 'background:var(--color-critical);' }), document.createTextNode('CRITICAL 90–100')]),
+      ]),
+      el('p', { class: 'risk-legend-caption', text: 'Scores are directional risk indicators, not guarantees — always verify independently.' }),
+    ]);
+  }
+
+  // --- Top flags: plain-language translation of the most severe findings --------------
+
+  var FLAG_TEMPLATES = {
+    verification: function (dim) {
+      var verified = /is verified/.test((dim.findings[0] || {}).summary || '');
+      if (verified) return null;
+      return 'This contract’s source code is not publicly verified, so nobody can independently check what it actually does.';
+    },
+    adminControls: function (dim) {
+      var count = dim.findings.length;
+      if (count === 0) return null;
+      return 'The contract gives its admin ' + count + ' privileged function' + (count > 1 ? 's' : '') + ' (like pause or mint) that can directly affect user funds.';
+    },
+    upgradeability: function (dim) {
+      if (dim.level === 'no_material_indicator') return null;
+      return 'This contract’s logic can be swapped out after deployment — what you see today may not be what runs tomorrow.';
+    },
+    tokenRestrictions: function (dim) {
+      if (dim.findings.length === 0) return null;
+      return 'The contract code contains patterns that could restrict how you buy, sell, or transfer this token.';
+    },
+    governance: function (dim) {
+      var summary = (dim.findings[0] || {}).summary || '';
+      if (/wallet with no contract code/.test(summary)) {
+        return 'A single private-key wallet — not a multisig — has full administrative control over this contract.';
+      }
+      return null;
+    },
+  };
+
+  function buildTopFlags(dimensions) {
+    var flags = (dimensions || [])
+      .filter(function (d) { return d.state === 'assessed'; })
+      .map(function (d) {
+        var templateFn = FLAG_TEMPLATES[d.key];
+        var text = templateFn ? templateFn(d) : null;
+        return text ? { subscore: d.subscore, text: text } : null;
+      })
+      .filter(Boolean)
+      .sort(function (a, b) { return b.subscore - a.subscore; })
+      .slice(0, 3);
+    return flags;
+  }
+
+  function renderTopFlagsCard(dimensions) {
+    var flags = buildTopFlags(dimensions);
+    if (!flags.length) return null;
+    var list = el('ul', { class: 'top-flags-list' }, flags.map(function (f) {
+      return el('li', { class: 'top-flags-item', text: f.text });
+    }));
+    return el('div', { class: 'result-card top-flags-card' }, [
+      el('h3', { text: 'Top Flags' }),
+      list,
+    ]);
   }
 
   function copyToClipboard(text, btn) {
@@ -432,7 +503,13 @@
 
     var scoreRow = el('div', { class: 'score-row' });
     if (data.overallScore !== null && data.overallScore !== undefined) {
-      var tier = tierFromScore(data.overallScore);
+      // The banner's tier/color is driven by the single highest-severity dimension, not the
+      // mean overallScore - one critical-severity dimension must never be averaged down to a
+      // reassuring headline. The number shown in the ring is still the overall score.
+      var bannerScore = (data.worstDimensionScore !== null && data.worstDimensionScore !== undefined)
+        ? data.worstDimensionScore
+        : data.overallScore;
+      var tier = tierFromScore(bannerScore);
       var ring = el('div', { class: 'risk-ring', style: '--ring-color:' + tier.color + ';--ring-pct:' + data.overallScore }, [
         el('div', { class: 'risk-ring-inner' }, [
           el('div', { class: 'risk-score', text: String(data.overallScore) }),
@@ -447,6 +524,10 @@
       scoreRow.appendChild(el('div', { class: 'no-score-note', html: '<strong>No score — insufficient evidence.</strong> We couldn’t gather enough information to assess this contract confidently. Never treat "no data" as "safe" — it means we don’t know, not that it’s fine.' }));
     }
     header.appendChild(scoreRow);
+
+    if (data.overallScore !== null && data.overallScore !== undefined) {
+      header.appendChild(buildRiskLegend());
+    }
 
     header.appendChild(el('p', { class: 'result-disclaimer', text: 'Beta automated preliminary screening. This is not a full smart-contract audit, financial advice, or a legal declaration that a protocol is fraudulent or safe.' }));
 
@@ -465,6 +546,9 @@
     }
 
     resultArea.appendChild(header);
+
+    var topFlagsCard = renderTopFlagsCard(data.dimensions);
+    if (topFlagsCard) resultArea.appendChild(topFlagsCard);
 
     var orderedDims = (data.dimensions || []).slice().sort(function (a, b) {
       return DIMENSION_ORDER.indexOf(a.key) - DIMENSION_ORDER.indexOf(b.key);

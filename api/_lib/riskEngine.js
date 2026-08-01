@@ -302,20 +302,27 @@ function computeDimensions({ onChain, verification, chainConfig, address, retrie
 // Only computes an overall score/confidence when enough dimensions were actually assessed.
 // Coverage fraction directly discounts confidence - thin evidence must never look as
 // confident as full evidence.
+//
+// overallScore is the mean subscore across assessed dimensions - useful as a single summary
+// number, but a mean can hide one severely risky dimension behind several low ones.
+// worstDimensionScore is the max subscore instead: the UI's banner tier/color must be driven
+// by this, not the mean, so a single critical-severity finding is never averaged down to a
+// reassuring "medium" headline.
 function summarizeDimensions(dimensions) {
   const assessed = dimensions.filter((d) => d.state === 'assessed');
   const coverageFraction = assessed.length / dimensions.length;
 
   if (assessed.length < 3) {
-    return { overallScore: null, confidence: 0, resultStatus: 'insufficient_data', coverageFraction };
+    return { overallScore: null, worstDimensionScore: null, confidence: 0, resultStatus: 'insufficient_data', coverageFraction };
   }
 
   const overallScore = Math.round(assessed.reduce((sum, d) => sum + d.subscore, 0) / assessed.length);
+  const worstDimensionScore = Math.max(...assessed.map((d) => d.subscore));
   const rawConfidence = assessed.reduce((sum, d) => sum + d.confidence, 0) / assessed.length;
   const confidence = Math.round(rawConfidence * coverageFraction);
   const resultStatus = assessed.length >= 6 ? 'success' : 'partial';
 
-  return { overallScore, confidence, resultStatus, coverageFraction };
+  return { overallScore, worstDimensionScore, confidence, resultStatus, coverageFraction };
 }
 
 module.exports = {
