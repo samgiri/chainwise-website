@@ -46,17 +46,83 @@ test('computeDimensions reports insufficient_data (not a fabricated score) when 
   });
 });
 
-test('the three fully roadmap-blocked dimensions (liquidity, ownership, exploit signals) read as "not built yet," never as a per-contract error', () => {
+test('the two fully roadmap-blocked dimensions (liquidity, exploit signals) read as "not built yet," never as a per-contract error', () => {
   const onChain = {
     isContract: true, bytecode: '0x6080604052', codeSizeBytes: 10, balanceNative: 0, txCount: 0,
     blockNumber: 1000, proxyImplementation: null, proxyAdmin: null, ownerAddress: null, ownerIsContract: null,
   };
   const dims = computeDimensions({ onChain, verification: null, chainConfig, address, retrievedAt });
-  ['liquidity', 'ownership', 'exploitSignals'].forEach((key) => {
+  ['liquidity', 'exploitSignals'].forEach((key) => {
     const dim = dims.find((d) => d.key === key);
     assert.match(dim.explanation, /roadmap gap, not an error/i);
     assert.ok(!/we could not gather enough information/i.test(dim.explanation), `${key} must not use the generic per-contract "couldn't gather evidence" wording`);
   });
+});
+
+// --- Ownership & Wallet Concentration (real integration, not a stub) ------------------
+
+const onChainContract = {
+  isContract: true, bytecode: '0x6080604052', codeSizeBytes: 10, balanceNative: 0, txCount: 0,
+  blockNumber: 1000, proxyImplementation: null, proxyAdmin: null, ownerAddress: null, ownerIsContract: null,
+};
+const onChainEOA = { ...onChainContract, isContract: false };
+
+test('computeOwnershipConcentration is not_applicable for an EOA (no supply/holders to speak of)', () => {
+  const dims = computeDimensions({ onChain: onChainEOA, verification: null, ownership: null, chainConfig, address, retrievedAt });
+  const ownership = dims.find((d) => d.key === 'ownership');
+  assert.equal(ownership.state, 'not_applicable');
+  assert.equal(ownership.subscore, null);
+});
+
+test('computeOwnershipConcentration reports insufficient data (not a fabricated score) when no holder-list data is available - e.g. no ETHERSCAN_API_KEY or a free-tier key that cannot reach the Pro-only tokenholderlist endpoint', () => {
+  const dims = computeDimensions({ onChain: onChainContract, verification: null, ownership: null, chainConfig, address, retrievedAt });
+  const ownership = dims.find((d) => d.key === 'ownership');
+  assert.equal(ownership.state, 'insufficient_data');
+  assert.equal(ownership.subscore, null);
+  assert.ok(ownership.limitations.some((l) => /Pro-tier/.test(l)));
+});
+
+test('computeOwnershipConcentration flags a real extreme-concentration case (LGNS/Origin on Polygon: ~60.7% held by one EOA) as elevated risk, using the same figures verified via GeckoTerminal', () => {
+  const ownership = {
+    totalSupply: 4070000000n, // ~4.07B LGNS total supply
+    topHolders: [{ address: '0x1964ca90474b11ffd08af387b110ba6c96251bfc', quantity: '2470000000' }], // ~2.47B, the "ORIGIN" wallet
+    topHolder: { address: '0x1964ca90474b11ffd08af387b110ba6c96251bfc', quantity: '2470000000' },
+    topHolderIsContract: false,
+  };
+  const dims = computeDimensions({ onChain: onChainContract, verification: null, ownership, chainConfig, address, retrievedAt });
+  const dim = dims.find((d) => d.key === 'ownership');
+  assert.equal(dim.state, 'assessed');
+  assert.equal(dim.subscore, 75, 'a single EOA holding >50% of supply must score in the elevated band');
+  assert.equal(dim.level, 'elevated_risk_indicator');
+  assert.match(dim.findings[0].summary, /60\.7%/);
+  assert.match(dim.findings[0].summary, /is a wallet \(EOA\)/);
+});
+
+test('computeOwnershipConcentration does NOT flag the same high percentage as risky when the top holder is a contract (locked LP/staking/vesting), not a wallet', () => {
+  const ownership = {
+    totalSupply: 1000000n,
+    topHolders: [{ address: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', quantity: '600000' }], // 60% held by a contract
+    topHolder: { address: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', quantity: '600000' },
+    topHolderIsContract: true,
+  };
+  const dims = computeDimensions({ onChain: onChainContract, verification: null, ownership, chainConfig, address, retrievedAt });
+  const dim = dims.find((d) => d.key === 'ownership');
+  assert.equal(dim.state, 'assessed');
+  assert.ok(dim.subscore <= 20, 'a contract-held (e.g. locked LP) balance must not score like an EOA holding the same share');
+  assert.equal(dim.level, 'no_material_indicator');
+});
+
+test('computeOwnershipConcentration treats an all-burn-address holder list as insufficient data, not as "0% concentration"', () => {
+  const ownership = {
+    totalSupply: 1000000n,
+    topHolders: [{ address: `0x${'0'.repeat(40)}`, quantity: '900000' }],
+    topHolder: null,
+    topHolderIsContract: null,
+  };
+  const dims = computeDimensions({ onChain: onChainContract, verification: null, ownership, chainConfig, address, retrievedAt });
+  const dim = dims.find((d) => d.key === 'ownership');
+  assert.equal(dim.state, 'insufficient_data');
+  assert.equal(dim.subscore, null);
 });
 
 test('computeDimensions detects a known admin selector (pause()) from real bytecode', () => {
