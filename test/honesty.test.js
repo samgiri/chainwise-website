@@ -88,10 +88,28 @@ test('the result meta grid cannot overlap: address gets its own full-width row a
 });
 
 test('no page links to the dashboard with a stale free-text ?address= param', () => {
-  ['index.html', 'research.html', 'case-smart-solve.html', 'dashboard.html', 'demo.html'].forEach((page) => {
+  ['index.html', 'research.html', 'dashboard.html', 'demo.html'].forEach((page) => {
     const html = read(page);
     assert.ok(!html.includes('dashboard?address='), `${page} must not link to /dashboard?address=<name> - the dashboard is address-only (0x contracts), not free-text protocol names`);
   });
+});
+
+test('the fabricated "Smart Solve DeFi" case study has been fully removed, not just relabeled', () => {
+  const fs2 = fs;
+  assert.ok(!fs2.existsSync(path.join(ROOT, 'case-smart-solve.html')), 'case-smart-solve.html must not exist on disk');
+
+  const vercelConfig = read('vercel.json');
+  assert.ok(!vercelConfig.includes('case-smart-solve'), 'vercel.json must not rewrite a route to the removed case page');
+
+  const caseStudiesSrc = read('api/_lib/caseStudies.js');
+  assert.ok(!/smart\s*solve/i.test(caseStudiesSrc.replace(/\/\/.*$|\/\*[\s\S]*?\*\//gm, '')), 'the case-study data file must not define a Smart Solve DeFi entry outside of comments');
+
+  ['index.html', 'research.html', 'case-detail.html', 'api/cases.js'].forEach((file) => {
+    assert.ok(!/smart\s*solve/i.test(read(file)), `${file} must not reference Smart Solve DeFi`);
+  });
+
+  const homeIntro = read('index.html');
+  assert.ok(!/\breal\b.{0,40}\blive\b|\blive case\b/i.test(homeIntro.slice(homeIntro.indexOf('id="research"'), homeIntro.indexOf('id="research"') + 2000)), 'the homepage research intro must not claim a real/live published case exists');
 });
 
 test('rate limiting and timeout handling exist for the analyze endpoint', () => {

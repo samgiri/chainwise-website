@@ -21,7 +21,7 @@
         .filters { display: flex; gap: 1rem; margin-bottom: 3rem; flex-wrap: wrap; }
         .filter-btn { padding: 0.7rem 1.5rem; background: rgba(247, 147, 26, 0.1); border: 1px solid rgba(247, 147, 26, 0.3); color: #e0e0e0; border-radius: 4px; cursor: pointer; transition: all 0.3s; }
         .filter-btn:hover, .filter-btn.active { background: rgba(247, 147, 26, 0.3); border-color: #f7931a; color: #f7931a; }
-        .cases-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem; }
+        .cases-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; }
         .case-card { background: rgba(20, 25, 45, 0.8); border: 1px solid rgba(247, 147, 26, 0.2); border-radius: 8px; padding: 2rem; transition: all 0.3s; }
         .case-card:hover { border-color: #f7931a; transform: translateY(-5px); box-shadow: 0 10px 30px rgba(247, 147, 26, 0.2); }
         .case-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; gap: 1rem; }
@@ -78,7 +78,7 @@
 
     <div class="hero">
         <h1>Research & Case Studies</h1>
-        <p>Institutional-grade DeFi risk analysis. Learn from real-world protocol failures.</p>
+        <p>Institutional-grade DeFi risk analysis using our 8-layer detection framework. Real, evidence-backed case studies are in progress — the examples below are illustrative.</p>
     </div>
 
     <div class="container">
@@ -124,7 +124,6 @@
         }
 
         function caseHref(c) {
-            if (c.slug === 'smart-solve-defi') return '/case-smart-solve';
             if (c.isIllustrative) return `/case-detail?slug=${encodeURIComponent(c.slug)}`;
             // The dashboard only accepts a real 0x contract address (no free-text protocol
             // names), and case studies don't carry one - link to the dashboard with just the

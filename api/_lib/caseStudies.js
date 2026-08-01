@@ -1,56 +1,22 @@
 // Shared case study data. Underscore-prefixed directory so Vercel doesn't
-// treat this as its own route - it's imported by api/analyze.js (for the
-// live single-case demo lookup) and api/cases.js (for the case list).
+// treat this as its own route - it's imported by api/cases.js (for the case
+// list).
 //
-// SMART_SOLVE_CASE is a real, published case study. The ILLUSTRATIVE_CASES
-// below it are clearly-labeled hypothetical/composite examples used to show
-// what the 8-layer framework looks like across different risk patterns while
-// we build out verified research on additional protocols - they carry
+// There is no real, published case study yet - only ILLUSTRATIVE_CASES below,
+// which are clearly-labeled hypothetical/composite examples used to show what
+// the 8-layer framework looks like across different risk patterns while we
+// build out verified research on real protocols. They carry
 // isIllustrative: true and must never be presented as real findings.
-
-const SMART_SOLVE_CASE = {
-  slug: 'smart-solve-defi',
-  protocol: 'Smart Solve DeFi',
-  chain: 'BSC',
-  riskScore: 95,
-  riskLevel: 'CRITICAL',
-  summary: 'Smart Solve DeFi exhibits parameters consistent with MLM pyramid scheme.',
-  confidence: 98,
-  estimatedLoss: '$100M+',
-  usersAtRisk: 15000,
-  collapseTimelineDays: [180, 365],
-  operatorControlPct: 60,
-  detectionHours: 24,
-  layers: {
-    patterns: 85,
-    bytecode: 55,
-    treasury: 30,
-    withdrawals: 50,
-    bridges: 20,
-    offRamps: 25,
-    sybil: 40,
-    attribution: 35,
-  },
-  alerts: [
-    { level: 'CRITICAL', message: 'Withdrawal queue exceeds threshold (127 pending)' },
-    { level: 'HIGH', message: 'Treasury drain detected - $21K/day outflow' },
-    { level: 'HIGH', message: 'Operator pause() function ready' },
-    { level: 'MEDIUM', message: 'Sybil cluster detected (89 wallets)' },
-  ],
-  timeline: [
-    { date: '2023-11', title: 'Deployment', description: 'Contract deployed on BSC and marketed as a "smart farming" yield aggregator with tiered referral rewards.' },
-    { date: '2023-12', title: 'Rapid, referral-driven growth', description: 'Aggressive multi-level referral bonuses drive fast signups; wallet-clustering shows coordinated funding of many new accounts from a small set of sources.' },
-    { date: '2024-02', title: 'Red flags emerge', description: 'Treasury outflows accelerate to roughly $21K/day and withdrawal processing begins to slow.' },
-    { date: '2024-03', title: 'Withdrawal queue crisis', description: 'Pending withdrawal queue exceeds 127 addresses; an operator-controlled pause() function is armed but not yet triggered.' },
-    { date: '2024-04', title: 'Projected outcome', description: 'Model projects an operator-controlled collapse within 180-365 days of deployment absent intervention; users are advised to withdraw where still possible.' },
-  ],
-  walletFlow: [
-    { step: 1, from: 'User deposit wallets', to: 'Central treasury address', description: 'Incoming user funds are swept into a small number of centrally-controlled treasury addresses shortly after each deposit.' },
-    { step: 2, from: 'Treasury address', to: 'Operator-attributed wallets', description: 'About 60% of inflows are forwarded on to wallets attributed to the operating team rather than retained to cover user withdrawals.' },
-    { step: 3, from: 'Operator-attributed wallets', to: 'Exchange deposit addresses', description: 'Funds progressively move toward known centralized-exchange deposit clusters, consistent with converting to fiat off-chain.' },
-    { step: 4, from: 'Remaining treasury balance', to: 'User withdrawal queue', description: 'A shrinking balance is left to service a growing withdrawal queue - the liquidity crunch that first surfaced this case.' },
-  ],
-};
+//
+// A "Smart Solve DeFi" entry previously lived here, presented on the
+// homepage/research pages as a real investigated case ("Real, on-chain
+// forensic breakdowns... a live case with a $100M+ estimated loss"). It had
+// no evidence links of any kind (no tx hashes, wallet/contract addresses, or
+// explorer links) and traced back to a fixed demo dataset that had briefly
+// been wired into the live /api/analyze engine as a fake result for
+// free-text "smart solve" queries (see test/honesty.test.js). It has been
+// removed rather than relabeled - do not re-add it without real, cited
+// on-chain evidence.
 
 const ILLUSTRATIVE_CASES = [
   {
@@ -151,6 +117,6 @@ const ILLUSTRATIVE_CASES = [
   },
 ];
 
-const CASE_STUDIES = [SMART_SOLVE_CASE, ...ILLUSTRATIVE_CASES];
+const CASE_STUDIES = [...ILLUSTRATIVE_CASES];
 
-module.exports = { SMART_SOLVE_CASE, ILLUSTRATIVE_CASES, CASE_STUDIES };
+module.exports = { ILLUSTRATIVE_CASES, CASE_STUDIES };
