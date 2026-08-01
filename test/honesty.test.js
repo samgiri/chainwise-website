@@ -112,6 +112,35 @@ test('the fabricated "Smart Solve DeFi" case study has been fully removed, not j
   assert.ok(!/\breal\b.{0,40}\blive\b|\blive case\b/i.test(homeIntro.slice(homeIntro.indexOf('id="research"'), homeIntro.indexOf('id="research"') + 2000)), 'the homepage research intro must not claim a real/live published case exists');
 });
 
+test('the MANTRA (OM) case study is real, sourced, and kept separate from the engine score', () => {
+  const { CASE_STUDIES } = require('../api/_lib/caseStudies');
+  const mantra = CASE_STUDIES.find((c) => c.slug === 'mantra-om-2025-collapse');
+  assert.ok(mantra, 'the MANTRA case study must exist in CASE_STUDIES');
+  assert.equal(mantra.isIllustrative, false, 'MANTRA must never be marked isIllustrative');
+  assert.equal(mantra.isInvestigated, true, 'MANTRA must be marked isInvestigated');
+
+  assert.ok(Array.isArray(mantra.sources) && mantra.sources.length >= 3, 'MANTRA must cite at least 3 sources');
+  mantra.sources.forEach((s) => {
+    assert.ok(/^https:\/\//.test(s.url), `source "${s.label}" must be a real https:// link, not a placeholder`);
+  });
+
+  const narrativeText = mantra.narrative.join(' ');
+  assert.ok(!/\b(is|was|confirmed)\s+a\s+rug\s*pull\b/i.test(narrativeText), 'the narrative must not assert "rug pull" as settled fact');
+  assert.ok(/den(y|ied|ies)/i.test(narrativeText), "MANTRA's denial/response must be included per the right-of-reply standard");
+  assert.ok(/no regulator or independent forensic audit/i.test(narrativeText), 'the narrative must explicitly state no definitive finding exists yet');
+
+  assert.ok(mantra.engineAnalysis && Array.isArray(mantra.engineAnalysis.dimensions) && mantra.engineAnalysis.dimensions.length === 8, 'the engine analysis must carry a real 8-dimension breakdown, not a placeholder');
+  assert.ok(/not a verdict|not a forensic finding/i.test(mantra.engineAnalysis.note), 'the engine analysis must explicitly disclaim that it is not a verdict on the crash');
+
+  assert.ok(fs.existsSync(path.join(ROOT, 'case-mantra-om.html')), 'case-mantra-om.html must exist');
+  const vercelConfig = read('vercel.json');
+  assert.ok(vercelConfig.includes('/case-mantra-om'), 'vercel.json must route /case-mantra-om to its page');
+
+  ['index.html', 'research.html'].forEach((file) => {
+    assert.ok(/isInvestigated/.test(read(file)), `${file} must render a distinct badge for investigated cases`);
+  });
+});
+
 test('rate limiting and timeout handling exist for the analyze endpoint', () => {
   const src = read('api/analyze.js');
   assert.ok(src.includes('checkRateLimit'));

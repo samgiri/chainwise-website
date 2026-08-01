@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MANTRA (OM) April 2025 collapse — sourced timeline, MANTRA's response, and a ChainWise Beta on-chain analysis of the current Base OM token contract.">
+    <title>MANTRA (OM) Case Study | ChainWise</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%23FF3D5C'/><stop offset='50%25' stop-color='%23FF8C3D'/><stop offset='100%25' stop-color='%2300D4FF'/></linearGradient></defs><rect width='200' height='200' rx='36' fill='%230F1629'/><path d='M160 30A70 70 0 0 0 40 100A70 70 0 0 0 160 170' stroke='url(%23g)' stroke-width='20' fill='none' stroke-linecap='round'/><circle cx='100' cy='100' r='10' fill='%23FF8C3D'/></svg>">
+    <link rel="stylesheet" href="/assets/dashboard.css">
+    <style>
+        .case-hero { max-width: 900px; margin: 0 auto 2rem; }
+        .badge-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1rem; }
+        .badge-investigated {
+            display: inline-flex; align-items: center; gap: 0.35rem;
+            padding: 0.3rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.4px;
+            background: rgba(59, 130, 246, 0.15); color: #7db4ff; border: 1px solid #3b82f6;
+        }
+        .badge-status-disputed {
+            display: inline-flex; align-items: center; gap: 0.35rem;
+            padding: 0.3rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.4px;
+            background: rgba(245, 158, 11, 0.15); color: var(--color-warning); border: 1px solid var(--color-warning);
+        }
+        .case-hero h1 { font-size: 1.9rem; margin-bottom: 0.75rem; }
+        .case-hero .dek { color: var(--color-text-secondary); font-size: 1rem; }
+        .narrative-card p { margin-bottom: 1rem; font-size: 0.95rem; line-height: 1.7; color: var(--color-text-primary); }
+        .narrative-card p:last-child { margin-bottom: 0; }
+        .response-callout {
+            background: rgba(123, 63, 228, 0.08); border-left: 4px solid var(--color-accent-purple);
+            border-radius: 6px; padding: 1rem 1.25rem; margin: 1.25rem 0; font-size: 0.9rem;
+        }
+        .no-finding-callout {
+            background: rgba(139, 147, 184, 0.08); border: 1px dashed var(--color-unknown);
+            border-radius: 6px; padding: 1rem 1.25rem; margin-top: 1.25rem; font-size: 0.85rem; color: var(--color-text-secondary);
+        }
+        .sources-list { list-style: none; margin-top: 0.75rem; }
+        .sources-list li { margin-bottom: 0.5rem; font-size: 0.88rem; }
+        .sources-list a { color: var(--color-accent-orange); }
+        .section-divider {
+            max-width: 900px; margin: 2.5rem auto 2rem; padding-top: 2rem; border-top: 1px solid var(--color-border);
+        }
+        .engine-scope-note {
+            background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.35);
+            border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; font-size: 0.88rem; color: var(--color-text-primary);
+        }
+        .engine-scope-note strong { color: #7db4ff; }
+        .right-of-reply-note { font-size: 0.85rem; color: var(--color-text-secondary); margin-top: 1rem; }
+        .right-of-reply-note a { color: var(--color-accent-orange); }
+    </style>
+</head>
+<body>
+    <nav class="header">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px; border-radius: 6px;">
+                    <defs>
+                        <linearGradient id="logoGradCaseHeader" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#FF3D5C"/>
+                            <stop offset="50%" style="stop-color:#FF8C3D"/>
+                            <stop offset="100%" style="stop-color:#00D4FF"/>
+                        </linearGradient>
+                    </defs>
+                    <rect width="200" height="200" fill="#0F1629" rx="20"/>
+                    <path d="M 160 30 A 70 70 0 0 0 40 100 A 70 70 0 0 0 160 170" stroke="url(#logoGradCaseHeader)" stroke-width="20" fill="none" stroke-linecap="round"/>
+                    <rect x="115" y="75" width="50" height="50" rx="4" fill="none" stroke="url(#logoGradCaseHeader)" stroke-width="3"/>
+                    <circle cx="140" cy="105" r="4" fill="#FF8C3D"/>
+                    <circle cx="100" cy="100" r="6" fill="#FF8C3D"/>
+                </svg>
+                <span>ChainWise</span>
+            </a>
+            <ul class="nav-primary">
+                <li><a href="/#features">Features</a></li>
+                <li><a href="/#methodology">Methodology</a></li>
+                <li><a href="/#research">Cases</a></li>
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/#alerts">Get Alerts</a></li>
+            </ul>
+            <ul class="nav-secondary">
+                <li><a href="mailto:contact@thechainwise.io" class="btn-nav secondary">Contact</a></li>
+                <li><a href="/" class="btn-nav primary">Back to Home</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <div class="dashboard-container">
+            <p style="font-size:0.85rem; color:var(--color-text-secondary); margin-bottom:1.5rem;">
+                <a href="/research" style="color:var(--color-accent-orange); text-decoration:none;">← Back to Research</a>
+            </p>
+
+            <div class="case-hero">
+                <div class="badge-row">
+                    <span class="badge-investigated">🔎 Investigated Case</span>
+                    <span class="badge-status-disputed">Disputed</span>
+                </div>
+                <h1>MANTRA (OM) — $5.5B token collapse, April 2025</h1>
+                <p class="dek">A sourced account of the April 13, 2025 crash, MANTRA's response, and a ChainWise Beta on-chain analysis of the current Base-chain OM token contract.</p>
+            </div>
+
+            <div class="result-card narrative-card" style="max-width:900px; margin-left:auto; margin-right:auto;">
+                <h3 style="margin-bottom:1rem; font-size:1.05rem;">What happened</h3>
+                <p>On April 13, 2025, MANTRA's OM token dropped from roughly $6.30 to below $0.50 within about an hour, erasing an estimated $5.5 billion in market capitalization — one of the largest single-day collapses in DeFi to date.</p>
+                <p>In the days before the crash, on-chain data showed 17 wallets moving a combined ~43.6 million OM (about $227M, roughly 4.5% of circulating supply) to the Binance and OKX exchanges. Blockchain analytics firm Arkham Intelligence tagged two of those wallets as belonging to MANTRA investor Laser Digital, which publicly denied the wallets were theirs. The crash triggered an estimated $71M+ in liquidations within 24 hours.</p>
+
+                <div class="response-callout">
+                    <strong>MANTRA's response:</strong> Co-founder John Patrick Mullin publicly denied any rug pull, stating the crash was "triggered by reckless forced closures initiated by centralized exchanges on OM account holders" and that team tokens "remain locked and subject to the published vesting periods." A MANTRA community lead separately denied the crash resulted from team selling.
+                </div>
+
+                <p>As of this writing, no regulator or independent forensic audit has issued a definitive finding on what caused the crash. This case is documented here as a disputed event, not a settled fraud finding — see the sources below and MANTRA's own statements for the full record.</p>
+
+                <h3 style="margin:1.5rem 0 0.5rem; font-size:1rem;">Sources</h3>
+                <ul class="sources-list">
+                    <li><a href="https://cointelegraph.com/news/mantra-om-token-collapsed-24-hours" target="_blank" rel="noopener">Cointelegraph — How Mantra's OM token collapsed in 24 hours of chaos</a></li>
+                    <li><a href="https://www.theblock.co/post/350665/layer-1-mantras-token-falls-90-in-sudden-crash-community-lead-denies-rug-pull-accusations" target="_blank" rel="noopener">The Block — MANTRA's token falls 90% in sudden crash; team blames "reckless liquidations"</a></li>
+                    <li><a href="https://coinmarketcap.com/academy/article/mantra-token-plunges-90percent-after-dollar227-million-moved-to-exchanges-sparking-liquidity-and-insider-dumping-concerns" target="_blank" rel="noopener">CoinMarketCap — Mantra Token Plunges 90% After $227 Million Moved to Exchanges</a></li>
+                </ul>
+                <p class="right-of-reply-note">MANTRA's public statements are included above per our <a href="/right-of-reply.html">Right of Reply</a> policy. If MANTRA disputes any specific claim here, that channel remains open.</p>
+            </div>
+
+            <div class="section-divider">
+                <h2 style="font-size:1.3rem; margin-bottom:1rem;">On-chain contract analysis</h2>
+                <div class="engine-scope-note">
+                    <strong>Scope note:</strong> the analysis below is a ChainWise Beta automated read of one specific contract — the current Base-chain OM token (bridged via Superbridge from Ethereum), <em>not</em> the original protocol deployment. It reflects this contract's on-chain risk properties (admin controls, upgradeability, verification, etc.) only. It is not a forensic investigation of the April 2025 crash and is not a verdict on whether that event involved fraud.
+                </div>
+            </div>
+
+            <div id="engineContent">
+                <div class="empty-state"><p>Loading engine analysis…</p></div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-section footer-brand">
+                    <div class="logo">
+                        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px; border-radius: 6px;">
+                            <defs>
+                                <linearGradient id="logoGradCaseFooter" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#FF3D5C"/>
+                                    <stop offset="50%" style="stop-color:#FF8C3D"/>
+                                    <stop offset="100%" style="stop-color:#00D4FF"/>
+                                </linearGradient>
+                            </defs>
+                            <rect width="200" height="200" fill="#0F1629" rx="20"/>
+                            <path d="M 160 30 A 70 70 0 0 0 40 100 A 70 70 0 0 0 160 170" stroke="url(#logoGradCaseFooter)" stroke-width="20" fill="none" stroke-linecap="round"/>
+                            <rect x="115" y="75" width="50" height="50" rx="4" fill="none" stroke="url(#logoGradCaseFooter)" stroke-width="3"/>
+                            <circle cx="140" cy="105" r="4" fill="#FF8C3D"/>
+                            <circle cx="100" cy="100" r="6" fill="#FF8C3D"/>
+                        </svg>
+                        <span>ChainWise</span>
+                    </div>
+                    <p class="footer-tagline">ChainWise provides evidence-linked preliminary DeFi and smart-contract risk assessments. Results are informational and should not replace independent technical, legal, or financial review.</p>
+                    <div class="footer-socials">
+                        <a href="https://twitter.com/chainwise" class="social-link" title="Twitter">𝕏</a>
+                        <a href="https://medium.com/@chainwise" class="social-link" title="Medium">📝</a>
+                        <a href="https://youtube.com/@chainwise" class="social-link" title="YouTube">▶️</a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Product</h3>
+                    <ul>
+                        <li><a href="/#features">Features</a></li>
+                        <li><a href="/#methodology">Methodology</a></li>
+                        <li><a href="/dashboard">Dashboard</a></li>
+                        <li><a href="/#alerts">Get Alerts</a></li>
+                        <li><a href="/api-docs.html">API Docs</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Research</h3>
+                    <ul>
+                        <li><a href="/research.html">Case Studies</a></li>
+                        <li><a href="/#methodology">Detection Framework</a></li>
+                        <li><a href="/blog.html">Research Blog</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="/about.html">About</a></li>
+                        <li><a href="/team.html">Team</a></li>
+                        <li><a href="/press.html">Press Kit</a></li>
+                        <li><a href="https://satoshilab.ai">Satoshi Lab</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Trust</h3>
+                    <ul>
+                        <li><a href="/#trust-security">Security</a></li>
+                        <li><a href="/#trust-security">Compliance</a></li>
+                        <li><a href="/right-of-reply.html">Right of Reply</a></li>
+                        <li><a href="/#trust-security">Third-Party Audits</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="/privacy.html">Privacy Policy</a></li>
+                        <li><a href="/terms.html">Terms of Service</a></li>
+                        <li><a href="/#disclaimer">Disclaimer</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div>© 2026 ChainWise Research. All rights reserved. | Built by <a href="https://satoshilab.ai" style="color: var(--color-accent-orange); text-decoration:none;">Satoshi Lab</a></div>
+                <div class="footer-badge">
+                    <span>🧪 Beta Product</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        (function () {
+            var DIMENSION_ORDER = [
+                'verification', 'adminControls', 'upgradeability', 'tokenRestrictions',
+                'liquidity', 'ownership', 'governance', 'exploitSignals',
+            ];
+            var LEVEL_BADGE_CLASS = {
+                no_material_indicator: 'no_material_indicator',
+                review_recommended: 'review_recommended',
+                elevated_risk_indicator: 'elevated_risk_indicator',
+                critical_risk_indicator: 'critical_risk_indicator',
+            };
+
+            function el(tag, attrs, children) {
+                var node = document.createElement(tag);
+                attrs = attrs || {};
+                Object.keys(attrs).forEach(function (key) {
+                    if (key === 'class') node.className = attrs[key];
+                    else if (key === 'html') node.innerHTML = attrs[key];
+                    else if (key === 'text') node.textContent = attrs[key];
+                    else node.setAttribute(key, attrs[key]);
+                });
+                (children || []).forEach(function (child) { if (child) node.appendChild(child); });
+                return node;
+            }
+
+            function tierFromScore(score) {
+                if (score === null || score === undefined) return { color: 'var(--color-unknown)', tier: 'NOT ANALYZED' };
+                if (score <= 33) return { color: 'var(--color-success)', tier: 'LOW' };
+                if (score <= 66) return { color: 'var(--color-warning)', tier: 'MEDIUM' };
+                if (score <= 89) return { color: 'var(--color-accent-orange)', tier: 'HIGH' };
+                return { color: 'var(--color-critical)', tier: 'CRITICAL' };
+            }
+
+            function badgeClassFor(dim) {
+                if (dim.state === 'assessed') return LEVEL_BADGE_CLASS[dim.level] || 'insufficient';
+                return dim.state === 'not_applicable' ? 'not_applicable' : 'insufficient';
+            }
+
+            function renderDimensionCard(dim) {
+                var badgeClass = badgeClassFor(dim);
+                var head = el('div', { class: 'dimension-card-head' }, [
+                    el('div', { class: 'dimension-name', text: dim.name }),
+                    el('span', { class: 'dimension-badge ' + badgeClass, text: dim.levelLabel }),
+                ]);
+                var card = el('div', { class: 'dimension-card' }, [head]);
+                if (dim.state === 'assessed') {
+                    var barFill = el('div', { class: 'dimension-bar-fill' }, [
+                        el('div', { class: 'dimension-bar-progress', style: 'width:' + dim.subscore + '%' }),
+                    ]);
+                    card.appendChild(barFill);
+                    card.appendChild(el('p', { class: 'dimension-confidence', text: 'Confidence: ' + dim.confidence + '%' }));
+                }
+                card.appendChild(el('p', { class: 'dimension-explanation', text: dim.explanation }));
+                return card;
+            }
+
+            function render(caseData) {
+                var engineContent = document.getElementById('engineContent');
+                engineContent.innerHTML = '';
+                var ea = caseData.engineAnalysis;
+
+                var header = el('div', { class: 'result-card' });
+                header.appendChild(el('div', { class: 'result-header-top' }, [
+                    el('span', { class: 'status-pill partial', text: ea.assessmentStatus }),
+                ]));
+
+                var addressRow = el('div', { class: 'address-copy-row' }, [
+                    el('code', { text: caseData.contractAddress }),
+                    el('a', { href: ea.explorerUrl, target: '_blank', rel: 'noopener', class: 'explorer-link-btn', text: 'View on explorer ↗' }),
+                ]);
+
+                var metaGrid = el('div', { class: 'result-meta-grid' }, [
+                    el('div', { class: 'meta-item meta-item-wide' }, [el('div', { class: 'meta-label', text: 'Contract Address' }), addressRow]),
+                    el('div', { class: 'meta-item' }, [el('div', { class: 'meta-label', text: 'Network' }), el('div', { class: 'meta-value', text: caseData.chain })]),
+                    el('div', { class: 'meta-item' }, [el('div', { class: 'meta-label', text: 'Verified Name' }), el('div', { class: 'meta-value', text: ea.verifiedName || 'Not available' })]),
+                    el('div', { class: 'meta-item' }, [el('div', { class: 'meta-label', text: 'Analyzed At' }), el('div', { class: 'meta-value', text: new Date(ea.analyzedAt).toLocaleString() })]),
+                    el('div', { class: 'meta-item' }, [el('div', { class: 'meta-label', text: 'Engine Version' }), el('div', { class: 'meta-value', text: ea.engineVersion })]),
+                    el('div', { class: 'meta-item' }, [el('div', { class: 'meta-label', text: 'Confidence' }), el('div', { class: 'meta-value', text: ea.confidence + '%' })]),
+                ]);
+                header.appendChild(metaGrid);
+
+                var tier = tierFromScore(ea.worstDimensionScore != null ? ea.worstDimensionScore : ea.overallScore);
+                var scoreRow = el('div', { class: 'score-row' });
+                var ring = el('div', { class: 'risk-ring', style: '--ring-color:' + tier.color + ';--ring-pct:' + ea.overallScore }, [
+                    el('div', { class: 'risk-ring-inner' }, [
+                        el('div', { class: 'risk-score', text: String(ea.overallScore) }),
+                        el('div', { class: 'risk-label', style: 'color:' + tier.color, text: tier.tier }),
+                    ]),
+                ]);
+                scoreRow.appendChild(el('div', { class: 'risk-ring-wrap' }, [ring]));
+                scoreRow.appendChild(el('div', { class: 'no-score-note', text: 'Partial assessment. Only some risk dimensions had enough evidence to score — see below for what was and wasn’t assessed.' }));
+                header.appendChild(scoreRow);
+
+                header.appendChild(el('div', { class: 'risk-legend' }, [
+                    el('div', { class: 'risk-legend-bar' }),
+                    el('div', { class: 'risk-legend-labels' }, [
+                        el('span', {}, [el('span', { class: 'dot', style: 'background:var(--color-success);' }), document.createTextNode('LOW 0–33')]),
+                        el('span', {}, [el('span', { class: 'dot', style: 'background:var(--color-warning);' }), document.createTextNode('MEDIUM 34–66')]),
+                        el('span', {}, [el('span', { class: 'dot', style: 'background:var(--color-accent-orange);' }), document.createTextNode('HIGH 67–89')]),
+                        el('span', {}, [el('span', { class: 'dot', style: 'background:var(--color-critical);' }), document.createTextNode('CRITICAL 90–100')]),
+                    ]),
+                    el('p', { class: 'risk-legend-caption', text: 'Scores are directional risk indicators, not guarantees — always verify independently.' }),
+                ]));
+
+                header.appendChild(el('p', { class: 'result-disclaimer', text: 'Beta automated preliminary screening. This is not a full smart-contract audit, financial advice, or a legal declaration that a protocol is fraudulent or safe.' }));
+                engineContent.appendChild(header);
+
+                if (ea.topFlags && ea.topFlags.length) {
+                    var list = el('ul', { class: 'top-flags-list' }, ea.topFlags.map(function (t) {
+                        return el('li', { class: 'top-flags-item', text: t });
+                    }));
+                    engineContent.appendChild(el('div', { class: 'result-card top-flags-card' }, [
+                        el('h3', { text: 'Top Flags' }),
+                        list,
+                    ]));
+                }
+
+                var orderedDims = (ea.dimensions || []).slice().sort(function (a, b) {
+                    return DIMENSION_ORDER.indexOf(a.key) - DIMENSION_ORDER.indexOf(b.key);
+                });
+                var dimSection = el('div', { class: 'dimensions-section' }, [el('h3', { text: 'The 8 Risk Dimensions' })]);
+                var grid = el('div', { class: 'dimension-grid' });
+                orderedDims.forEach(function (dim) { grid.appendChild(renderDimensionCard(dim)); });
+                dimSection.appendChild(grid);
+                engineContent.appendChild(dimSection);
+            }
+
+            fetch('/api/cases')
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    var caseData = (data.cases || []).find(function (c) { return c.slug === 'mantra-om-2025-collapse'; });
+                    if (!caseData || !caseData.engineAnalysis) {
+                        document.getElementById('engineContent').innerHTML = '<div class="empty-state"><p>Engine analysis not available.</p></div>';
+                        return;
+                    }
+                    render(caseData);
+                })
+                .catch(function () {
+                    document.getElementById('engineContent').innerHTML = '<div class="empty-state"><p>Could not load engine analysis right now.</p></div>';
+                });
+        })();
+    </script>
+</body>
+</html>
