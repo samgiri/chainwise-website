@@ -3,6 +3,7 @@
     { "source": "/dashboard", "destination": "/dashboard.html" },
     { "source": "/dashboard/demo", "destination": "/demo.html" },
     { "source": "/research", "destination": "/research.html" },
-    { "source": "/case-detail", "destination": "/case-detail.html" }
+    { "source": "/case-detail", "destination": "/case-detail.html" },
+    { "source": "/case-mantra-om", "destination": "/case-mantra-om.html" }
   ]
 }

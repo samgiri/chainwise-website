@@ -155,6 +155,7 @@
         .case-score-value { font-size: 1.6rem; font-weight: 700; line-height: 1; }
         .case-score-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-top: 0.2rem; }
         .case-illustrative-tag { display: inline-block; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; padding: 0.25rem 0.5rem; border-radius: 3px; background: rgba(160, 160, 160, 0.15); color: #c9c9c9; border: 1px solid rgba(160, 160, 160, 0.3); margin-bottom: 0.6rem; align-self: flex-start; }
+        .case-investigated-tag { display: inline-block; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; padding: 0.25rem 0.5rem; border-radius: 3px; background: rgba(59, 130, 246, 0.15); color: #7db4ff; border: 1px solid rgba(59, 130, 246, 0.4); margin-bottom: 0.6rem; align-self: flex-start; }
         .case-card-summary { color: var(--text2); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.25rem; flex: 1; }
         .case-card-link { color: var(--orange); text-decoration: none; font-size: 0.9rem; font-weight: 600; }
         .case-card-link:hover { text-decoration: underline; }
@@ -741,15 +742,21 @@
             const grid = document.getElementById('homeCaseGrid');
             if (!grid) return;
 
-            function riskColor(score) {
-                if (score === null || score === undefined) return '#6b7280';
-                if (score <= 33) return '#4caf50';
-                if (score <= 66) return '#ffc107';
-                if (score <= 89) return '#f7931a';
-                return '#ef4444';
+            // Keyed by riskLevel (not the raw score) so a worst-dimension-driven tier - e.g. a
+            // MEDIUM banner sitting on top of a lower average score - never renders with a
+            // color that contradicts its own label.
+            function colorForLevel(level) {
+                switch ((level || '').toUpperCase()) {
+                    case 'LOW': return '#4caf50';
+                    case 'MEDIUM': return '#ffc107';
+                    case 'HIGH': return '#f7931a';
+                    case 'CRITICAL': return '#ef4444';
+                    default: return '#6b7280';
+                }
             }
 
             function caseHref(c) {
+                if (c.detailPage) return c.detailPage;
                 if (c.isIllustrative) return `/case-detail?slug=${encodeURIComponent(c.slug)}`;
                 // The dashboard only accepts a real 0x contract address (no free-text protocol
                 // names), and case studies don't carry one - link to the dashboard with just the
@@ -770,14 +777,15 @@
                     grid.innerHTML = cases.map(c => `
                         <div class="case-card">
                             ${c.isIllustrative ? '<span class="case-illustrative-tag">Illustrative Example</span>' : ''}
+                            ${c.isInvestigated ? '<span class="case-investigated-tag">🔎 Investigated Case</span>' : ''}
                             <div class="case-card-top">
                                 <div>
                                     <div class="case-card-name">${c.protocol}</div>
                                     <span class="case-card-chain">${c.chain}</span>
                                 </div>
                                 <div class="case-score-badge">
-                                    <div class="case-score-value" style="color:${riskColor(c.riskScore)};">${c.riskScore ?? '--'}</div>
-                                    <div class="case-score-label" style="color:${riskColor(c.riskScore)};">${c.riskLevel || ''}</div>
+                                    <div class="case-score-value" style="color:${colorForLevel(c.riskLevel)};">${c.riskScore ?? '--'}</div>
+                                    <div class="case-score-label" style="color:${colorForLevel(c.riskLevel)};">${c.riskLevel || ''}</div>
                                 </div>
                             </div>
                             <p class="case-card-summary">${c.summary}</p>

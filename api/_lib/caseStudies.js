@@ -17,6 +17,74 @@
 // free-text "smart solve" queries (see test/honesty.test.js). It has been
 // removed rather than relabeled - do not re-add it without real, cited
 // on-chain evidence.
+//
+// INVESTIGATED_CASES below is the first (and so far only) real, sourced case
+// study. Two things are kept strictly separate for it, and must stay that
+// way for any future entry of this kind:
+//   1. `narrative` / `sources` - real-world reporting on an event (a token
+//      collapse, an exploit, etc.), hedged and multi-sourced, with the
+//      subject's own response included per our right-of-reply standard.
+//   2. `engineAnalysis` - the *actual, captured* output of a real
+//      /api/analyze run against a specific contract, verbatim. This is a
+//      point-in-time snapshot, not a live re-analysis, and it is a technical
+//      read of one contract's on-chain properties - it is never a verdict on
+//      the narrative event. Never let scores/dimensions here be hand-written
+//      or estimated; only ever paste in a real captured engine response.
+
+const INVESTIGATED_CASES = [
+  {
+    slug: 'mantra-om-2025-collapse',
+    protocol: 'MANTRA (OM)',
+    isIllustrative: false,
+    isInvestigated: true,
+    detailPage: '/case-mantra-om',
+    statusBadge: 'DISPUTED',
+    chain: 'Base',
+    contractAddress: '0x3992b27da26848c2b19cea6fd25ad5568b68ab98',
+    riskScore: 23,
+    // Worst-dimension-driven tier (adminControls scored 40), not the mean of 23 - see
+    // engineAnalysis.worstDimensionScore and dashboard.js's tierFromScore for why.
+    riskLevel: 'MEDIUM',
+    summary: 'OM dropped over 90% on April 13, 2025, erasing an estimated $5.5B in market cap. MANTRA disputes rug-pull characterizations, attributing it to forced exchange liquidations. The on-chain score below is for the current Base OM token contract only - not a verdict on the crash.',
+    sources: [
+      { label: "Cointelegraph — How Mantra's OM token collapsed in 24 hours of chaos", url: 'https://cointelegraph.com/news/mantra-om-token-collapsed-24-hours' },
+      { label: "The Block — MANTRA's token falls 90% in sudden crash; team blames 'reckless liquidations'", url: 'https://www.theblock.co/post/350665/layer-1-mantras-token-falls-90-in-sudden-crash-community-lead-denies-rug-pull-accusations' },
+      { label: 'CoinMarketCap — Mantra Token Plunges 90% After $227 Million Moved to Exchanges', url: 'https://coinmarketcap.com/academy/article/mantra-token-plunges-90percent-after-dollar227-million-moved-to-exchanges-sparking-liquidity-and-insider-dumping-concerns' },
+    ],
+    narrative: [
+      'On April 13, 2025, MANTRA\'s OM token dropped from roughly $6.30 to below $0.50 within about an hour, erasing an estimated $5.5 billion in market capitalization - one of the largest single-day collapses in DeFi to date.',
+      'In the days before the crash, on-chain data showed 17 wallets moving a combined ~43.6 million OM (about $227M, roughly 4.5% of circulating supply) to the Binance and OKX exchanges. Blockchain analytics firm Arkham Intelligence tagged two of those wallets as belonging to MANTRA investor Laser Digital, which publicly denied the wallets were theirs. The crash triggered an estimated $71M+ in liquidations within 24 hours.',
+      'MANTRA co-founder John Patrick Mullin publicly denied any rug pull, stating the crash was "triggered by reckless forced closures initiated by centralized exchanges on OM account holders" and that team tokens "remain locked and subject to the published vesting periods." A MANTRA community lead separately denied the crash resulted from team selling.',
+      'As of this writing, no regulator or independent forensic audit has issued a definitive finding on what caused the crash. This case is documented here as a disputed event, not a settled fraud finding - see the sources above and MANTRA\'s own statements for the full record.',
+    ],
+    engineAnalysis: {
+      // Captured verbatim from a real /api/analyze run - see the header comment above.
+      analyzedAt: '2026-08-01T22:21:36',
+      engineVersion: '2.0.0-beta.1',
+      resultStatus: 'partial',
+      assessmentStatus: 'Partial',
+      overallScore: 23,
+      worstDimensionScore: 40,
+      confidence: 33,
+      verifiedName: 'OptimismMintableERC20',
+      explorerUrl: 'https://basescan.org/address/0x3992b27da26848c2b19cea6fd25ad5568b68ab98',
+      note: 'This is the current Base-chain OM token contract (bridged via Superbridge from Ethereum), not the original protocol deployment. This score reflects only this specific contract\'s on-chain risk properties (admin controls, upgradeability, etc.) as assessed by ChainWise Beta - it is not a forensic finding about the April 2025 crash.',
+      topFlags: [
+        'The contract gives its admin 1 privileged function (like pause or mint) that can directly affect user funds.',
+      ],
+      dimensions: [
+        { key: 'verification', name: 'Contract Verification & Transparency', state: 'assessed', level: 'no_material_indicator', levelLabel: 'No material indicator detected', subscore: 10, confidence: 90, explanation: 'Publicly verified source code lets anyone read exactly what the contract does, which supports transparency.' },
+        { key: 'adminControls', name: 'Privileged Access & Admin Controls', state: 'assessed', level: 'review_recommended', levelLabel: 'Review recommended', subscore: 40, confidence: 55, explanation: 'Found 1 commonly privileged function selector in the bytecode. Many legitimate contracts use these too - presence alone is not proof of misuse.' },
+        { key: 'upgradeability', name: 'Upgradeability & Proxy Risk', state: 'assessed', level: 'no_material_indicator', levelLabel: 'No material indicator detected', subscore: 20, confidence: 75, explanation: 'No standard proxy pattern was detected, suggesting contract logic cannot be swapped after deployment via the most common upgrade mechanism.' },
+        { key: 'tokenRestrictions', name: 'Token & Transaction Restrictions', state: 'assessed', level: 'no_material_indicator', levelLabel: 'No material indicator detected', subscore: 20, confidence: 45, explanation: 'No common transfer-restriction keywords (max transaction, blacklist, cooldown, anti-whale) were found in verified source.' },
+        { key: 'liquidity', name: 'Liquidity & Market Structure', state: 'insufficient_data', level: null, levelLabel: 'Insufficient data', subscore: null, confidence: null, explanation: 'Not yet integrated in ChainWise Beta - this is a roadmap gap, not an error, and not specific to this contract.' },
+        { key: 'ownership', name: 'Ownership & Wallet Concentration', state: 'insufficient_data', level: null, levelLabel: 'Insufficient data', subscore: null, confidence: null, explanation: 'Not yet integrated in ChainWise Beta - this is a roadmap gap, not an error, and not specific to this contract.' },
+        { key: 'governance', name: 'Governance & Operational Controls', state: 'insufficient_data', level: null, levelLabel: 'Insufficient data', subscore: null, confidence: null, explanation: 'This contract does not expose a standard owner() function (or the call reverted), so single-key-vs-multisig control could not be determined this way.' },
+        { key: 'exploitSignals', name: 'Exploit, Anomaly & External Signals', state: 'insufficient_data', level: null, levelLabel: 'Insufficient data', subscore: null, confidence: null, explanation: 'Not yet integrated in ChainWise Beta - this is a roadmap gap, not an error, and not specific to this contract.' },
+      ],
+    },
+  },
+];
 
 const ILLUSTRATIVE_CASES = [
   {
@@ -117,6 +185,6 @@ const ILLUSTRATIVE_CASES = [
   },
 ];
 
-const CASE_STUDIES = [...ILLUSTRATIVE_CASES];
+const CASE_STUDIES = [...INVESTIGATED_CASES, ...ILLUSTRATIVE_CASES];
 
-module.exports = { ILLUSTRATIVE_CASES, CASE_STUDIES };
+module.exports = { INVESTIGATED_CASES, ILLUSTRATIVE_CASES, CASE_STUDIES };

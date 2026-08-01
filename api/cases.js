@@ -1,9 +1,10 @@
 // Vercel serverless function: GET /api/cases
 //
 // Lists published case studies - see api/_lib/caseStudies.js for the single
-// source of truth. There is no real, published case study yet; every entry
-// carries `isIllustrative: true` and is a hypothetical/composite example, not
-// a real finding. `inProgress: true` tells visitors verified case studies are
+// source of truth. INVESTIGATED_CASES entries are real, sourced case studies
+// (`isInvestigated: true`); ILLUSTRATIVE_CASES entries carry
+// `isIllustrative: true` and are hypothetical/composite examples, not real
+// findings. `inProgress: true` tells visitors more verified case studies are
 // still coming.
 
 const { CASE_STUDIES } = require('./_lib/caseStudies');
