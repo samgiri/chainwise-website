@@ -531,10 +531,17 @@
 
     header.appendChild(el('p', { class: 'result-disclaimer', text: 'Beta automated preliminary screening. This is not a full smart-contract audit, financial advice, or a legal declaration that a protocol is fraudulent or safe.' }));
 
-    var exportBtn = el('button', { type: 'button', class: 'export-btn', id: 'exportBtn', text: '📄 Export Assessment' });
-    exportBtn.disabled = !(data.resultStatus === 'success' || data.resultStatus === 'partial');
-    exportBtn.addEventListener('click', function () { exportAssessment(data); });
+    // Export is a locked placeholder for a future paid feature - always disabled, and never
+    // wired to exportAssessment(). The generator itself is left intact below for later reuse
+    // once the paid tier ships; only this call site is gated.
+    var exportBtn = el('button', {
+      type: 'button', class: 'export-btn', id: 'exportBtn',
+      title: 'PDF export will be available soon as a paid feature.',
+      text: '🔒 Export Assessment (Premium — coming soon)',
+    });
+    exportBtn.disabled = true;
     header.appendChild(exportBtn);
+    header.appendChild(el('p', { class: 'export-locked-note', text: 'PDF export will be available soon as a paid feature.' }));
 
     if (data.resultStatus === 'success' || data.resultStatus === 'partial') {
       header.appendChild(el('div', { class: 'post-analysis-social' }, [

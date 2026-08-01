@@ -367,7 +367,8 @@ main {
     border-radius: 6px; color: var(--color-text-primary); font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.2s;
 }
 .export-btn:hover:not(:disabled) { border-color: var(--color-accent-orange); }
-.export-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.export-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+.export-locked-note { font-size: 0.78rem; color: var(--color-text-secondary); text-align: center; margin-top: 0.6rem; font-style: italic; }
 
 .post-analysis-social { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border); font-size: 0.85rem; color: var(--color-text-secondary); }
 .post-analysis-social a { color: var(--color-text-primary); text-decoration: none; font-weight: 600; }
