@@ -295,7 +295,9 @@ module.exports = async (req, res) => {
     // a null score. success/partial both get one; generateSummary() can never throw or hang
     // past its own internal ~4s timeout, so this can never be the reason a request times out.
     // That 4s runs sequentially after the on-chain phase's own ANALYZE_TIMEOUT_MS (12s
-    // default), so worst-case combined latency is ~16s, not 12s - see aiSummary.js.
+    // default), so worst-case combined latency is ~16s, not 12s - see aiSummary.js. This
+    // function's own maxDuration is set to 20s in vercel.json (version-controlled, so it
+    // survives a project recreation) - comfortably above that 16s worst case.
     if (response.resultStatus !== 'insufficient_data') {
       response.aiSummary = await generateSummary({
         overallScore: response.overallScore,
