@@ -17,6 +17,13 @@
 //
 // Scoring is deterministic and versioned (ENGINE_VERSION in riskEngine.js) - identical
 // inputs always produce identical outputs, so results are reproducible.
+//
+// `aiSummary` is a separate, optional layer on top of that deterministic result: it sends the
+// already-computed score/dimensions/findings to Claude to rephrase in plain English for a
+// non-technical reader. It never sees raw on-chain data and never influences any score - see
+// api/_lib/aiSummary.js. It is never attached to insufficient_data or error responses (those
+// already explain themselves), and any failure/timeout there falls back to a template built
+// from existing fields, never to an error.
 
 const crypto = require('crypto');
 const { CHAIN_CONFIG } = require('./_lib/chains');
@@ -24,6 +31,7 @@ const { fetchOnChainData, RpcError } = require('./_lib/rpc');
 const { fetchVerification } = require('./_lib/verification');
 const { fetchOwnershipData } = require('./_lib/holders');
 const { computeDimensions, computeRoadmapDimensions, summarizeDimensions, ENGINE_VERSION } = require('./_lib/riskEngine');
+const { generateSummary } = require('./_lib/aiSummary');
 const { checkRateLimit } = require('./_lib/rateLimit');
 
 const ADDRESS_REGEX = /^0x[a-fA-F0-9]{40}$/;
@@ -282,6 +290,21 @@ module.exports = async (req, res) => {
     const roadmapDimensions = computeRoadmapDimensions();
     const summary = summarizeDimensions(dimensions);
     const response = successResponse({ requestId, address, chainConfig, dimensions, roadmapDimensions, summary, cached: false });
+
+    // insufficient_data responses already explain themselves - no summary to layer on top of
+    // a null score. success/partial both get one; generateSummary() can never throw or hang
+    // past its own internal ~4s timeout, so this can never be the reason a request times out.
+    // That 4s runs sequentially after the on-chain phase's own ANALYZE_TIMEOUT_MS (12s
+    // default), so worst-case combined latency is ~16s, not 12s - see aiSummary.js.
+    if (response.resultStatus !== 'insufficient_data') {
+      response.aiSummary = await generateSummary({
+        overallScore: response.overallScore,
+        worstDimensionScore: response.worstDimensionScore,
+        resultStatus: response.resultStatus,
+        dimensions: response.dimensions,
+        findings: response.findings,
+      });
+    }
 
     if (isCacheable(response)) {
       await kvSet(cacheKey, response);

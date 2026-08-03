@@ -240,3 +240,94 @@ test('end-to-end: a token with extreme holder concentration (LGNS/Origin-shaped 
     else process.env.ETHERSCAN_API_KEY = originalKey;
   }
 });
+
+// --- aiSummary: optional AI verdict layered on top of the deterministic result ------------
+
+// Produces 3 assessed dimensions (adminControls, upgradeability, governance) with no
+// ETHERSCAN_API_KEY needed at all, so resultStatus is 'partial' rather than
+// 'insufficient_data' - enough for the aiSummary tests below to exercise the real
+// aiSummary-attaching code path.
+function basicRpcMock() {
+  return jsonRpcMock({
+    eth_getCode: (params) => (params[0].toLowerCase() === VALID_ADDRESS.toLowerCase()
+      ? '0x' + '00'.repeat(10) + '8456cb59' + 'deadbeef' // contains pause()
+      : '0x'), // owner() address - an EOA, no code
+    eth_getBalance: () => '0x0',
+    eth_getTransactionCount: () => '0x5',
+    eth_blockNumber: () => '0x64',
+    eth_getStorageAt: () => ZERO_SLOT,
+    eth_call: () => '0x000000000000000000000000000000000000000000000000000000000000bbbb'.slice(0, 66),
+  });
+}
+
+test('aiSummary: falls back to the template (aiGenerated: false) and still returns 200 when ANTHROPIC_API_KEY is not set', async () => {
+  const originalAnthropicKey = process.env.ANTHROPIC_API_KEY;
+  delete process.env.ANTHROPIC_API_KEY;
+  global.fetch = basicRpcMock();
+  try {
+    const req = mockReq({ query: { address: VALID_ADDRESS, chain: 'ethereum' }, ip: '10.0.0.13' });
+    const res = mockRes();
+    await analyzeHandler(req, res);
+
+    assert.equal(res.statusCode, 200);
+    assert.equal(res.body.resultStatus, 'partial', '3 assessed dimensions (adminControls, upgradeability, governance) should produce a partial result');
+    assert.ok(res.body.aiSummary, 'aiSummary must be present for a scored result');
+    assert.equal(res.body.aiSummary.aiGenerated, false);
+    assert.ok(res.body.aiSummary.text.length > 0);
+  } finally {
+    if (originalAnthropicKey === undefined) delete process.env.ANTHROPIC_API_KEY;
+    else process.env.ANTHROPIC_API_KEY = originalAnthropicKey;
+  }
+});
+
+test('aiSummary: a real Claude success response (mocked Anthropic call) comes back as aiGenerated: true with the rest of the response intact and still 200', async () => {
+  const originalAnthropicKey = process.env.ANTHROPIC_API_KEY;
+  process.env.ANTHROPIC_API_KEY = 'test-key';
+  global.fetch = async (url, options) => {
+    if (typeof url === 'string' && url.includes('api.anthropic.com')) {
+      return { ok: true, json: async () => ({ content: [{ type: 'text', text: 'This contract shows some elevated risk indicators. This is automated preliminary screening, not a guarantee.' }] }) };
+    }
+    return basicRpcMock()(url, options);
+  };
+  try {
+    const req = mockReq({ query: { address: VALID_ADDRESS, chain: 'ethereum' }, ip: '10.0.0.14' });
+    const res = mockRes();
+    await analyzeHandler(req, res);
+
+    assert.equal(res.statusCode, 200);
+    assert.ok(res.body.aiSummary);
+    assert.equal(res.body.aiSummary.aiGenerated, true);
+    assert.match(res.body.aiSummary.text, /elevated risk indicators/);
+    // everything else must be unaffected by the AI layer being present
+    assert.ok(Array.isArray(res.body.dimensions) && res.body.dimensions.length === 6);
+    assert.ok(typeof res.body.overallScore === 'number' || res.body.overallScore === null);
+  } finally {
+    if (originalAnthropicKey === undefined) delete process.env.ANTHROPIC_API_KEY;
+    else process.env.ANTHROPIC_API_KEY = originalAnthropicKey;
+  }
+});
+
+test('aiSummary: an Anthropic API failure (mocked) falls back cleanly to the template and the request still returns 200 with no visible degradation', async () => {
+  const originalAnthropicKey = process.env.ANTHROPIC_API_KEY;
+  process.env.ANTHROPIC_API_KEY = 'test-key';
+  global.fetch = async (url, options) => {
+    if (typeof url === 'string' && url.includes('api.anthropic.com')) {
+      return { ok: false, status: 529, json: async () => ({ error: { message: 'overloaded_error' } }) };
+    }
+    return basicRpcMock()(url, options);
+  };
+  try {
+    const req = mockReq({ query: { address: VALID_ADDRESS, chain: 'ethereum' }, ip: '10.0.0.15' });
+    const res = mockRes();
+    await analyzeHandler(req, res);
+
+    assert.equal(res.statusCode, 200);
+    assert.ok(res.body.aiSummary);
+    assert.equal(res.body.aiSummary.aiGenerated, false);
+    assert.ok(res.body.aiSummary.text.length > 0);
+    assert.ok(Array.isArray(res.body.dimensions) && res.body.dimensions.length === 6);
+  } finally {
+    if (originalAnthropicKey === undefined) delete process.env.ANTHROPIC_API_KEY;
+    else process.env.ANTHROPIC_API_KEY = originalAnthropicKey;
+  }
+});
