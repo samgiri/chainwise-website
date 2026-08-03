@@ -60,7 +60,10 @@ async function generateSummary({ overallScore, worstDimensionScore, resultStatus
   const fallback = buildTemplateFallback({ overallScore, dimensions, findings });
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) return fallback;
+  // TEMPORARY diagnostic (remove before merge - see PR #27): distinguishes "no key at all"
+  // from "key present but the call failed," which are otherwise indistinguishable from the
+  // response alone. Never includes the key itself.
+  if (!apiKey) return { ...fallback, _debugReason: 'no_api_key' };
 
   const payload = {
     model: MODEL,
@@ -85,13 +88,16 @@ async function generateSummary({ overallScore, worstDimensionScore, resultStatus
       body: JSON.stringify(payload),
     }, REQUEST_TIMEOUT_MS);
 
-    if (!res.ok) return fallback;
+    if (!res.ok) {
+      const errBody = await res.text().catch(() => '');
+      return { ...fallback, _debugReason: `non_ok_response_${res.status}`, _debugBody: errBody.slice(0, 300) };
+    }
     const data = await res.json();
     const text = data && Array.isArray(data.content) && data.content[0] && data.content[0].text;
-    if (!text || !text.trim()) return fallback;
+    if (!text || !text.trim()) return { ...fallback, _debugReason: 'empty_text_in_response' };
     return { text: text.trim(), aiGenerated: true };
   } catch (err) {
-    return fallback;
+    return { ...fallback, _debugReason: `exception_${err.name}`, _debugMessage: String(err.message).slice(0, 300) };
   }
 }
 
