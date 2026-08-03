@@ -240,10 +240,75 @@ function computeLiquidity(key = 'liquidity', name = 'Liquidity & Market Structur
   ]);
 }
 
-function computeOwnershipConcentration(key = 'ownership', name = 'Ownership & Wallet Concentration') {
-  return notIntegratedDimension(key, name, 'Not yet integrated', [
-    'Token holder distribution and wallet-concentration analysis require a chain-indexing provider (e.g. Covalent, Moralis, or a paid explorer tier) that is not yet integrated into this engine.',
-  ]);
+function computeOwnershipConcentration({ onChain, ownership, chainConfig, address, retrievedAt }) {
+  const key = 'ownership';
+  const name = 'Ownership & Wallet Concentration';
+  if (!onChain.isContract) {
+    return notApplicableDimension(key, name, 'This address is not a deployed contract, so holder-concentration analysis does not apply.');
+  }
+  if (!ownership) {
+    return notIntegratedDimension(key, name,
+      chainConfig.explorerApiChainId ? `${chainConfig.explorer} (token holder list)` : `${chainConfig.explorer} (not supported for this chain)`,
+      ['Top-holder distribution requires the block explorer\'s token-holder-list API, which is an Etherscan Pro-tier feature - a standard ETHERSCAN_API_KEY cannot retrieve it. This environment either has no key configured, the token has no ERC-20 supply/holder data, or the request failed or was rate-limited.']);
+  }
+  if (!ownership.topHolder) {
+    return insufficientDimension(key, name, `${chainConfig.explorer} (token holder list)`,
+      ['Every top holder returned by the explorer was a known burn/zero address, so a real top holder could not be identified to assess concentration against.']);
+  }
+
+  let topHolderPct;
+  try {
+    const qty = BigInt(ownership.topHolder.quantity);
+    if (!(ownership.totalSupply > 0n)) throw new Error('non-positive supply');
+    topHolderPct = Number((qty * 10000n) / ownership.totalSupply) / 100;
+  } catch (err) {
+    return insufficientDimension(key, name, `${chainConfig.explorer} (token holder list)`,
+      ['The top holder quantity or total supply returned by the explorer could not be parsed as a number.']);
+  }
+
+  const topHolderIsContract = ownership.topHolderIsContract;
+  const contractNote = topHolderIsContract === true
+    ? ', and is itself a contract (e.g. a liquidity pool, staking, or vesting contract)'
+    : topHolderIsContract === false
+      ? ', and is a wallet (EOA), not a contract'
+      : ' (could not determine whether this address is a wallet or a contract)';
+  const evidence = buildEvidence({
+    type: 'token_holder_concentration',
+    description: `Top holder ${ownership.topHolder.address} holds ${topHolderPct.toFixed(1)}% of total supply${contractNote}.`,
+    chainConfig, address, retrievedAt,
+    extra: { topHolderAddress: ownership.topHolder.address, topHolderPct, topHolderIsContract },
+  });
+
+  // A contract-held balance (locked LP, staking, vesting) is not the same risk as an EOA
+  // holding the same share, so it is scored well below the EOA concentration bands even at
+  // a high percentage - it still gets a finding and evidence, just not a "risky" subscore.
+  let subscore;
+  let explanation;
+  if (topHolderIsContract === true) {
+    subscore = 20;
+    explanation = `The largest holder (${topHolderPct.toFixed(1)}% of supply) is itself a contract, not a wallet - consistent with (but not proof of) locked liquidity, staking, or a vesting contract rather than a single party with direct sell control.`;
+  } else if (topHolderPct > 50) {
+    subscore = 75;
+    explanation = `A single wallet holds ${topHolderPct.toFixed(1)}% of total supply - enough to move the market unilaterally if it sells. This is a real concentration risk, independent of whether that holder ever intends to sell.`;
+  } else if (topHolderPct >= 25) {
+    subscore = 45;
+    explanation = `A single wallet holds ${topHolderPct.toFixed(1)}% of total supply - a meaningful concentration, though below a majority stake.`;
+  } else {
+    subscore = 15;
+    explanation = `The largest wallet holder controls ${topHolderPct.toFixed(1)}% of total supply, which does not indicate outsized single-wallet concentration on its own.`;
+  }
+
+  return assessedDimension({
+    key, name, subscore,
+    confidence: 50,
+    findings: [{ summary: evidence.description, evidence }],
+    dataSource: `${chainConfig.explorer} (token holder list, Etherscan Pro tier)`,
+    explanation,
+    limitations: [
+      'Based on the single largest holder only, not the full top-10 distribution, and reflects a one-time snapshot - concentration can change at any time.',
+      'The contract-vs-wallet check only detects whether the top holder address has contract code; it cannot confirm a contract-held balance is genuinely locked, or that a wallet-held balance is not itself an exchange or multisig address.',
+    ],
+  });
 }
 
 function computeGovernance({ onChain, chainConfig, address, retrievedAt }) {
@@ -286,14 +351,14 @@ function computeExploitSignals(key = 'exploitSignals', name = 'Exploit, Anomaly 
   ]);
 }
 
-function computeDimensions({ onChain, verification, chainConfig, address, retrievedAt }) {
+function computeDimensions({ onChain, verification, ownership, chainConfig, address, retrievedAt }) {
   return [
     computeContractVerification({ verification, chainConfig, address, retrievedAt }),
     computeAdminControls({ onChain, chainConfig, address, retrievedAt }),
     computeUpgradeability({ onChain, chainConfig, address, retrievedAt }),
     computeTokenRestrictions({ verification, chainConfig }),
     computeLiquidity(),
-    computeOwnershipConcentration(),
+    computeOwnershipConcentration({ onChain, ownership, chainConfig, address, retrievedAt }),
     computeGovernance({ onChain, chainConfig, address, retrievedAt }),
     computeExploitSignals(),
   ];

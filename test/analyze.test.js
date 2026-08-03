@@ -187,3 +187,55 @@ test('a repeated analysis for the same address is independent and reproducible (
   assert.equal(res1.body.overallScore, res2.body.overallScore);
   assert.equal(res1.body.resultStatus, res2.body.resultStatus);
 });
+
+test('end-to-end: a token with extreme holder concentration (LGNS/Origin-shaped fixture) gets a real ownership dimension, not not_yet_integrated', async () => {
+  const originalKey = process.env.ETHERSCAN_API_KEY;
+  process.env.ETHERSCAN_API_KEY = 'test-key';
+  const LGNS_ADDRESS = '0xeb51d9a39ad5eef215dc0bf39a8821ff804a0f01';
+  const TOP_HOLDER = '0x1964ca90474b11ffd08af387b110ba6c96251bfc';
+
+  global.fetch = async (url, options) => {
+    if (typeof url === 'string' && url.includes('api.etherscan.io')) {
+      if (url.includes('action=getsourcecode')) {
+        return { ok: true, json: async () => ({ status: '1', result: [{ SourceCode: '', ContractName: '', CompilerVersion: '', Proxy: '0' }] }) };
+      }
+      if (url.includes('action=tokensupply')) {
+        return { ok: true, json: async () => ({ status: '1', result: '4070000000' }) };
+      }
+      if (url.includes('action=tokenholderlist')) {
+        return { ok: true, json: async () => ({ status: '1', result: [{ TokenHolderAddress: TOP_HOLDER, TokenHolderQuantity: '2470000000' }] }) };
+      }
+      return { ok: true, json: async () => ({ status: '0', result: 'unexpected etherscan call in test' }) };
+    }
+    const body = JSON.parse(options.body);
+    const handlers = {
+      eth_getCode: (params) => (params[0].toLowerCase() === LGNS_ADDRESS.toLowerCase() ? '0x6080604052' : '0x'),
+      eth_getBalance: () => '0x0',
+      eth_getTransactionCount: () => '0x5',
+      eth_blockNumber: () => '0x64',
+      eth_getStorageAt: () => ZERO_SLOT,
+      eth_call: () => new Error('execution reverted'), // no owner() exposed
+    };
+    if (!(body.method in handlers)) throw new Error(`Unexpected RPC method in test mock: ${body.method}`);
+    const outcome = handlers[body.method](body.params);
+    if (outcome instanceof Error) throw outcome;
+    return { ok: true, json: async () => ({ jsonrpc: '2.0', id: body.id, result: outcome }) };
+  };
+
+  try {
+    const req = mockReq({ query: { address: LGNS_ADDRESS, chain: 'polygon' }, ip: '10.0.0.12' });
+    const res = mockRes();
+    await analyzeHandler(req, res);
+
+    assert.equal(res.statusCode, 200);
+    const ownership = res.body.dimensions.find((d) => d.key === 'ownership');
+    assert.ok(ownership, 'ownership dimension must be present');
+    assert.equal(ownership.state, 'assessed', 'must be a real assessment, not not_yet_integrated/insufficient_data');
+    assert.equal(ownership.subscore, 75, 'a ~60.7% EOA-held supply must land in the elevated-risk band');
+    assert.equal(ownership.level, 'elevated_risk_indicator');
+    assert.match(ownership.findings[0].summary, /60\.7%/);
+  } finally {
+    if (originalKey === undefined) delete process.env.ETHERSCAN_API_KEY;
+    else process.env.ETHERSCAN_API_KEY = originalKey;
+  }
+});

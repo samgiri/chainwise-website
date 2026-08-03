@@ -15,6 +15,7 @@ const crypto = require('crypto');
 const { CHAIN_CONFIG } = require('./_lib/chains');
 const { fetchOnChainData, RpcError } = require('./_lib/rpc');
 const { fetchVerification } = require('./_lib/verification');
+const { fetchOwnershipData } = require('./_lib/holders');
 const { computeDimensions, summarizeDimensions, ENGINE_VERSION } = require('./_lib/riskEngine');
 const { checkRateLimit } = require('./_lib/rateLimit');
 
@@ -232,15 +233,18 @@ module.exports = async (req, res) => {
       (async () => {
         const onChain = await fetchOnChainData(chainConfig, address);
         if (!onChain.isContract) {
-          return { onChain, verification: null };
+          return { onChain, verification: null, ownership: null };
         }
-        const verification = await fetchVerification(chainConfig, address).catch(() => null);
-        return { onChain, verification };
+        const [verification, ownership] = await Promise.all([
+          fetchVerification(chainConfig, address).catch(() => null),
+          fetchOwnershipData(chainConfig, address).catch(() => null),
+        ]);
+        return { onChain, verification, ownership };
       })(),
       timeout(REQUEST_TIMEOUT_MS, 'Analysis timed out'),
     ]);
 
-    const { onChain, verification } = analysis;
+    const { onChain, verification, ownership } = analysis;
 
     if (!onChain.isContract) {
       const response = {
@@ -264,7 +268,7 @@ module.exports = async (req, res) => {
       return;
     }
 
-    const dimensions = computeDimensions({ onChain, verification, chainConfig, address, retrievedAt });
+    const dimensions = computeDimensions({ onChain, verification, ownership, chainConfig, address, retrievedAt });
     const summary = summarizeDimensions(dimensions);
     const response = successResponse({ requestId, address, chainConfig, dimensions, summary, cached: false });
 
