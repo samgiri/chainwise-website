@@ -113,7 +113,8 @@ test('a contract with no proxy/owner data and no explorer key yields insufficien
   assert.equal(res.statusCode, 200);
   assert.equal(res.body.resultStatus, 'insufficient_data');
   assert.equal(res.body.overallScore, null);
-  assert.ok(res.body.dimensions.length === 8, 'all 8 dimensions must still be reported, just honestly labeled');
+  assert.ok(res.body.dimensions.length === 6, 'all 6 scored dimensions must still be reported, just honestly labeled');
+  assert.ok(res.body.roadmapDimensions.length === 2, 'the 2 roadmap stubs (liquidity, exploitSignals) must be surfaced separately');
 });
 
 test('a contract with a detectable proxy + admin selectors + EOA owner produces a partial, evidence-linked result', async () => {

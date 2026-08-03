@@ -8,12 +8,25 @@
 //
 // Subscores are intentionally capped below the CRITICAL band (90-100): the signals this
 // phase of the engine can gather (bytecode selector presence, EIP-1967 storage slots,
-// owner()-vs-EOA, explorer verification flag) are real but weak/partial evidence, and a
-// "critical" verdict should never be produced from evidence this thin.
+// owner()-vs-EOA, explorer verification flag, top-holder concentration) are real but
+// weak/partial evidence, and a "critical" verdict should never be produced from evidence
+// this thin.
+//
+// As of 2.1.0, the 8 conceptual dimensions split into two groups:
+//   - computeDimensions() returns the 6 that can actually produce a real assessment today:
+//     verification, adminControls, upgradeability, tokenRestrictions, ownership, governance.
+//     ("Live but gated" dimensions - tokenRestrictions, ownership, governance - still count
+//     here even though any individual contract may come back insufficient_data for them; the
+//     code path to genuinely assess them exists and is exercised in practice.)
+//   - computeRoadmapDimensions() returns the 2 that are permanent stubs with no data provider
+//     integrated at all yet - liquidity and exploitSignals. These are surfaced separately
+//     (see api/analyze.js's `roadmapDimensions` field) instead of being mixed into the scored
+//     set, where they would silently distort summarizeDimensions()'s coverage/confidence math
+//     and overstate what the engine actually does.
 
 const { scanBytecodeForSelectors, scanSourceForRestrictions } = require('./selectors');
 
-const ENGINE_VERSION = '2.0.0-beta.1';
+const ENGINE_VERSION = '2.1.0';
 
 const LEVELS = [
   { max: 33, level: 'no_material_indicator', label: 'No material indicator detected' },
@@ -357,22 +370,40 @@ function computeDimensions({ onChain, verification, ownership, chainConfig, addr
     computeAdminControls({ onChain, chainConfig, address, retrievedAt }),
     computeUpgradeability({ onChain, chainConfig, address, retrievedAt }),
     computeTokenRestrictions({ verification, chainConfig }),
-    computeLiquidity(),
     computeOwnershipConcentration({ onChain, ownership, chainConfig, address, retrievedAt }),
     computeGovernance({ onChain, chainConfig, address, retrievedAt }),
+  ];
+}
+
+// The 2 permanent stubs, kept out of computeDimensions()/summarizeDimensions() entirely so
+// they can never silently dilute the coverage/confidence math for the 6 real dimensions.
+// Surfaced separately by the caller (api/analyze.js's `roadmapDimensions` field) so the UI can
+// render them as "coming soon" rather than as failed checks on the analyzed contract.
+function computeRoadmapDimensions() {
+  return [
+    computeLiquidity(),
     computeExploitSignals(),
   ];
 }
 
 // Only computes an overall score/confidence when enough dimensions were actually assessed.
 // Coverage fraction directly discounts confidence - thin evidence must never look as
-// confident as full evidence.
+// confident as full evidence. `dimensions` here is always the 6-item array from
+// computeDimensions() - coverageFraction is assessed.length / 6 in practice, since the
+// denominator is dimensions.length rather than a hardcoded constant.
 //
 // overallScore is the mean subscore across assessed dimensions - useful as a single summary
 // number, but a mean can hide one severely risky dimension behind several low ones.
 // worstDimensionScore is the max subscore instead: the UI's banner tier/color must be driven
 // by this, not the mean, so a single critical-severity finding is never averaged down to a
 // reassuring "medium" headline.
+//
+// The minimum-3-assessed floor for producing any score at all is intentionally NOT scaled
+// down with the 8->6 dimension reduction: it represents "need at least this many independent
+// real signals to trust an average," which doesn't get weaker just because the total pool of
+// possible dimensions shrank. success/partial *are* scaled to preserve roughly the same
+// relative strictness as the previous 8-dimension thresholds (success required 6/8 = 75%
+// coverage; 5/6 ~= 83% is the closest whole-dimension equivalent without loosening it).
 function summarizeDimensions(dimensions) {
   const assessed = dimensions.filter((d) => d.state === 'assessed');
   const coverageFraction = assessed.length / dimensions.length;
@@ -385,7 +416,7 @@ function summarizeDimensions(dimensions) {
   const worstDimensionScore = Math.max(...assessed.map((d) => d.subscore));
   const rawConfidence = assessed.reduce((sum, d) => sum + d.confidence, 0) / assessed.length;
   const confidence = Math.round(rawConfidence * coverageFraction);
-  const resultStatus = assessed.length >= 6 ? 'success' : 'partial';
+  const resultStatus = assessed.length >= 5 ? 'success' : 'partial';
 
   return { overallScore, worstDimensionScore, confidence, resultStatus, coverageFraction };
 }
@@ -394,5 +425,6 @@ module.exports = {
   ENGINE_VERSION,
   levelFromScore,
   computeDimensions,
+  computeRoadmapDimensions,
   summarizeDimensions,
 };

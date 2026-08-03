@@ -2,11 +2,18 @@
 //
 // This endpoint analyzes a single EVM contract address using free, no-API-key public RPC
 // (bytecode presence/size, EIP-1967 proxy slots, owner() control check) plus an optional
-// block-explorer source-verification lookup (ETHERSCAN_API_KEY). See api/_lib/riskEngine.js
-// for how the 8 risk dimensions are computed - every value is either a real, cited on-chain
-// fact or an honest `insufficient_data` state. Nothing here returns a fixed demo score, and
-// there is no "no address supplied" shortcut that serves example data - an empty/invalid
-// address is always a 400, never a stand-in dataset.
+// block-explorer source-verification and holder-concentration lookup (ETHERSCAN_API_KEY).
+// See api/_lib/riskEngine.js for how dimensions are computed - every value is either a real,
+// cited on-chain fact or an honest `insufficient_data` state. Nothing here returns a fixed
+// demo score, and there is no "no address supplied" shortcut that serves example data - an
+// empty/invalid address is always a 400, never a stand-in dataset.
+//
+// `dimensions` holds the 6 real, scored dimensions (verification, adminControls,
+// upgradeability, tokenRestrictions, ownership, governance) and drives overallScore/
+// worstDimensionScore/confidence. `roadmapDimensions` holds the 2 permanent stubs (liquidity,
+// exploitSignals) that have no data provider integrated at all yet - they are surfaced
+// separately so they never dilute the scored coverage/confidence math, and so the UI can
+// render them as "coming soon" rather than as failed checks on the analyzed contract.
 //
 // Scoring is deterministic and versioned (ENGINE_VERSION in riskEngine.js) - identical
 // inputs always produce identical outputs, so results are reproducible.
@@ -16,7 +23,7 @@ const { CHAIN_CONFIG } = require('./_lib/chains');
 const { fetchOnChainData, RpcError } = require('./_lib/rpc');
 const { fetchVerification } = require('./_lib/verification');
 const { fetchOwnershipData } = require('./_lib/holders');
-const { computeDimensions, summarizeDimensions, ENGINE_VERSION } = require('./_lib/riskEngine');
+const { computeDimensions, computeRoadmapDimensions, summarizeDimensions, ENGINE_VERSION } = require('./_lib/riskEngine');
 const { checkRateLimit } = require('./_lib/rateLimit');
 
 const ADDRESS_REGEX = /^0x[a-fA-F0-9]{40}$/;
@@ -89,6 +96,7 @@ function errorResponse({ requestId, address, chainKey, chainConfig, resultStatus
     confidence: 0,
     dataFreshness: 'live',
     dimensions: [],
+    roadmapDimensions: [],
     findings: [],
     evidence: [],
     dataSources: [],
@@ -98,7 +106,7 @@ function errorResponse({ requestId, address, chainKey, chainConfig, resultStatus
   };
 }
 
-function successResponse({ requestId, address, chainConfig, dimensions, summary, cached }) {
+function successResponse({ requestId, address, chainConfig, dimensions, roadmapDimensions, summary, cached }) {
   const findings = [];
   const evidence = [];
   const dataSources = new Set();
@@ -123,6 +131,7 @@ function successResponse({ requestId, address, chainConfig, dimensions, summary,
     dataFreshness: cached ? 'cached' : 'live',
     explorerUrl: `${chainConfig.explorer}/address/${address}`,
     dimensions,
+    roadmapDimensions,
     findings,
     evidence,
     dataSources: [...dataSources],
@@ -257,6 +266,7 @@ module.exports = async (req, res) => {
         dataFreshness: 'live',
         explorerUrl: `${chainConfig.explorer}/address/${address}`,
         dimensions: [],
+        roadmapDimensions: [],
         findings: [],
         evidence: [],
         dataSources: [`${chainConfig.label} RPC (eth_getCode)`],
@@ -269,8 +279,9 @@ module.exports = async (req, res) => {
     }
 
     const dimensions = computeDimensions({ onChain, verification, ownership, chainConfig, address, retrievedAt });
+    const roadmapDimensions = computeRoadmapDimensions();
     const summary = summarizeDimensions(dimensions);
-    const response = successResponse({ requestId, address, chainConfig, dimensions, summary, cached: false });
+    const response = successResponse({ requestId, address, chainConfig, dimensions, roadmapDimensions, summary, cached: false });
 
     if (isCacheable(response)) {
       await kvSet(cacheKey, response);
