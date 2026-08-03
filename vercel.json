@@ -4,7 +4,8 @@
     { "source": "/dashboard/demo", "destination": "/demo.html" },
     { "source": "/research", "destination": "/research.html" },
     { "source": "/case-detail", "destination": "/case-detail.html" },
-    { "source": "/case-mantra-om", "destination": "/case-mantra-om.html" }
+    { "source": "/case-mantra-om", "destination": "/case-mantra-om.html" },
+    { "source": "/cookie-policy", "destination": "/cookie-policy.html" }
   ],
   "functions": {
     "api/analyze.js": { "maxDuration": 20 }
