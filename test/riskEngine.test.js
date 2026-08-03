@@ -1,6 +1,6 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { levelFromScore, computeDimensions, summarizeDimensions, ENGINE_VERSION } = require('../api/_lib/riskEngine');
+const { levelFromScore, computeDimensions, computeRoadmapDimensions, summarizeDimensions, ENGINE_VERSION } = require('../api/_lib/riskEngine');
 const { CHAIN_CONFIG } = require('../api/_lib/chains');
 
 const chainConfig = { key: 'ethereum', ...CHAIN_CONFIG.ethereum };
@@ -18,13 +18,30 @@ test('levelFromScore bands match the plain-language legend (0-33/34-66/67-89/90-
   assert.equal(levelFromScore(100).level, 'critical_risk_indicator');
 });
 
+test('computeDimensions returns exactly the 6 real, scored dimensions', () => {
+  const onChain = {
+    isContract: true, bytecode: '0x6080604052', codeSizeBytes: 10, balanceNative: 0, txCount: 0,
+    blockNumber: 1000, proxyImplementation: null, proxyAdmin: null, ownerAddress: null, ownerIsContract: null,
+  };
+  const dims = computeDimensions({ onChain, verification: null, ownership: null, chainConfig, address, retrievedAt });
+  assert.equal(dims.length, 6);
+  assert.deepEqual(dims.map((d) => d.key).sort(), ['adminControls', 'governance', 'ownership', 'tokenRestrictions', 'upgradeability', 'verification'].sort());
+});
+
+test('computeRoadmapDimensions returns exactly the 2 permanent stubs, kept out of the scored set', () => {
+  const roadmap = computeRoadmapDimensions();
+  assert.equal(roadmap.length, 2);
+  assert.deepEqual(roadmap.map((d) => d.key).sort(), ['exploitSignals', 'liquidity']);
+  roadmap.forEach((d) => assert.equal(d.state, 'insufficient_data'));
+});
+
 test('computeDimensions never fabricates data for an EOA-shaped onChain fixture (not_applicable, not "safe")', () => {
   const onChain = {
     isContract: false, bytecode: '0x', codeSizeBytes: 0, balanceNative: 1, txCount: 4,
     blockNumber: 1000, proxyImplementation: null, proxyAdmin: null, ownerAddress: null, ownerIsContract: null,
   };
-  const dims = computeDimensions({ onChain, verification: null, chainConfig, address, retrievedAt });
-  const contractSpecific = dims.filter((d) => ['adminControls', 'upgradeability', 'governance'].includes(d.key));
+  const dims = computeDimensions({ onChain, verification: null, ownership: null, chainConfig, address, retrievedAt });
+  const contractSpecific = dims.filter((d) => ['adminControls', 'upgradeability', 'governance', 'ownership'].includes(d.key));
   contractSpecific.forEach((d) => {
     assert.equal(d.state, 'not_applicable');
     assert.equal(d.subscore, null);
@@ -36,8 +53,8 @@ test('computeDimensions reports insufficient_data (not a fabricated score) when 
     isContract: true, bytecode: '0x6080604052', codeSizeBytes: 10, balanceNative: 0, txCount: 0,
     blockNumber: 1000, proxyImplementation: null, proxyAdmin: null, ownerAddress: null, ownerIsContract: null,
   };
-  const dims = computeDimensions({ onChain, verification: null, chainConfig, address, retrievedAt });
-  const alwaysInsufficient = ['liquidity', 'ownership', 'exploitSignals', 'tokenRestrictions', 'verification'];
+  const dims = computeDimensions({ onChain, verification: null, ownership: null, chainConfig, address, retrievedAt });
+  const alwaysInsufficient = ['ownership', 'tokenRestrictions', 'verification'];
   alwaysInsufficient.forEach((key) => {
     const dim = dims.find((d) => d.key === key);
     assert.equal(dim.state, 'insufficient_data', `${key} should be insufficient_data without a data source`);
@@ -46,17 +63,20 @@ test('computeDimensions reports insufficient_data (not a fabricated score) when 
   });
 });
 
-test('the two fully roadmap-blocked dimensions (liquidity, exploit signals) read as "not built yet," never as a per-contract error', () => {
+test('the 2 permanent-stub roadmap dimensions (liquidity, exploit signals) read as "not built yet," never as a per-contract error, and are never mixed into computeDimensions()', () => {
+  const roadmap = computeRoadmapDimensions();
+  ['liquidity', 'exploitSignals'].forEach((key) => {
+    const dim = roadmap.find((d) => d.key === key);
+    assert.match(dim.explanation, /roadmap gap, not an error/i);
+    assert.ok(!/we could not gather enough information/i.test(dim.explanation), `${key} must not use the generic per-contract "couldn't gather evidence" wording`);
+  });
+
   const onChain = {
     isContract: true, bytecode: '0x6080604052', codeSizeBytes: 10, balanceNative: 0, txCount: 0,
     blockNumber: 1000, proxyImplementation: null, proxyAdmin: null, ownerAddress: null, ownerIsContract: null,
   };
-  const dims = computeDimensions({ onChain, verification: null, chainConfig, address, retrievedAt });
-  ['liquidity', 'exploitSignals'].forEach((key) => {
-    const dim = dims.find((d) => d.key === key);
-    assert.match(dim.explanation, /roadmap gap, not an error/i);
-    assert.ok(!/we could not gather enough information/i.test(dim.explanation), `${key} must not use the generic per-contract "couldn't gather evidence" wording`);
-  });
+  const dims = computeDimensions({ onChain, verification: null, ownership: null, chainConfig, address, retrievedAt });
+  assert.ok(!dims.some((d) => d.key === 'liquidity' || d.key === 'exploitSignals'), 'roadmap stubs must not appear in the scored dimensions array');
 });
 
 // --- Ownership & Wallet Concentration (real integration, not a stub) ------------------

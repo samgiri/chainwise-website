@@ -2,21 +2,36 @@
 //
 // This endpoint analyzes a single EVM contract address using free, no-API-key public RPC
 // (bytecode presence/size, EIP-1967 proxy slots, owner() control check) plus an optional
-// block-explorer source-verification lookup (ETHERSCAN_API_KEY). See api/_lib/riskEngine.js
-// for how the 8 risk dimensions are computed - every value is either a real, cited on-chain
-// fact or an honest `insufficient_data` state. Nothing here returns a fixed demo score, and
-// there is no "no address supplied" shortcut that serves example data - an empty/invalid
-// address is always a 400, never a stand-in dataset.
+// block-explorer source-verification and holder-concentration lookup (ETHERSCAN_API_KEY).
+// See api/_lib/riskEngine.js for how dimensions are computed - every value is either a real,
+// cited on-chain fact or an honest `insufficient_data` state. Nothing here returns a fixed
+// demo score, and there is no "no address supplied" shortcut that serves example data - an
+// empty/invalid address is always a 400, never a stand-in dataset.
+//
+// `dimensions` holds the 6 real, scored dimensions (verification, adminControls,
+// upgradeability, tokenRestrictions, ownership, governance) and drives overallScore/
+// worstDimensionScore/confidence. `roadmapDimensions` holds the 2 permanent stubs (liquidity,
+// exploitSignals) that have no data provider integrated at all yet - they are surfaced
+// separately so they never dilute the scored coverage/confidence math, and so the UI can
+// render them as "coming soon" rather than as failed checks on the analyzed contract.
 //
 // Scoring is deterministic and versioned (ENGINE_VERSION in riskEngine.js) - identical
 // inputs always produce identical outputs, so results are reproducible.
+//
+// `aiSummary` is a separate, optional layer on top of that deterministic result: it sends the
+// already-computed score/dimensions/findings to Claude to rephrase in plain English for a
+// non-technical reader. It never sees raw on-chain data and never influences any score - see
+// api/_lib/aiSummary.js. It is never attached to insufficient_data or error responses (those
+// already explain themselves), and any failure/timeout there falls back to a template built
+// from existing fields, never to an error.
 
 const crypto = require('crypto');
 const { CHAIN_CONFIG } = require('./_lib/chains');
 const { fetchOnChainData, RpcError } = require('./_lib/rpc');
 const { fetchVerification } = require('./_lib/verification');
 const { fetchOwnershipData } = require('./_lib/holders');
-const { computeDimensions, summarizeDimensions, ENGINE_VERSION } = require('./_lib/riskEngine');
+const { computeDimensions, computeRoadmapDimensions, summarizeDimensions, ENGINE_VERSION } = require('./_lib/riskEngine');
+const { generateSummary } = require('./_lib/aiSummary');
 const { checkRateLimit } = require('./_lib/rateLimit');
 
 const ADDRESS_REGEX = /^0x[a-fA-F0-9]{40}$/;
@@ -89,6 +104,7 @@ function errorResponse({ requestId, address, chainKey, chainConfig, resultStatus
     confidence: 0,
     dataFreshness: 'live',
     dimensions: [],
+    roadmapDimensions: [],
     findings: [],
     evidence: [],
     dataSources: [],
@@ -98,7 +114,7 @@ function errorResponse({ requestId, address, chainKey, chainConfig, resultStatus
   };
 }
 
-function successResponse({ requestId, address, chainConfig, dimensions, summary, cached }) {
+function successResponse({ requestId, address, chainConfig, dimensions, roadmapDimensions, summary, cached }) {
   const findings = [];
   const evidence = [];
   const dataSources = new Set();
@@ -123,6 +139,7 @@ function successResponse({ requestId, address, chainConfig, dimensions, summary,
     dataFreshness: cached ? 'cached' : 'live',
     explorerUrl: `${chainConfig.explorer}/address/${address}`,
     dimensions,
+    roadmapDimensions,
     findings,
     evidence,
     dataSources: [...dataSources],
@@ -257,6 +274,7 @@ module.exports = async (req, res) => {
         dataFreshness: 'live',
         explorerUrl: `${chainConfig.explorer}/address/${address}`,
         dimensions: [],
+        roadmapDimensions: [],
         findings: [],
         evidence: [],
         dataSources: [`${chainConfig.label} RPC (eth_getCode)`],
@@ -269,8 +287,26 @@ module.exports = async (req, res) => {
     }
 
     const dimensions = computeDimensions({ onChain, verification, ownership, chainConfig, address, retrievedAt });
+    const roadmapDimensions = computeRoadmapDimensions();
     const summary = summarizeDimensions(dimensions);
-    const response = successResponse({ requestId, address, chainConfig, dimensions, summary, cached: false });
+    const response = successResponse({ requestId, address, chainConfig, dimensions, roadmapDimensions, summary, cached: false });
+
+    // insufficient_data responses already explain themselves - no summary to layer on top of
+    // a null score. success/partial both get one; generateSummary() can never throw or hang
+    // past its own internal ~4s timeout, so this can never be the reason a request times out.
+    // That 4s runs sequentially after the on-chain phase's own ANALYZE_TIMEOUT_MS (12s
+    // default), so worst-case combined latency is ~16s, not 12s - see aiSummary.js. This
+    // function's own maxDuration is set to 20s in vercel.json (version-controlled, so it
+    // survives a project recreation) - comfortably above that 16s worst case.
+    if (response.resultStatus !== 'insufficient_data') {
+      response.aiSummary = await generateSummary({
+        overallScore: response.overallScore,
+        worstDimensionScore: response.worstDimensionScore,
+        resultStatus: response.resultStatus,
+        dimensions: response.dimensions,
+        findings: response.findings,
+      });
+    }
 
     if (isCacheable(response)) {
       await kvSet(cacheKey, response);

@@ -5,5 +5,8 @@
     { "source": "/research", "destination": "/research.html" },
     { "source": "/case-detail", "destination": "/case-detail.html" },
     { "source": "/case-mantra-om", "destination": "/case-mantra-om.html" }
-  ]
+  ],
+  "functions": {
+    "api/analyze.js": { "maxDuration": 20 }
+  }
 }
