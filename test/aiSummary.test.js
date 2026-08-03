@@ -73,7 +73,7 @@ test('generateSummary returns aiGenerated: true with the model text on a well-fo
     assert.equal(options.headers['x-api-key'], 'test-key');
     const body = JSON.parse(options.body);
     assert.equal(body.model, 'claude-sonnet-5');
-    assert.ok(body.max_tokens <= 150);
+    assert.ok(body.max_tokens <= 220);
     return {
       ok: true,
       json: async () => ({ content: [{ type: 'text', text: 'This contract shows a moderate risk profile. It is preliminary automated screening, not a guarantee.' }] }),

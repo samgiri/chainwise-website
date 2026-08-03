@@ -15,7 +15,10 @@ const { levelFromScore } = require('./riskEngine');
 const REQUEST_TIMEOUT_MS = 4000;
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
 const MODEL = 'claude-sonnet-5';
-const MAX_TOKENS = 150;
+// 150 was clipping the required closing safety-reminder sentence mid-word on real Claude
+// output (observed on the live preview); 220 gives 3-4 sentences plus the reminder room to
+// complete without materially changing worst-case latency (REQUEST_TIMEOUT_MS still bounds it).
+const MAX_TOKENS = 220;
 
 const SYSTEM_PROMPT = 'You are summarizing a smart-contract risk report for a non-technical '
   + 'retail investor. You will be given structured findings. Write exactly 3-4 plain-English '
