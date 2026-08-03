@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="The Chainwise - Real-time protocol analysis for DeFi risk intelligence.">
-    <title>The Chainwise | DeFi Risk Intelligence</title>
+    <meta name="description" content="The Chainwise turns verified on-chain evidence into a deterministic 6-point smart-contract risk score and a clear, traceable report.">
+    <title>The Chainwise | 6-Point Smart-Contract Risk Check</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%23FF3D5C'/><stop offset='50%25' stop-color='%23FF8C3D'/><stop offset='100%25' stop-color='%2300D4FF'/></linearGradient></defs><rect width='200' height='200' rx='36' fill='%230F1629'/><path d='M160 30A70 70 0 0 0 40 100A70 70 0 0 0 160 170' stroke='url(%23g)' stroke-width='20' fill='none' stroke-linecap='round'/><circle cx='100' cy='100' r='10' fill='%23FF8C3D'/></svg>">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -112,6 +112,16 @@
         .feature-card:focus-visible .feature-card-hint { opacity: 1; transform: translateY(0); }
 
         .section-intro { max-width: 760px; margin: 0 auto 2.5rem; text-align: center; color: var(--text2); font-size: 1rem; line-height: 1.7; }
+
+        .method-steps { max-width: 900px; margin: 0 auto 3rem; border: 1px solid #2a3047; border-radius: 8px; overflow: hidden; background: var(--bg2); }
+        .method-step-button { width: 100%; display: grid; grid-template-columns: 36px 1fr auto; align-items: center; gap: 1rem; padding: 1.2rem 1.5rem; border: 0; border-bottom: 1px solid #2a3047; background: transparent; color: var(--text); text-align: left; cursor: pointer; font: inherit; }
+        .method-step-button:hover, .method-step-button[aria-expanded="true"] { background: #1a1f3a; }
+        .method-step-number { width: 32px; height: 32px; display: grid; place-items: center; border: 1px solid var(--orange); border-radius: 50%; color: var(--orange); font-weight: 700; }
+        .method-step-label strong { display: block; margin-bottom: 0.15rem; }
+        .method-step-label span { color: var(--text2); font-size: 0.85rem; }
+        .method-step-panel { display: none; padding: 0 1.5rem 1.25rem 5.75rem; color: var(--text2); font-size: 0.92rem; line-height: 1.7; border-bottom: 1px solid #2a3047; }
+        .method-step-panel.open { display: block; }
+        .method-step-button:last-of-type, .method-step-panel:last-child { border-bottom: 0; }
 
         .workflow-diagram-wrap { overflow-x: auto; margin-bottom: 3rem; padding-bottom: 0.5rem; }
         .workflow-diagram { display: block; min-width: 900px; margin: 0 auto; }
@@ -288,8 +298,8 @@
             </svg>
 
             <div class="hero-content">
-                <h1 class="hero-title">Smart Contract Risk Intelligence for DeFi Investors & Builders</h1>
-                <p class="hero-subtitle">See a protocol's risk before you commit capital — not after it's too late.</p>
+                <h1 class="hero-title">A Clearer Way to Assess Smart-Contract Risk</h1>
+                <p class="hero-subtitle">The Chainwise runs a deterministic 6-point risk check, then links every finding back to verifiable evidence.</p>
 
                 <div class="cta-buttons">
                     <a href="/dashboard" class="btn btn-primary btn-large">Analyze a Protocol</a>
@@ -297,8 +307,8 @@
                 </div>
 
                 <div class="trust-indicators">
-                    <div class="trust-item"><span class="trust-icon">✅</span><span>8-Layer Detection Framework Verified</span></div>
-                    <div class="trust-item"><span class="trust-icon">📊</span><span>1,200+ Protocols Analyzed</span></div>
+                    <div class="trust-item"><span class="trust-icon">✅</span><span>6-Point Risk Check</span></div>
+                    <div class="trust-item"><span class="trust-icon">🔗</span><span>Deterministic, Evidence-Linked Scoring</span></div>
                 </div>
 
                 <div class="chain-logos">
@@ -335,86 +345,85 @@
                         <span class="chain-tooltip">Avalanche</span>
                     </a>
                 </div>
-                <p class="chain-caption">Supports 8+ Blockchains</p>
+                <p class="chain-caption">Run the same 6-point risk check on every supported chain.</p>
             </div>
         </section>
 
         <div class="stats">
             <div class="stat">
-                <div class="stat-number">8</div>
-                <div class="stat-label">Detection Layers</div>
+                <div class="stat-number">6</div>
+                <div class="stat-label">Scored Risk Dimensions</div>
             </div>
             <div class="stat">
-                <div class="stat-number">&lt;24h</div>
-                <div class="stat-label">Threat Detection</div>
+                <div class="stat-number">0-100</div>
+                <div class="stat-label">Deterministic Risk Score</div>
             </div>
             <div class="stat">
-                <div class="stat-number">∞</div>
-                <div class="stat-label">Multi-Chain</div>
+                <div class="stat-number">Linked</div>
+                <div class="stat-label">Supporting Evidence</div>
             </div>
             <div class="stat">
-                <div class="stat-number">100%</div>
-                <div class="stat-label">On-Chain Verified</div>
+                <div class="stat-number">Plain</div>
+                <div class="stat-label">English Verdict</div>
             </div>
         </div>
 
-        <h2 class="section-title" id="features">How We Protect You</h2>
+        <h2 class="section-title" id="features">The 6-Point Risk Check</h2>
         <div class="grid" id="featureGrid">
-            <div class="feature-card" tabindex="0" role="button" data-layer="pattern-recognition" data-title="Pattern Recognition" data-full="Spot red flags before you invest — not after you've lost money. Our pattern engine cross-references a protocol's website, whitepaper, and on-chain behavior against thousands of known scam signatures, surfacing suspicious claims and inconsistencies early.">
+            <div class="feature-card" tabindex="0" role="button" data-layer="contract-verification" data-title="Contract Verification & Transparency" data-full="Checks whether the contract is verified and whether its implementation can be inspected with confidence. Findings distinguish observable evidence from unavailable or unverifiable code.">
                 <svg class="feature-card-icon" viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3"/><path d="m16 16-1.9-1.9"/></svg>
-                <h3>Pattern Recognition</h3>
-                <p>Spot red flags before you invest — not after you've lost money. We cross-reference a protocol's website, whitepaper, and on-chain behavior against known scam signatures.</p>
+                <h3>Contract Verification &amp; Transparency</h3>
+                <p>Checks whether the contract is verified and whether its implementation can be inspected with confidence.</p>
                 <span class="feature-card-hint">Learn more →</span>
             </div>
-            <div class="feature-card" tabindex="0" role="button" data-layer="bytecode-analysis" data-title="Bytecode Analysis" data-full="Know exactly what a contract can do to your funds before you approve it. We decompile and inspect bytecode for hidden functions, backdoors, and owner-only controls that aren't visible in marketing materials or even verified source code.">
+            <div class="feature-card" tabindex="0" role="button" data-layer="privileged-access" data-title="Privileged Access & Admin Controls" data-full="Identifies elevated roles and sensitive permissions that can materially change how the contract behaves, including controls available only to owners or administrators.">
                 <svg class="feature-card-icon" viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
-                <h3>Bytecode Analysis</h3>
-                <p>Know exactly what a contract can do to your funds before you approve it. We inspect bytecode for hidden functions and owner-only controls invisible to marketing pages.</p>
+                <h3>Privileged Access &amp; Admin Controls</h3>
+                <p>Identifies elevated roles and sensitive permissions that can materially change contract behavior.</p>
                 <span class="feature-card-hint">Learn more →</span>
             </div>
-            <div class="feature-card" tabindex="0" role="button" data-layer="treasury-flow" data-title="Treasury Flow" data-full="See where protocol funds are actually going, in real time. We track treasury wallets continuously, flagging unusual outflows, liquidity drains, and fund movements that often precede a rug pull or insolvency event.">
+            <div class="feature-card" tabindex="0" role="button" data-layer="upgradeability" data-title="Upgradeability & Proxy Risk" data-full="Examines proxy patterns, upgrade paths, and who can replace or alter the underlying implementation after deployment.">
                 <svg class="feature-card-icon" viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 18v-7"/><path d="M11.119 2.205a2 2 0 0 1 1.762 0l7.84 3.846A.5.5 0 0 1 20.5 7h-17a.5.5 0 0 1-.22-.949z"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M3 22h18"/><path d="M6 18v-7"/></svg>
-                <h3>Treasury Flow</h3>
-                <p>See where protocol funds are actually going, in real time. We flag unusual outflows and liquidity drains that often precede a rug pull.</p>
+                <h3>Upgradeability &amp; Proxy Risk</h3>
+                <p>Examines proxy patterns, upgrade paths, and who can alter the underlying implementation.</p>
                 <span class="feature-card-hint">Learn more →</span>
             </div>
-            <div class="feature-card" tabindex="0" role="button" data-layer="withdrawal-dynamics" data-title="Withdrawal Dynamics" data-full="Get warned the moment withdrawals start slowing down or freezing. We monitor historical withdrawal patterns and detect pause events, growing queues, and cooldown changes — early signals of a protocol in distress.">
+            <div class="feature-card" tabindex="0" role="button" data-layer="transaction-restrictions" data-title="Token & Transaction Restrictions" data-full="Surfaces controls that may pause, block, tax, limit, mint, or otherwise constrain token activity and user transactions.">
                 <svg class="feature-card-icon" viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5"/><path d="m16 19 3 3 3-3"/><path d="M18 12h.01"/><path d="M19 16v6"/><path d="M6 12h.01"/><circle cx="12" cy="12" r="2"/></svg>
-                <h3>Withdrawal Dynamics</h3>
-                <p>Get warned the moment withdrawals start slowing down or freezing. We track pause events and growing queues before they become a crisis.</p>
+                <h3>Token &amp; Transaction Restrictions</h3>
+                <p>Surfaces controls that may pause, block, tax, limit, mint, or constrain token activity.</p>
                 <span class="feature-card-hint">Learn more →</span>
             </div>
-            <div class="feature-card" tabindex="0" role="button" data-layer="cross-chain-bridge" data-title="Cross-Chain Bridge" data-full="Track risk across every chain a protocol touches, not just one. Our monitoring follows fund movement and protocol behavior across bridges and multiple blockchain networks, so risk doesn't hide in a chain you weren't watching.">
+            <div class="feature-card" tabindex="0" role="button" data-layer="wallet-concentration" data-title="Ownership & Wallet Concentration" data-full="Measures concentration and highlights dependencies created by dominant owners, large holders, or connected wallets.">
                 <svg class="feature-card-icon" viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.586 5.414-5.172 5.172"/><path d="m18.586 13.414-5.172 5.172"/><path d="M6 12h12"/><circle cx="12" cy="20" r="2"/><circle cx="12" cy="4" r="2"/><circle cx="20" cy="12" r="2"/><circle cx="4" cy="12" r="2"/></svg>
-                <h3>Cross-Chain Bridge</h3>
-                <p>Track risk across every chain a protocol touches, not just one. We follow fund movement across bridges so risk doesn't hide where you weren't watching.</p>
+                <h3>Ownership &amp; Wallet Concentration</h3>
+                <p>Measures concentration and highlights dependencies created by dominant or connected wallets.</p>
                 <span class="feature-card-hint">Learn more →</span>
             </div>
-            <div class="feature-card" tabindex="0" role="button" data-layer="off-ramp-detection" data-title="Off-Ramp Detection" data-full="Catch funds heading toward exchanges before they disappear for good. We identify wallet activity consistent with cashing out through centralized exchanges, a common final step before an operator disappears with user funds.">
+            <div class="feature-card" tabindex="0" role="button" data-layer="governance-controls" data-title="Governance & Operational Controls" data-full="Reviews timelocks, multisig safeguards, role separation, and the operating controls around sensitive decisions.">
                 <svg class="feature-card-icon" viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
-                <h3>Off-Ramp Detection</h3>
-                <p>Catch funds heading toward exchanges before they disappear for good. We flag activity consistent with operators cashing out.</p>
-                <span class="feature-card-hint">Learn more →</span>
-            </div>
-            <div class="feature-card" tabindex="0" role="button" data-layer="sybil-clustering" data-title="Sybil Clustering" data-full="Unmask fake community and wallet activity designed to look organic. We detect coordinated, machine-like wallet behavior and clustering that reveals when 'grassroots' activity is really a handful of operators.">
-                <svg class="feature-card-icon" viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/><path d="M14 13.12c0 2.38 0 6.38-1 8.88"/><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/><path d="M2 12a10 10 0 0 1 18-6"/><path d="M2 16h.01"/><path d="M21.8 16c.2-2 .131-5.354 0-6"/><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"/><path d="M8.65 22c.21-.66.45-1.32.57-2"/><path d="M9 6.8a6 6 0 0 1 9 5.2v2"/></svg>
-                <h3>Sybil Clustering</h3>
-                <p>Unmask fake community and wallet activity designed to look organic. We detect coordinated behavior behind seemingly independent wallets.</p>
-                <span class="feature-card-hint">Learn more →</span>
-            </div>
-            <div class="feature-card" tabindex="0" role="button" data-layer="transaction-attribution" data-title="Transaction Attribution" data-full="Trace the money back to the people actually responsible. Using on-chain forensics, we follow capital flows through mixers and intermediary wallets to attribute activity to real operators with a measurable confidence score.">
-                <svg class="feature-card-icon" viewBox="0 0 24 24" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                <h3>Transaction Attribution</h3>
-                <p>Trace the money back to the people actually responsible. Our forensics follow capital through mixers to attribute activity with a confidence score.</p>
+                <h3>Governance &amp; Operational Controls</h3>
+                <p>Reviews timelocks, multisig safeguards, role separation, and sensitive operating controls.</p>
                 <span class="feature-card-hint">Learn more →</span>
             </div>
         </div>
 
-        <h2 class="section-title" id="methodology">8-Layer Detection Framework</h2>
-        <p class="section-intro">Our 8-layer detection framework analyzes smart contracts across multiple dimensions — from code structure to treasury dynamics to behavioral patterns. Each layer represents a distinct threat surface; comprehensive assessment requires simultaneous evaluation across all eight.</p>
+        <h2 class="section-title" id="methodology">How a Verdict Is Made</h2>
+        <p class="section-intro">Trace the result from evidence to explanation. Scoring is deterministic; AI is used only to express the completed findings in clearer language.</p>
+
+        <div class="method-steps" id="methodSteps">
+            <button class="method-step-button" aria-expanded="true" aria-controls="method-step-1"><span class="method-step-number">1</span><span class="method-step-label"><strong>Collect verifiable signals</strong><span>Start with contract and wallet evidence</span></span><span aria-hidden="true">+</span></button>
+            <div class="method-step-panel open" id="method-step-1"><strong>Observable facts come first.</strong> The analysis identifies source verification, access roles, proxy structure, transaction controls, holder concentration, and governance safeguards.</div>
+            <button class="method-step-button" aria-expanded="false" aria-controls="method-step-2"><span class="method-step-number">2</span><span class="method-step-label"><strong>Run the 6-point framework</strong><span>Apply the same rules to every analysis</span></span><span aria-hidden="true">+</span></button>
+            <div class="method-step-panel" id="method-step-2"><strong>Each dimension is scored by predefined logic.</strong> The overall result is derived from those checks, so the same evidence produces the same score.</div>
+            <button class="method-step-button" aria-expanded="false" aria-controls="method-step-3"><span class="method-step-number">3</span><span class="method-step-label"><strong>Link findings to evidence</strong><span>Make the score inspectable</span></span><span aria-hidden="true">+</span></button>
+            <div class="method-step-panel" id="method-step-3"><strong>Results show their work.</strong> Material findings connect to the underlying contract or wallet signals so reviewers can validate the basis of the assessment.</div>
+            <button class="method-step-button" aria-expanded="false" aria-controls="method-step-4"><span class="method-step-number">4</span><span class="method-step-label"><strong>Explain the verdict plainly</strong><span>Translate without changing the result</span></span><span aria-hidden="true">+</span></button>
+            <div class="method-step-panel" id="method-step-4"><strong>AI writes a short plain-English summary after scoring is complete.</strong> It rephrases the deterministic findings; it does not add evidence, invent risks, or influence the score.</div>
+        </div>
 
         <div class="workflow-diagram-wrap">
-            <svg class="workflow-diagram" viewBox="0 0 1480 170" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Workflow: Contract Address flows through Layers 1 through 8 to produce a Risk Score">
+            <svg class="workflow-diagram" viewBox="0 0 1480 170" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Workflow: Contract Address flows through six scored dimensions to produce an evidence-linked risk report">
                 <defs>
                     <linearGradient id="workflowGrad" x1="0" y1="0" x2="1480" y2="0" gradientUnits="userSpaceOnUse">
                         <stop offset="0%" stop-color="#10b981"/>
@@ -439,87 +448,87 @@
 
                 <circle cx="250.0" cy="80" r="24" fill="#0a0e27" stroke="url(#workflowGrad)" stroke-width="3"/>
                 <text x="250.0" y="85" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">1</text>
-                <text x="250.0" y="124" text-anchor="middle" font-size="11" fill="#a0a8c8">Patterns</text>
+                <text x="250.0" y="124" text-anchor="middle" font-size="11" fill="#a0a8c8">Verification</text>
 
                 <circle cx="378.6" cy="80" r="24" fill="#0a0e27" stroke="url(#workflowGrad)" stroke-width="3"/>
                 <text x="378.6" y="85" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">2</text>
-                <text x="378.6" y="124" text-anchor="middle" font-size="11" fill="#a0a8c8">Bytecode</text>
+                <text x="378.6" y="124" text-anchor="middle" font-size="11" fill="#a0a8c8">Admin Access</text>
 
                 <circle cx="507.1" cy="80" r="24" fill="#0a0e27" stroke="url(#workflowGrad)" stroke-width="3"/>
                 <text x="507.1" y="85" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">3</text>
-                <text x="507.1" y="124" text-anchor="middle" font-size="11" fill="#a0a8c8">Treasury</text>
+                <text x="507.1" y="124" text-anchor="middle" font-size="11" fill="#a0a8c8">Proxy Risk</text>
 
                 <circle cx="635.7" cy="80" r="24" fill="#0a0e27" stroke="url(#workflowGrad)" stroke-width="3"/>
                 <text x="635.7" y="85" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">4</text>
-                <text x="635.7" y="124" text-anchor="middle" font-size="11" fill="#a0a8c8">Withdrawals</text>
+                <text x="635.7" y="124" text-anchor="middle" font-size="11" fill="#a0a8c8">Restrictions</text>
 
                 <circle cx="764.3" cy="80" r="24" fill="#0a0e27" stroke="url(#workflowGrad)" stroke-width="3"/>
                 <text x="764.3" y="85" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">5</text>
-                <text x="764.3" y="124" text-anchor="middle" font-size="11" fill="#a0a8c8">Bridges</text>
+                <text x="764.3" y="124" text-anchor="middle" font-size="11" fill="#a0a8c8">Ownership</text>
 
                 <circle cx="892.9" cy="80" r="24" fill="#0a0e27" stroke="url(#workflowGrad)" stroke-width="3"/>
                 <text x="892.9" y="85" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">6</text>
-                <text x="892.9" y="124" text-anchor="middle" font-size="11" fill="#a0a8c8">Off-Ramps</text>
+                <text x="892.9" y="124" text-anchor="middle" font-size="11" fill="#a0a8c8">Governance</text>
 
                 <circle cx="1021.4" cy="80" r="24" fill="#0a0e27" stroke="url(#workflowGrad)" stroke-width="3"/>
-                <text x="1021.4" y="85" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">7</text>
-                <text x="1021.4" y="124" text-anchor="middle" font-size="11" fill="#a0a8c8">Sybil</text>
+                <text x="1021.4" y="85" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">S</text>
+                <text x="1021.4" y="124" text-anchor="middle" font-size="11" fill="#a0a8c8">Score</text>
 
                 <circle cx="1150.0" cy="80" r="24" fill="#0a0e27" stroke="url(#workflowGrad)" stroke-width="3"/>
-                <text x="1150.0" y="85" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">8</text>
-                <text x="1150.0" y="124" text-anchor="middle" font-size="11" fill="#a0a8c8">Attribution</text>
+                <text x="1150.0" y="85" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">AI</text>
+                <text x="1150.0" y="124" text-anchor="middle" font-size="11" fill="#a0a8c8">Plain English</text>
 
                 <rect x="1250" y="50" width="220" height="60" rx="8" fill="url(#workflowGrad)"/>
-                <text x="1360" y="76" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">Risk Score</text>
-                <text x="1360" y="96" text-anchor="middle" font-size="11" fill="#ffffff" opacity="0.85">0-100</text>
+                <text x="1360" y="76" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">Risk Report</text>
+                <text x="1360" y="96" text-anchor="middle" font-size="11" fill="#ffffff" opacity="0.85">Score + Evidence</text>
             </svg>
         </div>
 
         <div class="layer-grid">
             <div class="layer-card">
                 <svg class="layer-card-icon" viewBox="0 0 24 24" fill="none" stroke="#f7931a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 7v4"/><path d="M11 15h.01"/></svg>
-                <div class="layer-card-name">Layer 1: Patterns</div>
-                <p>Scans website copy, whitepapers, and promotional materials for guaranteed-return language, MLM/pyramid structuring, and unsustainable APY claims (&gt;100% annually) — the same red flags present in nearly every historical rug pull.</p>
+                <div class="layer-card-name">1. Contract Verification &amp; Transparency</div>
+                <p>Checks whether the contract is verified and whether its implementation can be inspected with confidence.</p>
             </div>
             <div class="layer-card">
                 <svg class="layer-card-icon" viewBox="0 0 24 24" fill="none" stroke="#f7931a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
-                <div class="layer-card-name">Layer 2: Bytecode</div>
-                <p>Decompiles verified and unverified contract bytecode to flag owner-only mint/pause/blacklist functions, missing or fake time-locks, and upgrade proxies that let an operator silently swap the logic behind a "verified" contract.</p>
+                <div class="layer-card-name">2. Privileged Access &amp; Admin Controls</div>
+                <p>Identifies elevated roles and sensitive permissions that can materially change how the contract behaves.</p>
             </div>
             <div class="layer-card">
                 <svg class="layer-card-icon" viewBox="0 0 24 24" fill="none" stroke="#f7931a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="7.5" cy="7.5" r=".5" fill="#f7931a"/><path d="m7.9 7.9 2.7 2.7"/><circle cx="16.5" cy="7.5" r=".5" fill="#f7931a"/><path d="m13.4 10.6 2.7-2.7"/><circle cx="7.5" cy="16.5" r=".5" fill="#f7931a"/><path d="m7.9 16.1 2.7-2.7"/><circle cx="16.5" cy="16.5" r=".5" fill="#f7931a"/><path d="m13.4 13.4 2.7 2.7"/><circle cx="12" cy="12" r="2"/></svg>
-                <div class="layer-card-name">Layer 3: Treasury Flow Analysis</div>
-                <p>Continuously tracks treasury and multisig wallets for abnormal outflows, mixer transfers, and drain velocity — the rate of fund departure relative to historical baseline — that precedes most insolvency events by days, not minutes.</p>
+                <div class="layer-card-name">3. Upgradeability &amp; Proxy Risk</div>
+                <p>Examines proxy patterns, upgrade paths, and who can replace or alter the underlying implementation.</p>
             </div>
             <div class="layer-card">
                 <svg class="layer-card-icon" viewBox="0 0 24 24" fill="none" stroke="#f7931a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="16" r="1"/><rect x="3" y="10" width="18" height="12" rx="2"/><path d="M7 10V7a5 5 0 0 1 10 0v3"/></svg>
-                <div class="layer-card-name">Layer 4: Withdrawals</div>
-                <p>Monitors withdrawal queue depth, cooldown period changes, and pause() invocations in real time, flagging the moment a protocol quietly slows redemptions before any public freeze announcement.</p>
+                <div class="layer-card-name">4. Token &amp; Transaction Restrictions</div>
+                <p>Surfaces controls that may pause, block, tax, limit, mint, or otherwise constrain token activity.</p>
             </div>
             <div class="layer-card">
                 <svg class="layer-card-icon" viewBox="0 0 24 24" fill="none" stroke="#f7931a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.586 5.414-5.172 5.172"/><path d="m18.586 13.414-5.172 5.172"/><path d="M6 12h12"/><circle cx="12" cy="20" r="2"/><circle cx="12" cy="4" r="2"/><circle cx="20" cy="12" r="2"/><circle cx="4" cy="12" r="2"/></svg>
-                <div class="layer-card-name">Layer 5: Bridges</div>
-                <p>Follows fund movement and contract behavior across every bridge and chain a protocol touches, correlating cross-chain transfers so risk signals on one network aren't missed because you were only watching another.</p>
+                <div class="layer-card-name">5. Ownership &amp; Wallet Concentration</div>
+                <p>Measures concentration and highlights dependencies created by dominant owners or connected wallets.</p>
             </div>
             <div class="layer-card">
                 <svg class="layer-card-icon" viewBox="0 0 24 24" fill="none" stroke="#f7931a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg>
-                <div class="layer-card-name">Layer 6: Exchange & Off-Ramp Detection</div>
-                <p>Identifies wallet proximity to centralized exchange deposit addresses and known VASP (Virtual Asset Service Provider) clusters, surfacing the operator exit paths used to convert on-chain funds to fiat before disappearing.</p>
+                <div class="layer-card-name">6. Governance &amp; Operational Controls</div>
+                <p>Reviews timelocks, multisig safeguards, role separation, and the operating controls around key decisions.</p>
             </div>
             <div class="layer-card">
                 <svg class="layer-card-icon" viewBox="0 0 24 24" fill="none" stroke="#f7931a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>
-                <div class="layer-card-name">Layer 7: Sybil</div>
-                <p>Clusters wallets by funding source, transaction timing, and gas behavior to detect machine-like, coordinated activity — the fingerprint of a handful of operators simulating an organic community or user base.</p>
+                <div class="layer-card-name">Planned: Liquidity &amp; Market Structure</div>
+                <p>Roadmap capability for evaluating liquidity depth, market dependencies, and structural trading risks. This is not included in the current score.</p>
             </div>
             <div class="layer-card">
                 <svg class="layer-card-icon" viewBox="0 0 24 24" fill="none" stroke="#f7931a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/><path d="M14 13.12c0 2.38 0 6.38-1 8.88"/><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/><path d="M2 12a10 10 0 0 1 18-6"/><path d="M2 16h.01"/><path d="M21.8 16c.2-2 .131-5.354 0-6"/><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"/><path d="M8.65 22c.21-.66.45-1.32.57-2"/><path d="M9 6.8a6 6 0 0 1 9 5.2v2"/></svg>
-                <div class="layer-card-name">Layer 8: Attribution</div>
-                <p>Applies on-chain forensics to trace capital through mixers and intermediary wallets, attributing activity to real-world operators with a measurable confidence score rather than a guess.</p>
+                <div class="layer-card-name">Planned: Exploit/Anomaly &amp; External Signals</div>
+                <p>Roadmap capability for adding anomaly detection, exploit intelligence, and corroborating external signals. This is not included in the current score.</p>
             </div>
         </div>
 
         <h2 class="section-title" id="research">Research & Case Studies</h2>
-        <p class="research-intro">We're building out real, evidence-backed case studies using our 8-layer detection framework. In the meantime, here are illustrative examples showing how different risk patterns look across the framework.</p>
+        <p class="research-intro">Explore evidence-backed case studies showing how different smart-contract risks appear across the 6-point framework.</p>
         <div class="risk-legend">
             <div class="risk-legend-bar"></div>
             <div class="risk-legend-labels">
@@ -564,7 +573,7 @@
 
         <div class="disclaimer" id="disclaimer">
             <h2>⚠️ Important Disclaimer</h2>
-            <p><strong>Not Financial Advice:</strong> ChainWise provides institutional-grade risk assessment for informational purposes only.</p>
+            <p><strong>Not Financial Advice:</strong> The Chainwise provides structured risk screening for informational purposes only.</p>
             <p><strong>Risk Acknowledgment:</strong> Cryptocurrency protocols carry substantial risk. Users should conduct independent research and consult qualified advisors.</p>
             <p><strong>Verification Required:</strong> All findings are evidence-based and on-chain verifiable. Independent verification recommended before any action.</p>
             <p><strong>Regulatory Compliance:</strong> Users are responsible for compliance with applicable laws and regulations in their jurisdiction.</p>
@@ -576,7 +585,7 @@
             <div class="card">
                 <div class="card-icon">📐</div>
                 <h3>Our Methodology</h3>
-                <p>Every risk score comes from our <a href="#methodology" style="color:var(--orange);">8-Layer Detection Framework</a> — a systematic pipeline covering pattern recognition, bytecode analysis, treasury flow, and transaction attribution. We favor evidence over speculation: every flag we raise is tied to on-chain data you can independently verify, not a black-box score.</p>
+                <p>Every risk score comes from our <a href="#methodology" style="color:var(--orange);">6-Point Risk Check</a>. Predefined logic evaluates the same six dimensions for every analysis, and material findings link back to the supporting evidence. Results also include an AI-generated plain-English summary: AI rephrases the completed findings, but never invents evidence or determines the score.</p>
             </div>
             <div class="card" id="trust-security">
                 <div class="card-icon">🔒</div>
@@ -625,7 +634,7 @@
                 <span class="chain-tooltip">Avalanche</span>
             </a>
         </div>
-        <p class="chain-caption" style="margin-bottom: 4rem;">The same 8-layer methodology, applied consistently across every supported chain.</p>
+        <p class="chain-caption" style="margin-bottom: 4rem;">The same deterministic 6-point methodology, applied consistently across every supported chain.</p>
     </main>
 
     <footer>
@@ -641,7 +650,7 @@
                         </svg>
                         <span style="font-size:1.1rem; font-weight:700;">The Chainwise</span>
                     </div>
-                    <p style="color:var(--text2); font-size:0.9rem; line-height:1.6; max-width:260px; margin-bottom:1.5rem;">The industry standard for DeFi risk intelligence. Real-time protocol analysis for smart contract safety.</p>
+                    <p style="color:var(--text2); font-size:0.9rem; line-height:1.6; max-width:260px; margin-bottom:1.5rem;">Deterministic smart-contract risk screening with findings linked to verifiable evidence.</p>
                     <form class="footer-newsletter" data-capture-source="footer">
                         <input type="email" placeholder="Get risk alerts by email" required>
                         <button type="submit">Subscribe</button>
@@ -676,13 +685,12 @@
 
                 <div class="footer-section">
                     <h3>Legal</h3>
-                    <ul><li><a href="/privacy.html">Privacy Policy</a></li><li><a href="/terms.html">Terms of Service</a></li><li><a href="#">Cookie Policy</a></li><li><a href="/right-of-reply.html">Right of Reply</a></li></ul>
+                    <ul><li><a href="/privacy.html">Privacy Policy</a></li><li><a href="/terms.html">Terms of Service</a></li><li><a href="/cookie-policy">Cookie Policy</a></li><li><a href="/right-of-reply.html">Right of Reply</a></li></ul>
                 </div>
             </div>
 
             <div class="footer-bottom">
-                <div>© 2024 The Chainwise. All rights reserved. Built by <a href="https://satoshilab.ai" style="color:var(--orange); text-decoration:none;">Satoshi Lab</a></div>
-                <div>🟢 Enterprise-Grade Security</div>
+                <div>© 2026 The Chainwise. All rights reserved. Built by <a href="https://satoshilab.ai" style="color:var(--orange); text-decoration:none;">Satoshi Lab</a></div>
             </div>
         </div>
     </footer>
@@ -697,6 +705,22 @@
     </div>
 
     <script>
+        (function () {
+            const buttons = document.querySelectorAll('.method-step-button');
+            buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const panel = document.getElementById(button.getAttribute('aria-controls'));
+                    const isOpen = button.getAttribute('aria-expanded') === 'true';
+                    buttons.forEach(item => item.setAttribute('aria-expanded', 'false'));
+                    document.querySelectorAll('.method-step-panel').forEach(item => item.classList.remove('open'));
+                    if (!isOpen) {
+                        button.setAttribute('aria-expanded', 'true');
+                        panel.classList.add('open');
+                    }
+                });
+            });
+        })();
+
         (function () {
             const modal = document.getElementById('featureModal');
             const modalTitle = document.getElementById('modalTitle');
