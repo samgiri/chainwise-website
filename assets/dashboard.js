@@ -30,10 +30,14 @@
     'Preparing assessment',
   ];
 
-  var DIMENSION_ORDER = [
-    'verification', 'adminControls', 'upgradeability', 'tokenRestrictions',
-    'liquidity', 'ownership', 'governance', 'exploitSignals',
+  // Matches riskEngine.js's split as of engine 2.1.0: the API's `dimensions` field holds
+  // these 6 - the only ones that can ever be scored - and `roadmapDimensions` holds the 2
+  // permanent stubs below, rendered in their own section so they never look like scored
+  // results (see renderResult()).
+  var SCORED_DIMENSION_ORDER = [
+    'verification', 'adminControls', 'upgradeability', 'tokenRestrictions', 'ownership', 'governance',
   ];
+  var ROADMAP_DIMENSION_ORDER = ['liquidity', 'exploitSignals'];
 
   var LEVEL_BADGE_CLASS = {
     no_material_indicator: 'no_material_indicator',
@@ -558,7 +562,7 @@
     if (topFlagsCard) resultArea.appendChild(topFlagsCard);
 
     var orderedDims = (data.dimensions || []).slice().sort(function (a, b) {
-      return DIMENSION_ORDER.indexOf(a.key) - DIMENSION_ORDER.indexOf(b.key);
+      return SCORED_DIMENSION_ORDER.indexOf(a.key) - SCORED_DIMENSION_ORDER.indexOf(b.key);
     });
 
     if (orderedDims.length) {
@@ -569,12 +573,31 @@
       resultArea.appendChild(chartCard);
 
       var dimSection = el('div', { class: 'dimensions-section' }, [
-        el('h3', { text: 'The 8 Risk Dimensions' }),
+        el('h3', { text: 'The 6 Scored Risk Dimensions' }),
       ]);
       var grid = el('div', { class: 'dimension-grid' });
       orderedDims.forEach(function (dim) { grid.appendChild(renderDimensionCard(dim)); });
       dimSection.appendChild(grid);
       resultArea.appendChild(dimSection);
+    }
+
+    var orderedRoadmap = (data.roadmapDimensions || []).slice().sort(function (a, b) {
+      return ROADMAP_DIMENSION_ORDER.indexOf(a.key) - ROADMAP_DIMENSION_ORDER.indexOf(b.key);
+    });
+    if (orderedRoadmap.length) {
+      var roadmapSection = el('div', { class: 'roadmap-section' }, [
+        el('h3', { text: 'Roadmap: Not Yet Scored' }),
+        el('p', { class: 'roadmap-note', text: 'These ' + orderedRoadmap.length + ' dimensions have no data provider integrated yet for any contract - they are not included in the score above.' }),
+      ]);
+      var roadmapGrid = el('div', { class: 'roadmap-grid' });
+      orderedRoadmap.forEach(function (dim) {
+        roadmapGrid.appendChild(el('div', { class: 'roadmap-card' }, [
+          el('div', { class: 'roadmap-card-name', text: dim.name }),
+          el('p', { text: dim.explanation }),
+        ]));
+      });
+      roadmapSection.appendChild(roadmapGrid);
+      resultArea.appendChild(roadmapSection);
     }
 
     if (data.limitations && data.limitations.length) {
