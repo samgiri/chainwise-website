@@ -2,10 +2,9 @@
 // treat this as its own route - it's imported by api/cases.js (for the case
 // list).
 //
-// There is no real, published case study yet - only ILLUSTRATIVE_CASES below,
-// which are clearly-labeled hypothetical/composite examples used to show what
-// the 8-layer framework looks like across different risk patterns while we
-// build out verified research on real protocols. They carry
+// ILLUSTRATIVE_CASES below are clearly-labeled hypothetical/composite examples used to show
+// what the real 6-scored + 2-roadmap dimension framework (riskEngine.js's computeDimensions()/
+// computeRoadmapDimensions()) looks like across different risk patterns. They carry
 // isIllustrative: true and must never be presented as real findings.
 //
 // A "Smart Solve DeFi" entry previously lived here, presented on the
@@ -110,7 +109,11 @@ const ILLUSTRATIVE_CASES = [
     collapseTimelineDays: [60, 150],
     operatorControlPct: 45,
     detectionHours: 36,
-    layers: { patterns: 60, bytecode: 65, treasury: 40, withdrawals: 35, bridges: 88, offRamps: 55, sybil: 25, attribution: 50 },
+    // Illustrative scores against the same 6 real dimensions the engine scores (see
+    // riskEngine.js's computeDimensions()) - not the old, unrelated 8-layer scheme
+    // (patterns/bytecode/treasury/withdrawals/bridges/offRamps/sybil/attribution) this used
+    // to carry, which never matched any real product surface.
+    dimensionScores: { verification: 65, adminControls: 88, upgradeability: 82, tokenRestrictions: 30, ownership: 40, governance: 78 },
     alerts: [
       { level: 'CRITICAL', message: '(Illustrative) Bridge contract owner key can redirect locked collateral' },
       { level: 'HIGH', message: '(Illustrative) Unverified proxy implementation swapped 48h post-launch' },
@@ -142,7 +145,7 @@ const ILLUSTRATIVE_CASES = [
     collapseTimelineDays: [90, 240],
     operatorControlPct: 55,
     detectionHours: 18,
-    layers: { patterns: 80, bytecode: 45, treasury: 50, withdrawals: 60, bridges: 15, offRamps: 40, sybil: 85, attribution: 45 },
+    dimensionScores: { verification: 50, adminControls: 55, upgradeability: 40, tokenRestrictions: 60, ownership: 90, governance: 65 },
     alerts: [
       { level: 'CRITICAL', message: '(Illustrative) 200+ wallets funded from 6 source addresses within 48 hours' },
       { level: 'HIGH', message: '(Illustrative) Advertised APY unsupported by on-chain protocol revenue' },
@@ -174,7 +177,7 @@ const ILLUSTRATIVE_CASES = [
     collapseTimelineDays: [120, 300],
     operatorControlPct: 38,
     detectionHours: 48,
-    layers: { patterns: 55, bytecode: 40, treasury: 35, withdrawals: 30, bridges: 20, offRamps: 45, sybil: 30, attribution: 78 },
+    dimensionScores: { verification: 55, adminControls: 80, upgradeability: 35, tokenRestrictions: 45, ownership: 40, governance: 85 },
     alerts: [
       { level: 'HIGH', message: '(Illustrative) Team wallets linked to two prior abandoned "yield" projects' },
       { level: 'MEDIUM', message: '(Illustrative) No public team identity despite "fixed return" guarantees' },

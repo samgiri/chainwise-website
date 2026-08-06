@@ -66,7 +66,7 @@
                     <div class="meta-item"><div class="meta-label">Network</div><div class="meta-value">BNB Chain (illustrative)</div></div>
                     <div class="meta-item"><div class="meta-label">Verified Name</div><div class="meta-value">Not available</div></div>
                     <div class="meta-item"><div class="meta-label">Analyzed At</div><div class="meta-value">Demonstration data — not a real timestamp</div></div>
-                    <div class="meta-item"><div class="meta-label">Engine Version</div><div class="meta-value">2.0.0-beta.1</div></div>
+                    <div class="meta-item"><div class="meta-label">Engine Version</div><div class="meta-value">2.1.0</div></div>
                     <div class="meta-item"><div class="meta-label">Data Freshness</div><div class="meta-value">N/A (static demo)</div></div>
                     <div class="meta-item"><div class="meta-label">Confidence</div><div class="meta-value">35%</div></div>
                 </div>
@@ -80,14 +80,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="no-score-note"><strong>Partial assessment (illustrative).</strong> Only 4 of 8 risk dimensions had enough evidence to score in this example — this is typical of the current Beta engine, which does not yet have every data source connected. See below for what was and wasn't assessed.</div>
+                    <div class="no-score-note"><strong>Partial assessment (illustrative).</strong> Only 4 of 6 scored risk dimensions had enough evidence to score in this example — this is typical of the current Beta engine, which does not yet have every data source connected. See below for what was and wasn't assessed.</div>
                 </div>
 
                 <p class="result-disclaimer">Beta automated preliminary screening. This is not a full smart-contract audit, financial advice, or a legal declaration that a protocol is fraudulent or safe. This specific page is a hardcoded demonstration dataset, not a real assessment.</p>
             </div>
 
             <div class="dimensions-section">
-                <h3>The 8 Risk Dimensions (illustrative)</h3>
+                <h3>The 6 Scored Risk Dimensions (illustrative)</h3>
                 <div class="dimension-grid">
                     <div class="dimension-card">
                         <div class="dimension-card-head"><div class="dimension-name">Contract Verification &amp; Transparency</div><span class="dimension-badge review_recommended">Review recommended</span></div>
@@ -112,12 +112,8 @@
                         <p class="dimension-explanation">We couldn't gather enough information to assess this dimension. This does not mean the contract is safe on this dimension — it means we do not know.</p>
                     </div>
                     <div class="dimension-card">
-                        <div class="dimension-card-head"><div class="dimension-name">Liquidity &amp; Market Structure</div><span class="dimension-badge insufficient">Insufficient data</span></div>
-                        <p class="dimension-explanation">Liquidity depth and lock-status analysis require a DEX data provider that is not yet integrated into this engine.</p>
-                    </div>
-                    <div class="dimension-card">
                         <div class="dimension-card-head"><div class="dimension-name">Ownership &amp; Wallet Concentration</div><span class="dimension-badge insufficient">Insufficient data</span></div>
-                        <p class="dimension-explanation">Token holder distribution analysis requires a chain-indexing provider that is not yet integrated into this engine.</p>
+                        <p class="dimension-explanation">Token holder distribution requires the block explorer's token-holder-list API, which is an Etherscan Pro-tier feature not available for this illustrative example.</p>
                     </div>
                     <div class="dimension-card">
                         <div class="dimension-card-head"><div class="dimension-name">Governance &amp; Operational Controls</div><span class="dimension-badge review_recommended">Review recommended</span></div>
@@ -125,9 +121,20 @@
                         <p class="dimension-confidence">Confidence: 60% (illustrative)</p>
                         <p class="dimension-explanation">owner() returns a wallet with no contract code — a single private key holds full control in this example.</p>
                     </div>
-                    <div class="dimension-card">
-                        <div class="dimension-card-head"><div class="dimension-name">Exploit, Anomaly &amp; External Signals</div><span class="dimension-badge insufficient">Insufficient data</span></div>
-                        <p class="dimension-explanation">Known-exploit and anomaly-feed correlation requires a threat-intelligence source that is not yet integrated into this engine.</p>
+                </div>
+            </div>
+
+            <div class="roadmap-section">
+                <h3>Roadmap: Not Yet Scored</h3>
+                <p class="roadmap-note">These 2 dimensions have no data provider integrated yet for any contract - they are not included in the score above.</p>
+                <div class="roadmap-grid">
+                    <div class="roadmap-card">
+                        <div class="roadmap-card-name">Liquidity &amp; Market Structure</div>
+                        <p>This risk dimension is not available yet in ChainWise Beta - it depends on a third-party data source that is not connected to the engine. This is a roadmap gap, not an error, and it is not specific to this contract.</p>
+                    </div>
+                    <div class="roadmap-card">
+                        <div class="roadmap-card-name">Exploit, Anomaly &amp; External Signals</div>
+                        <p>This risk dimension is not available yet in ChainWise Beta - it depends on a third-party data source that is not connected to the engine. This is a roadmap gap, not an error, and it is not specific to this contract.</p>
                     </div>
                 </div>
             </div>

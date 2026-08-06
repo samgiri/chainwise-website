@@ -79,7 +79,7 @@
 
     <div class="hero">
         <h1>Research & Case Studies</h1>
-        <p>Institutional-grade DeFi risk analysis using our 8-layer detection framework. Real, evidence-backed case studies are in progress — the examples below are illustrative.</p>
+        <p>Institutional-grade DeFi risk analysis using our 6-dimension risk engine (plus 2 roadmap dimensions not yet built). Real, evidence-backed case studies are in progress — the examples below are illustrative.</p>
     </div>
 
     <div class="container">
@@ -102,7 +102,8 @@
 
     <script>
         const RISK_CLASS = { CRITICAL: 'risk-critical', HIGH: 'risk-high', MEDIUM: 'risk-medium', LOW: 'risk-low' };
-        const LAYER_LABELS = { patterns: 'Patterns', bytecode: 'Bytecode', treasury: 'Treasury', withdrawals: 'Withdrawals', bridges: 'Bridges', offRamps: 'Off-Ramps', sybil: 'Sybil', attribution: 'Attribution' };
+        // Same 6 scored dimension keys as riskEngine.js's computeDimensions() / case-detail.html.
+        const DIMENSION_LABELS = { verification: 'Verification', adminControls: 'Admin Controls', upgradeability: 'Upgradeability', tokenRestrictions: 'Token Restrictions', ownership: 'Ownership', governance: 'Governance' };
 
         async function loadCaseStudies() {
             const grid = document.getElementById('casesGrid');
@@ -152,7 +153,7 @@
                         <div><div class="metric-value">${c.usersAtRisk ? (c.usersAtRisk / 1000).toFixed(1).replace(/\.0$/, '') + 'K' : '--'}</div><div class="metric-label">Users at Risk</div></div>
                     </div>
                     <div class="case-layers">
-                        ${Object.entries(c.layers || {}).map(([key, score]) => `<span class="layer-tag">${LAYER_LABELS[key] || key}: ${score}</span>`).join('')}
+                        ${Object.entries(c.dimensionScores || {}).map(([key, score]) => `<span class="layer-tag">${DIMENSION_LABELS[key] || key}: ${score}</span>`).join('')}
                     </div>
                     <a href="${caseHref(c)}" class="btn btn-primary">View Details</a>
                 </div>
