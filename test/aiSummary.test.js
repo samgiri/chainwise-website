@@ -89,7 +89,7 @@ test('buildTemplateFallback picks the finding belonging to the highest-subscore 
   const result = buildTemplateFallback({ overallScore: 23, dimensions: SAMPLE_DIMENSIONS, findings: SAMPLE_FINDINGS });
   assert.equal(result.aiGenerated, false);
   assert.match(result.text, /23\/100/);
-  assert.match(result.text, /No material indicator detected/, "the overall score's own level label (23 falls in the 0-33 band), not the worst dimension's");
+  assert.match(result.text, /\(Low\)/, "the overall score's own risk tier (23 falls in the 0-33 Low band), not a dimension's finding label like \"No material indicator detected\"");
   assert.match(result.text, /pause\(\)/, 'must cite the adminControls finding (subscore 40, the highest) as the top factor');
   assert.match(result.text, /automated preliminary screening, not a guarantee/);
 });
