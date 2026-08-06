@@ -129,7 +129,8 @@ test('the MANTRA (OM) case study is real, sourced, and kept separate from the en
   assert.ok(/den(y|ied|ies)/i.test(narrativeText), "MANTRA's denial/response must be included per the right-of-reply standard");
   assert.ok(/no regulator or independent forensic audit/i.test(narrativeText), 'the narrative must explicitly state no definitive finding exists yet');
 
-  assert.ok(mantra.engineAnalysis && Array.isArray(mantra.engineAnalysis.dimensions) && mantra.engineAnalysis.dimensions.length === 8, 'the engine analysis must carry a real 8-dimension breakdown, not a placeholder');
+  assert.ok(mantra.engineAnalysis && Array.isArray(mantra.engineAnalysis.dimensions) && mantra.engineAnalysis.dimensions.length === 6, 'the engine analysis must carry the 6 real scored dimensions, not a placeholder');
+  assert.ok(Array.isArray(mantra.engineAnalysis.roadmapDimensions) && mantra.engineAnalysis.roadmapDimensions.length === 2, 'the engine analysis must carry the 2 roadmap dimensions separately, not mixed into the scored set');
   assert.ok(/not a verdict|not a forensic finding/i.test(mantra.engineAnalysis.note), 'the engine analysis must explicitly disclaim that it is not a verdict on the crash');
 
   assert.ok(fs.existsSync(path.join(ROOT, 'case-mantra-om.html')), 'case-mantra-om.html must exist');

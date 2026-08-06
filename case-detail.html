@@ -54,6 +54,10 @@
         .score-bar { background: rgba(247, 147, 26, 0.1); border-radius: 4px; height: 8px; overflow: hidden; margin-bottom: 0.5rem; }
         .score-fill { height: 100%; background: linear-gradient(90deg, var(--orange), var(--purple)); transition: width 0.6s ease; }
         .layer-desc { font-size: 0.85rem; color: var(--text-secondary); margin-top: 1rem; line-height: 1.5; }
+        .roadmap-note { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem; }
+        .roadmap-card { background: transparent; border: 1px dashed var(--neutral); }
+        .roadmap-card::before { display: none; }
+        .roadmap-card .layer-name { color: var(--text-secondary); }
 
         .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
         .metric-card { background: rgba(20, 25, 45, 0.8); border: 1px solid rgba(247, 147, 26, 0.2); padding: 1.5rem; border-radius: 8px; text-align: center; }
@@ -145,17 +149,24 @@
     </footer>
 
     <script>
-        const LAYER_INFO = {
-            patterns: { name: 'Patterns', desc: 'Source/code pattern red flags: known vulnerability signatures, honeypot patterns, hidden fee/mint functions.' },
-            bytecode: { name: 'Bytecode', desc: 'Compiled bytecode risk: unverified source, proxy/upgradeable patterns, unusual opcodes or obfuscation.' },
-            treasury: { name: 'Treasury', desc: 'On-chain treasury wallet analysis: concentration of funds, suspicious outflows.' },
-            withdrawals: { name: 'Withdrawals', desc: 'Fund flow analysis: withdrawal queue health, abnormal withdrawal restrictions or halts.' },
-            bridges: { name: 'Bridges', desc: 'Cross-chain bridge exposure and bridge-related risk.' },
-            offRamps: { name: 'Off-Ramps', desc: 'Exchange/off-ramp cash-out concentration and velocity.' },
-            sybil: { name: 'Sybil', desc: 'Sybil / wallet-clustering risk among holders, referrers, or early participants.' },
-            attribution: { name: 'Attribution', desc: 'Operator/team identity risk: anonymity, prior rug pulls or failed projects by the same actors.' },
+        // Same 6 real scored dimensions ChainWise's engine actually computes (see
+        // riskEngine.js's computeDimensions()) and the same 2 permanent roadmap stubs
+        // (computeRoadmapDimensions()) - kept in sync with index.html's "6-Point Risk Check"
+        // and dashboard.js so illustrative examples teach the real framework, not a
+        // disconnected fictitious one.
+        const SCORED_DIMENSION_INFO = {
+            verification: { name: 'Contract Verification & Transparency', desc: 'Checks whether the contract is verified and whether its implementation can be inspected with confidence.' },
+            adminControls: { name: 'Privileged Access & Admin Controls', desc: 'Identifies elevated roles and sensitive permissions that can materially change how the contract behaves.' },
+            upgradeability: { name: 'Upgradeability & Proxy Risk', desc: 'Examines proxy patterns, upgrade paths, and who can replace or alter the underlying implementation.' },
+            tokenRestrictions: { name: 'Token & Transaction Restrictions', desc: 'Surfaces controls that may pause, block, tax, limit, mint, or otherwise constrain token activity.' },
+            ownership: { name: 'Ownership & Wallet Concentration', desc: 'Measures concentration and highlights dependencies created by dominant owners or connected wallets.' },
+            governance: { name: 'Governance & Operational Controls', desc: 'Reviews timelocks, multisig safeguards, role separation, and the operating controls around key decisions.' },
         };
-        const LAYER_ORDER = ['patterns', 'bytecode', 'treasury', 'withdrawals', 'bridges', 'offRamps', 'sybil', 'attribution'];
+        const SCORED_DIMENSION_ORDER = ['verification', 'adminControls', 'upgradeability', 'tokenRestrictions', 'ownership', 'governance'];
+        const ROADMAP_DIMENSIONS = [
+            { name: 'Liquidity & Market Structure', desc: 'Roadmap capability for evaluating liquidity depth, market dependencies, and structural trading risks. This is not included in the current score.' },
+            { name: 'Exploit/Anomaly & External Signals', desc: 'Roadmap capability for adding anomaly detection, exploit intelligence, and corroborating external signals. This is not included in the current score.' },
+        ];
 
         function riskBand(score) {
             if (score === null || score === undefined) return { color: 'var(--neutral)', tier: 'NOT ANALYZED' };
@@ -231,11 +242,11 @@
 
                 <div class="container">
                     <section>
-                        <h2>8-Layer Risk Detection Framework</h2>
+                        <h2>The 6 Scored Risk Dimensions</h2>
                         <div class="layers-grid">
-                            ${LAYER_ORDER.map((key, i) => {
-                                const score = (c.layers || {})[key] ?? 0;
-                                const info = LAYER_INFO[key];
+                            ${SCORED_DIMENSION_ORDER.map((key, i) => {
+                                const score = (c.dimensionScores || {})[key] ?? 0;
+                                const info = SCORED_DIMENSION_INFO[key];
                                 return `
                                     <div class="layer-card">
                                         <div class="layer-name">${i + 1}. ${info.name}</div>
@@ -245,6 +256,19 @@
                                     </div>
                                 `;
                             }).join('')}
+                        </div>
+                    </section>
+
+                    <section>
+                        <h2>Roadmap: Not Yet Scored</h2>
+                        <p class="roadmap-note">These 2 dimensions have no data provider integrated yet for any contract - they are not included in the score above.</p>
+                        <div class="layers-grid">
+                            ${ROADMAP_DIMENSIONS.map(info => `
+                                <div class="layer-card roadmap-card">
+                                    <div class="layer-name">${info.name}</div>
+                                    <div class="layer-desc">${info.desc}</div>
+                                </div>
+                            `).join('')}
                         </div>
                     </section>
 
@@ -314,9 +338,11 @@
                     <section>
                         <h2>Methodology</h2>
                         <p class="summary-text">
-                            This analysis uses ChainWise's 8-layer risk detection framework: Patterns, Bytecode, Treasury,
-                            Withdrawals, Bridges, Off-Ramps, Sybil, and Attribution. Per-layer descriptions above reflect what
-                            each layer generally measures, not case-specific forensic claims beyond what's listed under Alerts.
+                            This analysis uses ChainWise's risk framework: 6 scored dimensions (Contract Verification,
+                            Admin Controls, Upgradeability, Token Restrictions, Ownership & Wallet Concentration, and
+                            Governance) plus 2 roadmap dimensions (Liquidity and Exploit/Anomaly Signals) not yet built.
+                            Per-dimension descriptions above reflect what each generally measures, not case-specific
+                            forensic claims beyond what's listed under Alerts.
                         </p>
                         <p class="disclaimer">${c.isIllustrative ? 'Illustrative example for educational purposes only. Not a real protocol, not financial advice.' : 'Not financial advice. Independent verification recommended.'}</p>
                     </section>

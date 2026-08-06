@@ -40,6 +40,23 @@ function levelFromScore(score) {
   return { level: band.level, label: band.label };
 }
 
+// Same 0-33/34-66/67-89/90-100 bands as LEVELS, but named for an *overall* score
+// (Low/Medium/High/Critical) rather than a single dimension's finding severity. Mirrors the
+// LOW/MEDIUM/HIGH/CRITICAL tiers already duplicated in case-mantra-om.html's and
+// dashboard.js's frontend-only tierFromScore() - kept here too so backend code (aiSummary.js)
+// has a correct tier name to reach for instead of misusing levelFromScore()'s dimension label.
+const RISK_TIERS = [
+  { max: 33, tier: 'Low' },
+  { max: 66, tier: 'Medium' },
+  { max: 89, tier: 'High' },
+  { max: 100, tier: 'Critical' },
+];
+
+function tierFromScore(score) {
+  const band = RISK_TIERS.find((b) => score <= b.max) || RISK_TIERS[RISK_TIERS.length - 1];
+  return band.tier;
+}
+
 function insufficientDimension(key, name, dataSource, limitations) {
   return {
     key,
@@ -424,6 +441,7 @@ function summarizeDimensions(dimensions) {
 module.exports = {
   ENGINE_VERSION,
   levelFromScore,
+  tierFromScore,
   computeDimensions,
   computeRoadmapDimensions,
   summarizeDimensions,

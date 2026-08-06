@@ -7,7 +7,7 @@
 // never throw and never return an error to the caller - the page must never break, error, or
 // slow down meaningfully because of this.
 
-const { levelFromScore } = require('./riskEngine');
+const { tierFromScore } = require('./riskEngine');
 
 // Kept short and independent of ANALYZE_TIMEOUT_MS (the on-chain fetch budget, default 12s):
 // worst case the two add sequentially (on-chain phase finishes, then this runs), so this
@@ -48,11 +48,11 @@ function buildTemplateFallback({ overallScore, dimensions, findings }) {
     };
   }
 
-  const levelLabel = levelFromScore(overallScore).label;
+  const tier = tierFromScore(overallScore);
   const worstDim = assessedDims.reduce((worst, d) => (!worst || d.subscore > worst.subscore ? d : worst), null);
   const topFinding = (findings || []).find((f) => f.dimension === worstDim.key);
 
-  const text = `This contract scores ${overallScore}/100 (${levelLabel}), based on ${assessedDims.length} of ${total} risk checks. `
+  const text = `This contract scores ${overallScore}/100 (${tier}), based on ${assessedDims.length} of ${total} risk checks. `
     + (topFinding ? `The most significant factor found: ${topFinding.summary} ` : '')
     + 'This is automated preliminary screening, not a guarantee of safety or risk.';
 

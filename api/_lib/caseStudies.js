@@ -2,10 +2,9 @@
 // treat this as its own route - it's imported by api/cases.js (for the case
 // list).
 //
-// There is no real, published case study yet - only ILLUSTRATIVE_CASES below,
-// which are clearly-labeled hypothetical/composite examples used to show what
-// the 8-layer framework looks like across different risk patterns while we
-// build out verified research on real protocols. They carry
+// ILLUSTRATIVE_CASES below are clearly-labeled hypothetical/composite examples used to show
+// what the real 6-scored + 2-roadmap dimension framework (riskEngine.js's computeDimensions()/
+// computeRoadmapDimensions()) looks like across different risk patterns. They carry
 // isIllustrative: true and must never be presented as real findings.
 //
 // A "Smart Solve DeFi" entry previously lived here, presented on the
@@ -59,28 +58,36 @@ const INVESTIGATED_CASES = [
     ],
     engineAnalysis: {
       // Captured verbatim from a real /api/analyze run - see the header comment above.
-      analyzedAt: '2026-08-01T22:21:36',
-      engineVersion: '2.0.0-beta.1',
+      // Re-captured 2026-08-06 against engine 2.1.0 (previous capture was 2026-08-01 against
+      // 2.0.0-beta.1, predating PR #28's Ownership implementation and the 8->6 split).
+      analyzedAt: '2026-08-06T10:22:32.384Z',
+      engineVersion: '2.1.0',
       resultStatus: 'partial',
       assessmentStatus: 'Partial',
       overallScore: 23,
       worstDimensionScore: 40,
-      confidence: 33,
+      confidence: 44,
       verifiedName: 'OptimismMintableERC20',
       explorerUrl: 'https://basescan.org/address/0x3992b27da26848c2b19cea6fd25ad5568b68ab98',
       note: 'This is the current Base-chain OM token contract (bridged via Superbridge from Ethereum), not the original protocol deployment. This score reflects only this specific contract\'s on-chain risk properties (admin controls, upgradeability, etc.) as assessed by ChainWise Beta - it is not a forensic finding about the April 2025 crash.',
       topFlags: [
-        'The contract gives its admin 1 privileged function (like pause or mint) that can directly affect user funds.',
+        'The contract gives its admin 1 privileged function (mint) that can directly affect user funds by allowing new tokens to be created.',
       ],
       dimensions: [
-        { key: 'verification', name: 'Contract Verification & Transparency', state: 'assessed', level: 'no_material_indicator', levelLabel: 'No material indicator detected', subscore: 10, confidence: 90, explanation: 'Publicly verified source code lets anyone read exactly what the contract does, which supports transparency.' },
-        { key: 'adminControls', name: 'Privileged Access & Admin Controls', state: 'assessed', level: 'review_recommended', levelLabel: 'Review recommended', subscore: 40, confidence: 55, explanation: 'Found 1 commonly privileged function selector in the bytecode. Many legitimate contracts use these too - presence alone is not proof of misuse.' },
-        { key: 'upgradeability', name: 'Upgradeability & Proxy Risk', state: 'assessed', level: 'no_material_indicator', levelLabel: 'No material indicator detected', subscore: 20, confidence: 75, explanation: 'No standard proxy pattern was detected, suggesting contract logic cannot be swapped after deployment via the most common upgrade mechanism.' },
-        { key: 'tokenRestrictions', name: 'Token & Transaction Restrictions', state: 'assessed', level: 'no_material_indicator', levelLabel: 'No material indicator detected', subscore: 20, confidence: 45, explanation: 'No common transfer-restriction keywords (max transaction, blacklist, cooldown, anti-whale) were found in verified source.' },
-        { key: 'liquidity', name: 'Liquidity & Market Structure', state: 'insufficient_data', level: null, levelLabel: 'Insufficient data', subscore: null, confidence: null, explanation: 'Not yet integrated in ChainWise Beta - this is a roadmap gap, not an error, and not specific to this contract.' },
-        { key: 'ownership', name: 'Ownership & Wallet Concentration', state: 'insufficient_data', level: null, levelLabel: 'Insufficient data', subscore: null, confidence: null, explanation: 'Not yet integrated in ChainWise Beta - this is a roadmap gap, not an error, and not specific to this contract.' },
-        { key: 'governance', name: 'Governance & Operational Controls', state: 'insufficient_data', level: null, levelLabel: 'Insufficient data', subscore: null, confidence: null, explanation: 'This contract does not expose a standard owner() function (or the call reverted), so single-key-vs-multisig control could not be determined this way.' },
-        { key: 'exploitSignals', name: 'Exploit, Anomaly & External Signals', state: 'insufficient_data', level: null, levelLabel: 'Insufficient data', subscore: null, confidence: null, explanation: 'Not yet integrated in ChainWise Beta - this is a roadmap gap, not an error, and not specific to this contract.' },
+        { key: 'verification', name: 'Contract Verification & Transparency', state: 'assessed', level: 'no_material_indicator', levelLabel: 'No material indicator detected', subscore: 10, confidence: 90, findings: [{ summary: 'Source code is verified on https://basescan.org as "OptimismMintableERC20".' }], dataSource: 'https://basescan.org', lastChecked: '2026-08-06T10:22:32.383Z', explanation: 'Publicly verified source code lets anyone read exactly what the contract does, which supports transparency.', limitations: ['Verification status reflects only whether source was published to the explorer, not whether that source was independently audited.'] },
+        { key: 'adminControls', name: 'Privileged Access & Admin Controls', state: 'assessed', level: 'review_recommended', levelLabel: 'Review recommended', subscore: 40, confidence: 55, findings: [{ summary: 'Detected function selector 0x40c10f19 (mint(address,uint256)). Operator can mint new tokens.' }], dataSource: 'Base RPC (eth_getCode)', lastChecked: '2026-08-06T10:22:32.383Z', explanation: 'Found 1 commonly privileged function selector(s) in the bytecode. Many legitimate contracts use these too - presence alone is not proof of misuse.', limitations: ['This is a raw bytecode substring scan, not a decompiler - it can miss logic hidden behind a proxy (see Upgradeability) and cannot confirm how/when these functions are actually restricted or used.'] },
+        { key: 'upgradeability', name: 'Upgradeability & Proxy Risk', state: 'assessed', level: 'no_material_indicator', levelLabel: 'No material indicator detected', subscore: 20, confidence: 75, findings: [{ summary: 'The EIP-1967 implementation storage slot is empty; no standard upgradeable-proxy pattern was detected.' }], dataSource: 'Base RPC (eth_getStorageAt, EIP-1967 slots)', lastChecked: '2026-08-06T10:22:32.383Z', explanation: 'No standard proxy pattern was detected, suggesting contract logic cannot be swapped after deployment via the most common upgrade mechanism.', limitations: ['Only the standard EIP-1967 slot pattern is checked; non-standard or custom proxy implementations would not be detected by this check.'] },
+        { key: 'tokenRestrictions', name: 'Token & Transaction Restrictions', state: 'assessed', level: 'no_material_indicator', levelLabel: 'No material indicator detected', subscore: 20, confidence: 45, findings: [], dataSource: 'https://basescan.org (verified source keyword scan)', lastChecked: '2026-08-06T10:22:32.384Z', explanation: 'No common transfer-restriction keywords (max transaction, blacklist, cooldown, anti-whale) were found in verified source.', limitations: ['Keyword matching on source text, not a control-flow analysis - it cannot confirm whether a restriction is currently active or how it is gated.'] },
+        { key: 'ownership', name: 'Ownership & Wallet Concentration', state: 'insufficient_data', level: null, levelLabel: 'Insufficient data', subscore: null, confidence: null, findings: [], dataSource: 'https://basescan.org (token holder list)', lastChecked: '2026-08-06T10:22:32.384Z', explanation: 'This risk dimension is not available yet in ChainWise Beta - it depends on a third-party data source that is not connected to the engine (see the limitation below). This is a roadmap gap, not an error, and it is not specific to this contract.', limitations: ["Top-holder distribution requires the block explorer's token-holder-list API, which is an Etherscan Pro-tier feature - a standard ETHERSCAN_API_KEY cannot retrieve it. This environment either has no key configured, the token has no ERC-20 supply/holder data, or the request failed or was rate-limited."] },
+        { key: 'governance', name: 'Governance & Operational Controls', state: 'insufficient_data', level: null, levelLabel: 'Insufficient data', subscore: null, confidence: null, findings: [], dataSource: 'Base RPC (eth_call owner())', lastChecked: '2026-08-06T10:22:32.384Z', explanation: 'We could not gather enough information to assess this dimension. This does not mean the contract is safe on this dimension - it means we do not know.', limitations: ['This contract does not expose a standard owner() function (or the call reverted), so single-key-vs-multisig control could not be determined this way.'] },
+      ],
+      // The 2 permanent stubs (no data provider integrated for any contract) - kept out of
+      // `dimensions` so they never look like a scored result for this contract. This part of
+      // the snapshot isn't contract-specific and doesn't go stale when the contract is
+      // re-analyzed, but is captured verbatim here too rather than hand-written.
+      roadmapDimensions: [
+        { key: 'liquidity', name: 'Liquidity & Market Structure', state: 'insufficient_data', level: null, levelLabel: 'Insufficient data', subscore: null, confidence: null, findings: [], dataSource: 'Not yet integrated', lastChecked: '2026-08-06T10:22:32.384Z', explanation: 'This risk dimension is not available yet in ChainWise Beta - it depends on a third-party data source that is not connected to the engine (see the limitation below). This is a roadmap gap, not an error, and it is not specific to this contract.', limitations: ['Liquidity depth, lock status, and market-structure analysis require a DEX/liquidity data provider that is not yet integrated into this engine. (A free, RPC-only path exists for standard Uniswap-V2-style pairs - reading factory/pair reserves directly on-chain - but it has not shipped yet because it needs to be verified against live pairs before release.)'] },
+        { key: 'exploitSignals', name: 'Exploit, Anomaly & External Signals', state: 'insufficient_data', level: null, levelLabel: 'Insufficient data', subscore: null, confidence: null, findings: [], dataSource: 'Not yet integrated', lastChecked: '2026-08-06T10:22:32.384Z', explanation: 'This risk dimension is not available yet in ChainWise Beta - it depends on a third-party data source that is not connected to the engine (see the limitation below). This is a roadmap gap, not an error, and it is not specific to this contract.', limitations: ['Known-exploit and anomaly-feed correlation requires a threat-intelligence data source that is not yet integrated into this engine.'] },
       ],
     },
   },
@@ -102,7 +109,11 @@ const ILLUSTRATIVE_CASES = [
     collapseTimelineDays: [60, 150],
     operatorControlPct: 45,
     detectionHours: 36,
-    layers: { patterns: 60, bytecode: 65, treasury: 40, withdrawals: 35, bridges: 88, offRamps: 55, sybil: 25, attribution: 50 },
+    // Illustrative scores against the same 6 real dimensions the engine scores (see
+    // riskEngine.js's computeDimensions()) - not the old, unrelated 8-layer scheme
+    // (patterns/bytecode/treasury/withdrawals/bridges/offRamps/sybil/attribution) this used
+    // to carry, which never matched any real product surface.
+    dimensionScores: { verification: 65, adminControls: 88, upgradeability: 82, tokenRestrictions: 30, ownership: 40, governance: 78 },
     alerts: [
       { level: 'CRITICAL', message: '(Illustrative) Bridge contract owner key can redirect locked collateral' },
       { level: 'HIGH', message: '(Illustrative) Unverified proxy implementation swapped 48h post-launch' },
@@ -134,7 +145,7 @@ const ILLUSTRATIVE_CASES = [
     collapseTimelineDays: [90, 240],
     operatorControlPct: 55,
     detectionHours: 18,
-    layers: { patterns: 80, bytecode: 45, treasury: 50, withdrawals: 60, bridges: 15, offRamps: 40, sybil: 85, attribution: 45 },
+    dimensionScores: { verification: 50, adminControls: 55, upgradeability: 40, tokenRestrictions: 60, ownership: 90, governance: 65 },
     alerts: [
       { level: 'CRITICAL', message: '(Illustrative) 200+ wallets funded from 6 source addresses within 48 hours' },
       { level: 'HIGH', message: '(Illustrative) Advertised APY unsupported by on-chain protocol revenue' },
@@ -166,7 +177,7 @@ const ILLUSTRATIVE_CASES = [
     collapseTimelineDays: [120, 300],
     operatorControlPct: 38,
     detectionHours: 48,
-    layers: { patterns: 55, bytecode: 40, treasury: 35, withdrawals: 30, bridges: 20, offRamps: 45, sybil: 30, attribution: 78 },
+    dimensionScores: { verification: 55, adminControls: 80, upgradeability: 35, tokenRestrictions: 45, ownership: 40, governance: 85 },
     alerts: [
       { level: 'HIGH', message: '(Illustrative) Team wallets linked to two prior abandoned "yield" projects' },
       { level: 'MEDIUM', message: '(Illustrative) No public team identity despite "fixed return" guarantees' },
