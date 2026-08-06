@@ -72,15 +72,34 @@ const INVESTIGATED_CASES = [
       topFlags: [
         'The contract gives its admin 1 privileged function (like pause or mint) that can directly affect user funds.',
       ],
+      // STALE - captured before PR #28 (Ownership implemented as a real 6th dimension) and
+      // before the 8->6 split (engine 2.1.0). Pending a fresh /api/analyze re-capture; the
+      // 6 entries below (still verbatim from the 2.0.0-beta.1 run) need replacing wholesale,
+      // not hand-edited - see the file header comment.
       dimensions: [
         { key: 'verification', name: 'Contract Verification & Transparency', state: 'assessed', level: 'no_material_indicator', levelLabel: 'No material indicator detected', subscore: 10, confidence: 90, explanation: 'Publicly verified source code lets anyone read exactly what the contract does, which supports transparency.' },
         { key: 'adminControls', name: 'Privileged Access & Admin Controls', state: 'assessed', level: 'review_recommended', levelLabel: 'Review recommended', subscore: 40, confidence: 55, explanation: 'Found 1 commonly privileged function selector in the bytecode. Many legitimate contracts use these too - presence alone is not proof of misuse.' },
         { key: 'upgradeability', name: 'Upgradeability & Proxy Risk', state: 'assessed', level: 'no_material_indicator', levelLabel: 'No material indicator detected', subscore: 20, confidence: 75, explanation: 'No standard proxy pattern was detected, suggesting contract logic cannot be swapped after deployment via the most common upgrade mechanism.' },
         { key: 'tokenRestrictions', name: 'Token & Transaction Restrictions', state: 'assessed', level: 'no_material_indicator', levelLabel: 'No material indicator detected', subscore: 20, confidence: 45, explanation: 'No common transfer-restriction keywords (max transaction, blacklist, cooldown, anti-whale) were found in verified source.' },
-        { key: 'liquidity', name: 'Liquidity & Market Structure', state: 'insufficient_data', level: null, levelLabel: 'Insufficient data', subscore: null, confidence: null, explanation: 'Not yet integrated in ChainWise Beta - this is a roadmap gap, not an error, and not specific to this contract.' },
         { key: 'ownership', name: 'Ownership & Wallet Concentration', state: 'insufficient_data', level: null, levelLabel: 'Insufficient data', subscore: null, confidence: null, explanation: 'Not yet integrated in ChainWise Beta - this is a roadmap gap, not an error, and not specific to this contract.' },
         { key: 'governance', name: 'Governance & Operational Controls', state: 'insufficient_data', level: null, levelLabel: 'Insufficient data', subscore: null, confidence: null, explanation: 'This contract does not expose a standard owner() function (or the call reverted), so single-key-vs-multisig control could not be determined this way.' },
-        { key: 'exploitSignals', name: 'Exploit, Anomaly & External Signals', state: 'insufficient_data', level: null, levelLabel: 'Insufficient data', subscore: null, confidence: null, explanation: 'Not yet integrated in ChainWise Beta - this is a roadmap gap, not an error, and not specific to this contract.' },
+      ],
+      // The 2 permanent stubs (no data provider integrated for any contract) - kept out of
+      // `dimensions` so they never look like a scored result for this contract. Wording
+      // mirrors riskEngine.js's computeLiquidity()/computeExploitSignals() verbatim; unlike
+      // `dimensions` above, this part of the snapshot isn't contract-specific and doesn't go
+      // stale when the contract is re-analyzed.
+      roadmapDimensions: [
+        {
+          key: 'liquidity', name: 'Liquidity & Market Structure', state: 'insufficient_data', level: null, levelLabel: 'Insufficient data', subscore: null, confidence: null,
+          explanation: 'This risk dimension is not available yet in ChainWise Beta - it depends on a third-party data source that is not connected to the engine (see the limitation below). This is a roadmap gap, not an error, and it is not specific to this contract.',
+          limitations: ['Liquidity depth, lock status, and market-structure analysis require a DEX/liquidity data provider that is not yet integrated into this engine. (A free, RPC-only path exists for standard Uniswap-V2-style pairs - reading factory/pair reserves directly on-chain - but it has not shipped yet because it needs to be verified against live pairs before release.)'],
+        },
+        {
+          key: 'exploitSignals', name: 'Exploit, Anomaly & External Signals', state: 'insufficient_data', level: null, levelLabel: 'Insufficient data', subscore: null, confidence: null,
+          explanation: 'This risk dimension is not available yet in ChainWise Beta - it depends on a third-party data source that is not connected to the engine (see the limitation below). This is a roadmap gap, not an error, and it is not specific to this contract.',
+          limitations: ['Known-exploit and anomaly-feed correlation requires a threat-intelligence data source that is not yet integrated into this engine.'],
+        },
       ],
     },
   },
